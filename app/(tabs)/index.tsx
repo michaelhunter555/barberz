@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, Button as NativeButton, ImageBackground, ScrollView} from 'react-native';
-import { Button, Avatar, Card } from 'react-native-paper';
+import { Button, Avatar, Card, Divider, Searchbar } from 'react-native-paper';
 import styled from 'styled-components/native';
 import { HomeFeatures } from '@/components/home/HomeFeatures';
-import { UserCard } from '@/components/shared/UserList';
+import { UserCard } from '@/components/shared/UserList/UserList';
 import { dummyUsers } from '@/components/home/DummyData';
-import { StyledView } from '@/components/shared/UIComponents';
+import { StyledView } from '@/components/shared/UserList/UserListStyles';
+import { IconOptionsList } from '@/components/home/IconList/IconList';
+import { FilterBarberChips } from '@/components/home/FilterChips/FitlerChips';
 
 export default function HomeScreen() {
+  const [searchValue, setSearchValue] = React.useState<string>("");
   return (
     <ImageBackground 
     style={styles.imageBackground} 
@@ -16,34 +19,30 @@ export default function HomeScreen() {
     imageStyle={{ opacity: 0.2, width: '100%' }}
     >
 
-<View style={{ flex:1, display: 'flex', justifyContent: 'center', gap: 10, padding: 20 }}>
+<View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 10, padding: 15 }}>
+      <Searchbar elevation={4} showDivider={true} style={{  paddingVertical: 0, backgroundColor: 'white'}} onChangeText={setSearchValue} value={searchValue} placeholder="get started here..." />
   <View>
-    <StyledText style={{ textAlign: 'center', marginBottom: 5 }} fontWeight={700} fontSize={20}>A Barber that fits your needs</StyledText>
+    <StyledText style={{ textAlign: 'center', marginBottom: 2 }} fontWeight={700} fontSize={20}>A Barber that fits your needs</StyledText>
     </View>
   <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent:'center' }}>
-    <Card style={{ width: '100%', height: 250, backgroundColor: 'transparent' }}>
-    <Card.Cover  source={require("../../assets/images/homeImg.png")}  />
-      <Button style={{ marginTop: 10}} mode="contained" buttonColor="#000" onPress={() => console.log("learning more...")}>
-        Learn More
-      </Button>
-    
-    </Card>
-    
-  {/* <StyledAvatar size={100} source={require("../../assets/images/clippers.png")} /> */}
-    <HomeFeatures />
+    <Divider style={{ width: '100%' }} />
   </View>
 
+<View>
+<IconOptionsList />
+    <HomeFeatures />
+</View>
+
+
+    <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <View>
+    <FilterBarberChips />
+      </View>
+    <View style={{ maxHeight: 250 }}>
     <UserCard userData={dummyUsers} />
+    </View>
+    </View>
   
-  <View style={{ justifyContent: 'flex-end', alignItems: 'center', padding: 20, marginBottom: 10 }}>
-  
-  <Button 
-  onPress={() => console.log("authenticate with google")} 
-  icon="google" 
-  buttonColor="#000" 
-  mode="contained">login with google</Button>
-  <StyledButton title="Manual Login" />
-  </View>
 </View>
     </ImageBackground>
   );
