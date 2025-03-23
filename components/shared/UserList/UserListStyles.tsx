@@ -1,10 +1,12 @@
 import { Surface } from "react-native-paper";
-import { View, Text, ScrollView } from 'react-native';
-import styled from "styled-components/native";;
+import { View, Text, ScrollView, ColorSchemeName, } from 'react-native';
+import styled from "styled-components/native";
+import { BlurView } from "expo-blur";
 
 type TJustifyContent = "center" | "flex-end" | "flex-start" | "stretch" | "normal" | "space-between" | "space-around";
 type TAlignItems = "center" | "end" | "start" | "stretch" | "normal" | "flex-end" | "flex-start";
 type TDirection = "row" | "column";
+
 
 const StyledSurface = styled(Surface)`
 
@@ -30,10 +32,20 @@ height: ${(props: { height: string | number }) => props.height ?? 'auto'};
 `;
 
 export const StyledText = styled(Text)`
-color: ${(props: { theme: 'light' | 'dark'}) => props.theme}
+color: ${(props: { theme: ColorSchemeName }) => props.theme === "light" ? '#222': "#f1f1f1"}
 `;
 
 export const StyledScrollView = styled.ScrollView`
 display: flex;
 flex-direction: column;
-`
+`;
+
+export const StyledBlurContainer = styled(BlurView)`
+    display: flex;
+    flex: 1;
+    padding: 5px;
+    text-align: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 20px;
+`;

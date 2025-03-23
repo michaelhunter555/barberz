@@ -1,9 +1,12 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider,} from '@react-navigation/native';
+import { lightTheme, darkTheme } from '@/theme/theme';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -13,6 +16,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? lightTheme : darkTheme;
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -28,12 +32,17 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> 
+      <SafeAreaView style={{ flex: 1 }}>
+      <PaperProvider theme={theme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
+      </PaperProvider>
+    </SafeAreaView>
     </ThemeProvider>
   );
 }
