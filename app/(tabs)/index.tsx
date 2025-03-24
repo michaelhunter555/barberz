@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button as NativeButton, SafeAreaView, ImageBackground, ScrollView, useColorScheme, ColorSchemeName} from 'react-native';
+import { View, Text, ScrollView, useColorScheme, ColorSchemeName} from 'react-native';
 import { Button, Avatar, Card, Divider, Searchbar } from 'react-native-paper';
 import styled from 'styled-components/native';
-import { HomeFeatures } from '@/components/home/HomeFeatures';
+import { HomeFeatures } from '@/components/home/HomeFeatures/HomeFeatures';
 import { UserCard } from '@/components/shared/UserList/UserList';
 import { dummyUsers } from '@/components/home/DummyData';
 import { StyledView } from '@/components/shared/UserList/UserListStyles';
@@ -11,6 +11,7 @@ import { FilterBarberChips } from '@/components/home/FilterChips/FitlerChips';
 import MD3Theme, { useTheme } from 'react-native-paper';
 import { backgroundGradients } from '@/theme/gradients';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 
 
 export default function HomeScreen() {
@@ -20,29 +21,31 @@ export default function HomeScreen() {
   const gradientColors: readonly [string, string, ...string[]] = [gradient.colors[0], gradient.colors[1], ...gradient.colors]
   const isDarkTheme: readonly [string, string, ...string[]] = ["#000","#000"]
   const setGradient = colorScheme === 'light' ? gradientColors : isDarkTheme;
+
+  const lightImg = require("../../assets/images/background-a.png");
+  const darkImg = require("../../assets/images/background.png");
+
+  const selectedImg = colorScheme === 'light'?lightImg:darkImg;
   
   return (
     
     <StyledImageBackground 
-    source={require("../../assets/images/background-a.png")}
+    source={selectedImg}
     resizeMode="repeat"
     imageStyle={{ opacity: 0.2, width: '100%' }}
     >
-
-      <Searchbar
-      elevation={4} 
-      showDivider={true}
-      placeholderTextColor={colorScheme === 'light'? "#f1f1f1": "#fff"}
-      style={{ paddingVertical: 0, backgroundColor:colorScheme === 'light'? '#222': '#222'}} 
-      onChangeText={setSearchValue} value={searchValue} 
-      placeholder="Enter a location..." />
+      <ScrollView contentContainerStyle={{ display: 'flex', gap: 15}}>
+      <SearchBar 
+      colorScheme={colorScheme}
+      searchValue={searchValue}
+      onSearchSubmit={setSearchValue}/>
       <View>
         <StyledText colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Divider style={{ width: '100%' }} />
       </View>
-      <View>
+      <View style={{ display: 'flex', flexDirection: 'column', gap: 10}}>
         <IconOptionsList colorScheme={colorScheme} />
         <HomeFeatures colorScheme={colorScheme}/>
       </View>
@@ -50,10 +53,11 @@ export default function HomeScreen() {
         <View>
           <FilterBarberChips colorScheme={colorScheme} />
         </View>
-        <View style={{ maxHeight: 250 }}>
+        <View style={{ maxHeight: 270 }}>
           <UserCard userData={dummyUsers} colorScheme={colorScheme} />
         </View>
       </View>
+      </ScrollView>
       </StyledImageBackground>
    
   );
@@ -61,11 +65,10 @@ export default function HomeScreen() {
 
 const StyledImageBackground = styled.ImageBackground`
 flex: 1;
-  justify-content: 'center';
+justify-content: 'center';
 display: flex;
 flex-direction: column;
-justify-content: center;
-gap: 10px;
+gap: 15px;
 padding: 15px;
 `;
 
@@ -74,14 +77,4 @@ font-size: ${(props: { fontSize: string | number }) => props.fontSize}px;
 font-weight: ${(props: { fontWeight: number }) => props.fontWeight};
 color: ${(props: { colorScheme: ColorSchemeName }) => props.colorScheme === 'light' ? '#222': "#f1f1f1"};
 text-align: center;
-margin-bottom: 2px;
 `;
-
-
-const styles = StyleSheet.create({
-  imageBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    marginTop: 20,
-  }
-});

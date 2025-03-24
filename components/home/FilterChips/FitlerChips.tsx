@@ -20,8 +20,8 @@ export const FilterBarberChips = ({ colorScheme }: IBarberChips) => {
     return (
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             {filterOptions.map(({ text, icon }, i) => (
-                <TouchableOpacity key={text} onPress={() => setIsSelected(i)}>
-                <StyledBlurChip selected={i === isSelected} intensity={40} tint="light">
+                <TouchableOpacity activeOpacity={0.7} key={text} onPress={() => setIsSelected(i)}>
+                <StyledBlurChip selected={i === isSelected} intensity={colors ? 20:40} tint={colors ? 'dark':'light'}>
                     <Icon source={icon} color="#563586" size={15} />
                     <StyledText color={colors ? "#444" : "#f1f1f1"}>
                         {text}

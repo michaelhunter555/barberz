@@ -18,7 +18,7 @@ export const IconOptionsList = ({ colorScheme }: IconOptionsListProps) => {
             <StyledScrollView horizontal={true} bounces={true}>
         <StyledContainer>
                 {iconList.map(({icon, title, color}, i) => (
-                    <TouchableOpacity key={i} onPress={() => console.log(`${title} clicked`)}>
+                    <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => console.log(`${title} clicked`)}>
 
                     <StyledBlurContainer intensity={blurIntensity} tint={blurType} key={String(icon) + `${i}`}>
                         
@@ -49,7 +49,7 @@ display: flex;
 flex-direction: row;
 justify-content: flex-start;
 align-items: center;
-gap: 5px;
+gap: 10px;
 `
 
 const StyledScrollView = styled.ScrollView`

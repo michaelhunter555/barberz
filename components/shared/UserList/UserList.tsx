@@ -15,7 +15,7 @@ interface IUserCard<T extends Partial<TUser>> {
 }
 
 export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
-    const textColor = colorScheme === 'light'? '#333':'#f1f1f1'
+    const textColor = colorScheme === 'light'? '#222':'#f1f1f1'
     const [rating, setRating] = useState<number>(4.5);
     const gradient = glassGradients.find((g) => g.key === 'appleGlass') || { colors: ["#fff","#fff"] }
     const appleGlass: readonly [string, string, ...string[]] = [gradient.colors[0], gradient.colors[1]]
@@ -38,7 +38,7 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                 {userData.map((user, index) => (
                     // <LinearGradient style={{ borderRadius: 10, opacity: 0.5 }} colors={appleGlass} key={`${user.name}-${index}`}>
                     //         </LinearGradient>
-                    <TouchableOpacity onPress={() => console.log(user)} key={`${user.name}-${index}`}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => console.log(user)} key={`${user.name}-${index}`}>
                         <StyledBlurContainer intensity={intensity} tint={blurType}>
                     <Card
                         style={{ backgroundColor: 'transparent' }}
@@ -54,8 +54,8 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                     <StyledText style={{color: textColor, fontSize: 10 }}>- </StyledText>
                                     <StyledText style={{color: textColor, fontSize: 10 }}>4.5 (15 reviews)</StyledText>
                                     </View>
-                                    <StyledText style={{ color: 'green' }}>Availableve Now</StyledText>
-                                    <StyledText style={{ color: textColor, fontWeight: 'bold' }}>{user.name}</StyledText>
+                                    <StyledText style={{ color: colorScheme === 'light' ? '#0b6209': '#9deb9b' }}>Availableve Now</StyledText>
+                                    <StyledText style={{ color: textColor,}}>{user.name}</StyledText>
 
                                     <StyledText style={{ color: textColor, fontSize: 11 }}>${user.price.toFixed(2)} - {user.location}</StyledText>
                                 </StyledView>
