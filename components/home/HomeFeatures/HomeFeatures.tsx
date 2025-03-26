@@ -22,9 +22,7 @@ interface IHomeFeatures {
     colorScheme: ColorSchemeName;
 }
 
-export const HomeFeatures = ({ colorScheme }: IHomeFeatures) => {
-    const gradientScheme = backgroundGradients.find((g) => g.key === 'greenBlue') || { colors: ["#000", "#222"] }
-    const gradients: readonly [string, string, ...string[]] = [gradientScheme?.colors[0], gradientScheme.colors[1],]
+export const HomeFeatures = ({ colorScheme }: IHomeFeatures) =>{
     const blurTint = colorScheme === 'dark' ? 'light' : 'dark';
     const blurIntensity = colorScheme === 'dark' ? 70 : 35;
     const gList = backgroundGradients.slice(2)
@@ -33,7 +31,6 @@ export const HomeFeatures = ({ colorScheme }: IHomeFeatures) => {
         <StyledScrollView horizontal={true} bounces={true}>
             {featureList.map((feature, i) => (
                 <StyledBlurCard intensity={blurIntensity} tint={blurTint} key={feature.icon}>
-
                     <LinearGradient colors={[gList[i].colors[0], gList[i].colors[1], ...gList[i].colors]} style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -48,8 +45,8 @@ export const HomeFeatures = ({ colorScheme }: IHomeFeatures) => {
                         <StyledText colorScheme={colorScheme}>{feature.textLong}</StyledText>
                         <Divider style={{ width: '100%', marginVertical: 2 }} />
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
-                            <TouchableOpacity style={{ paddingRight: 5}}>
-                            <Text style={{ fontSize: 12, color: "#2196F3" }}>Get</Text>
+                            <TouchableOpacity activeOpacity={0.7} style={{ paddingRight: 5}}>
+                            <Text style={{ fontSize: 12, color: "#007AFF" }}>Get</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

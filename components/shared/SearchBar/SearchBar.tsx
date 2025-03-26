@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ColorSchemeName, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import { 
+    View, 
+    Text, 
+    TextInput, 
+    ColorSchemeName, 
+    NativeSyntheticEvent, 
+    TextInputChangeEventData,
+    TouchableOpacity 
+} from 'react-native';
 import { Icon } from 'react-native-paper';
 import { BlurView } from 'expo-blur';
 import styled
@@ -15,9 +23,12 @@ export const SearchBar = ({searchValue, onSearchSubmit, colorScheme}: ISearchBar
     const intensity = colorScheme === 'light' ? 35:70;
 return (
     <StyledBlurSearch intensity={intensity} tint={tint} >
+        <TouchableOpacity activeOpacity={0.9} onPress={() => console.log(searchValue)}>
+
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingLeft: 10}}>
             <Icon size={30} source="search-web" />
         </View>
+        </TouchableOpacity>
         <View>
             <StyledTextInput 
             maxLength={70} 
@@ -28,6 +39,7 @@ return (
             textContentType="location"
             placeholder="Browse a location..."
             placeholderTextColor={colorScheme === "light" ? "#444":"#f1f1f1"}
+            selectionColor={"#fff"}
             />
         </View>
     </StyledBlurSearch>
@@ -35,6 +47,7 @@ return (
 }
 
 const StyledTextInput = styled(TextInput)`
+
 `;
 
 const StyledBlurSearch = styled(BlurView)`
