@@ -1,16 +1,19 @@
+import React, { useState } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider,} from '@react-navigation/native';
 import { lightTheme, darkTheme } from '@/theme/theme';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, Button } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
-
+import { AuthProvider } from '@/context/auth/use-auth';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import * as WebBrowser from 'expo-web-browser';
 
+WebBrowser.maybeCompleteAuthSession()
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -32,9 +35,9 @@ export default function RootLayout() {
   }
 
   return (
-    
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> 
       <SafeAreaView style={{ flex: 1 }}>
+        <AuthProvider>
       <PaperProvider theme={theme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -42,6 +45,7 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
       </PaperProvider>
+        </AuthProvider>
     </SafeAreaView>
     </ThemeProvider>
   );

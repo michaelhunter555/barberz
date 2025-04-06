@@ -21,6 +21,7 @@ interface ISearchBar {
 export const SearchBar = ({searchValue, onSearchSubmit, colorScheme}: ISearchBar) => {
     const tint = colorScheme === 'light' ? 'dark':'light';
     const intensity = colorScheme === 'light' ? 35:70;
+    const textColor = colorScheme === 'light' ? "#222": "white"
 return (
     <StyledBlurSearch intensity={intensity} tint={tint} >
         <TouchableOpacity activeOpacity={0.9} onPress={() => console.log(searchValue)}>
@@ -30,7 +31,8 @@ return (
         </View>
         </TouchableOpacity>
         <View>
-            <StyledTextInput 
+            <StyledTextInput
+            style={{ color: colorScheme === 'light' ? "#222" : "white" }}
             maxLength={70} 
             value={searchValue}
             onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => onSearchSubmit(e.nativeEvent.text) }
@@ -47,7 +49,6 @@ return (
 }
 
 const StyledTextInput = styled(TextInput)`
-
 `;
 
 const StyledBlurSearch = styled(BlurView)`

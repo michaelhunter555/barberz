@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text, ScrollView, useColorScheme, ColorSchemeName} from 'react-native';
+import { AuthContext } from '@/context/auth/use-auth';
+import { View, Text, ScrollView, useColorScheme, ColorSchemeName, Button} from 'react-native';
 import { Divider } from 'react-native-paper';
 import styled from 'styled-components/native';
 import { HomeFeatures } from '@/components/home/HomeFeatures/HomeFeatures';
@@ -13,6 +14,7 @@ import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
 
 
 export default function HomeScreen() {
+  const auth = React.useContext(AuthContext);
   const colorScheme = useColorScheme();
   const [searchValue, setSearchValue] = React.useState<string>("");
   const gradient = backgroundGradients.find((g) => g.key === "creamWhite") || { colors: ["#f7f6f1 ", "#f7f6f1"]};
@@ -23,10 +25,9 @@ export default function HomeScreen() {
   const lightImg = require("../../assets/images/background-a.png");
   const darkImg = require("../../assets/images/background.png");
 
-  const selectedImg = colorScheme === 'light'?lightImg:darkImg;
+  const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
   
   return (
-    
     <StyledImageBackground 
     source={selectedImg}
     resizeMode="repeat"
@@ -39,6 +40,8 @@ export default function HomeScreen() {
       onSearchSubmit={setSearchValue}/>
       <View>
         <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
+        {auth?.googleResponse === null && ( <Button onPress={auth.signIn} title="login with google" />)}
+      <StyledText fontWeight={400} fontSize={14} colorScheme={colorScheme}>{JSON.stringify(auth?.userAuth)}</StyledText>
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Divider style={{ width: '100%' }} />
