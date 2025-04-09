@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import { BlurView } from 'expo-blur';
 import { Divider, Chip, Icon } from 'react-native-paper';
 import StarRating from 'react-native-star-rating-widget';
+import { StarRatings } from '@/components/shared/ratings/ratings';
 
 interface IFeaturedShop {
     colorScheme: ColorSchemeName;
@@ -27,7 +28,9 @@ const textColor = colorScheme === 'light'? '#222':'#f1f1f1';
             <Divider style={{ width: 1, height: 90 }}/>
             <View style={{ display: 'flex',flexDirection: 'column', alignItems: 'flex-start', flex: 1}}>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
-                   <StarRating starSize={15} rating={rating} onChange={setRating} />
+                    
+                   {/* <StarRating starSize={15} rating={rating} onChange={setRating} /> */}
+                   <StarRatings size={15} userRating={rating} isReview={false} color="yellow" />
                     <StyledText style={{color: textColor, fontSize: 10 }}>- </StyledText>
                     <StyledText style={{color: textColor, fontSize: 10 }}>5.0 (15 reviews)</StyledText>
                 </View>

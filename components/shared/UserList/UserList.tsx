@@ -4,6 +4,7 @@ import { StyledText, StyledView, StyledScrollView, StyledBlurContainer } from ".
 import { Card, Avatar, IconButton } from "react-native-paper";
 import { type TUser } from "../../home/DummyData";
 import StarRating from 'react-native-star-rating-widget';
+import { StarRatings } from '../ratings/ratings';
 import { glassGradients } from '@/theme/gradients';
 
 interface IUserCard<T extends Partial<TUser>> {
@@ -39,7 +40,8 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                 <StyledView direction="column" align="flex-start" style={{ paddingLeft: 10, paddingVertical: 2 }}>
                                     {/* <StyledText style={{ fontSize: 8 }}>"best deals & best service"</StyledText> */}
                                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
-                                    <StarRating starSize={15} rating={rating} onChange={setRating} />
+                                    {/* <StarRating starSize={15} rating={rating} onChange={setRating} /> */}
+                                     <StarRatings userRating={4} isReview={false} size={12} color="yellow" /> 
                                     <StyledText style={{color: textColor, fontSize: 10 }}>- </StyledText>
                                     <StyledText style={{color: textColor, fontSize: 10 }}>4.5 (15 reviews)</StyledText>
                                     </View>

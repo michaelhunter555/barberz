@@ -7,9 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useUser } from '@/hooks/user-hooks';
 
 export type TAuthContext = {
-   userAuth: Partial<IBarber> | null,
+   userAuth: Partial<IBarber> & { picture?: string } | null,
    signIn: () => void;
    signOut: () => void;
+   updateUser: (user: Partial<IBarber>) => void;
    googleResponse: any | null
 }  | null
 
@@ -17,7 +18,7 @@ export const AuthContext = createContext<TAuthContext>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
   const { checkDbUser } = useUser();
-  const [userAuth, setAuthUser] = useState<Partial<IBarber> | null>(null);
+  const [userAuth, setAuthUser] = useState<Partial<IBarber> & { picture: string } | null>(null);
    const [request, response, promptAsync] = Google.useAuthRequest({
       androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID,
       iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS
@@ -27,17 +28,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     handleGoogleSignIn()
   }, [response])
 
-  async function handleGoogleSignIn() {
+  const handleGoogleSignIn = async () => {
       const user = await AsyncStorage.getItem("@user");
       if(!user) {
         if(response?.type === "success") {
           await getUserInfo(response.authentication?.accessToken)
         }
       } else {
-        setAuthUser(JSON.parse(user))
+        const parsedUser = JSON.parse(user);
+        setAuthUser(parsedUser)
         //check if user exists here and if not, create them
         console.log(JSON.parse(user))
-        //checkDbUser(String(userAuth?.email))
+        await checkDbUser(
+          String(parsedUser?.name), 
+          String(parsedUser?.picture), 
+          String(parsedUser?.email))
       }
     }
     
@@ -57,12 +62,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
       }
     }
 
-    console.log("email", userAuth?.email)
-    
+    const updateUser = async (updateUser: Partial<IBarber>) => {
+      setAuthUser((prev) => (prev ? { ...prev, ...updateUser }: null))
+    }
+
   return (
     <AuthContext.Provider value={{ 
       googleResponse: response, 
-      userAuth, 
+      userAuth,
+      updateUser: updateUser, 
       signIn: () => promptAsync(), 
       signOut: () => AsyncStorage.removeItem("@user") }}>
       {children}

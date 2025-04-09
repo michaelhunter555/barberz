@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AuthContext } from '@/context/auth/use-auth';
+import { useAuth } from '@/context/auth/use-auth';
 import { View, Text, ScrollView, useColorScheme, ColorSchemeName, Button} from 'react-native';
 import { Divider } from 'react-native-paper';
 import styled from 'styled-components/native';
@@ -14,7 +14,7 @@ import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
 
 
 export default function HomeScreen() {
-  const auth = React.useContext(AuthContext);
+  const auth = useAuth();
   const colorScheme = useColorScheme();
   const [searchValue, setSearchValue] = React.useState<string>("");
   const gradient = backgroundGradients.find((g) => g.key === "creamWhite") || { colors: ["#f7f6f1 ", "#f7f6f1"]};
@@ -41,7 +41,7 @@ export default function HomeScreen() {
       <View>
         <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
         {auth?.googleResponse === null && ( <Button onPress={auth.signIn} title="login with google" />)}
-      <StyledText fontWeight={400} fontSize={14} colorScheme={colorScheme}>{JSON.stringify(auth?.userAuth)}</StyledText>
+      {auth?.googleResponse !== null && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Divider style={{ width: '100%' }} />
@@ -60,6 +60,7 @@ export default function HomeScreen() {
         </View>
       </View>
       <View>
+      <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Featured:</StyledText>
         <FeaturedShop colorScheme={colorScheme}/>
       </View>
       <View />
