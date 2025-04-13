@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { IBarber } from "@/types";
 import React, { createContext, useState, useContext } from "react";
-import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useUser } from '@/hooks/user-hooks';
 
 export type TAuthContext = {
    userAuth: Partial<IBarber> & { picture?: string } | null,
@@ -17,7 +15,6 @@ export type TAuthContext = {
 export const AuthContext = createContext<TAuthContext>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
-  const { checkDbUser } = useUser();
   const [userAuth, setAuthUser] = useState<Partial<IBarber> & { picture: string } | null>(null);
    const [request, response, promptAsync] = Google.useAuthRequest({
       androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID,
@@ -26,6 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
 
   useEffect(() => {
     handleGoogleSignIn()
+    console.log("I ran again")
   }, [response])
 
   const handleGoogleSignIn = async () => {
@@ -63,8 +61,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     }
 
     const updateUser = async (updateUser: Partial<IBarber>) => {
-      setAuthUser((prev) => (prev ? { ...prev, ...updateUser }: null))
+      setAuthUser((prev) => (prev ? { ...prev, ...updateUser } : null))
     }
+
+    const checkDbUser = async (name: string, imagePath: string, email: string) => {
+      try {
+          const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/get-user-account`,
+              {
+                  method: 'POST',
+                  body: JSON.stringify({ email, name, imagePath }),
+                  headers: { "Content-Type": "application/json" }
+              })
+          const data = await response.json();
+          if (!data.ok) {
+              throw new Error(data.error);
+          }
+          setAuthUser(data.user)
+          AsyncStorage.setItem("@user", JSON.stringify(data.user));
+          return data.user;
+      } catch (err) {
+          console.log("There was an error trying to retreive user data." + err)
+      }
+  }
 
   return (
     <AuthContext.Provider value={{ 

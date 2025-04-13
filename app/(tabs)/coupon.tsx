@@ -1,5 +1,5 @@
 import { StyleSheet, Image, Platform } from 'react-native';
-
+import { useAuth } from '@/context/auth/use-auth';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -7,7 +7,16 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
+const myOffer = [
+  { id: 0, offerText: "Get $10OFF your first cut through us.", offerCode: "40$00", expireDate: '10-12-2025'},
+  { id: 1, offerText: "Get $10OFF your first cut through us.", offerCode: "40$00", expireDate: '10-12-2025'},
+  { id: 2, offerText: "Get $10OFF your first cut through us.", offerCode: "40$00", expireDate: '10-12-2025'},
+  { id: 3, offerText: "Get $10OFF your first cut through us.", offerCode: "40$00", expireDate: '10-12-2025'},
+]
+
 export default function TabThreeScreen() {
+  const auth = useAuth();
+  console.log(auth)
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}

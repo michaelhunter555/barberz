@@ -1,5 +1,6 @@
 import { AuthContext } from '@/context/auth/use-auth';
-import React, { useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
 
 export const useUser = () => {
     const auth = useContext(AuthContext);
@@ -17,6 +18,7 @@ export const useUser = () => {
                 throw new Error(data.error);
             }
             auth?.updateUser(data.user);
+            AsyncStorage.setItem("@user", data.user);
             return data.user;
         } catch (err) {
             console.log("There was an error trying to retreive user data." + err)

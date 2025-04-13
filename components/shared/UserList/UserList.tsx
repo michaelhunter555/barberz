@@ -47,7 +47,6 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                     </View>
                                     <StyledText style={{ color: colorScheme === 'light' ? '#013700': '#9deb9b' }}>Availableve Now</StyledText>
                                     <StyledText style={{ color: textColor,}}>{user.name}</StyledText>
-
                                     <StyledText style={{ color: textColor, fontSize: 11 }}>${user.price.toFixed(2)} - {user.location}</StyledText>
                                 </StyledView>
                             }

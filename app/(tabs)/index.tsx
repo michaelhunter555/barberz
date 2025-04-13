@@ -41,7 +41,7 @@ export default function HomeScreen() {
       <View>
         <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
         {auth?.googleResponse === null && ( <Button onPress={auth.signIn} title="login with google" />)}
-      {auth?.googleResponse !== null && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
+      {(auth?.googleResponse !== null || auth.userAuth?._id) && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Divider style={{ width: '100%' }} />

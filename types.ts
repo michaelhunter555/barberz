@@ -8,6 +8,7 @@ export type Services = {
 export type Status = 'Available' | "Busy" | "Away";
 
 export interface IBarber {
+    _id?: string;
     name: string;
     email: string;
     image: string;
