@@ -22,7 +22,7 @@ export const FilterBarberChips = ({ colorScheme }: IBarberChips) => {
             {filterOptions.map(({ text, icon }, i) => (
                 <TouchableOpacity activeOpacity={0.7} key={text} onPress={() => setIsSelected(i)}>
                 <StyledBlurChip selected={i === isSelected} intensity={colors ? 20:40} tint={colors ? 'dark':'light'}>
-                    <Icon source={icon} color="#563586" size={15} />
+                    <Icon source={icon} color={colors ? "#222" : "#fff"} size={15} />
                     <StyledText color={colors ? "#444" : "#f1f1f1"}>
                         {text}
                     </StyledText>
@@ -41,7 +41,7 @@ align-items: center;
 gap: 2px;
 border-radius: 50px;
 overflow: hidden;
-border: ${(props: { selected: boolean}) => props.selected ? '1px solid #563586': '1px solid transparent'}
+border: ${(props: { selected: boolean}) => props.selected ? '1px solid #fff': '1px solid transparent'}
 `;
 
 const StyledText = styled.Text`

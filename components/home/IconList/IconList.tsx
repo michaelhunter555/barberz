@@ -19,7 +19,6 @@ export const IconOptionsList = ({ colorScheme }: IconOptionsListProps) => {
         <StyledScrollView horizontal={true} bounces={true}>
             <StyledContainer>
                 {iconList.map(({ icon, title, color, link }, i) => (
-                        <Link href="/barbers" asChild key={i}>
                     <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => console.log(`${title} clicked`)}>
                         
                         <StyledBlurContainer intensity={blurIntensity} tint={blurType} key={String(icon) + `${i}`}>
@@ -32,7 +31,6 @@ export const IconOptionsList = ({ colorScheme }: IconOptionsListProps) => {
                             </View>
                         </StyledBlurContainer>
                     </TouchableOpacity>
-                        </Link>
                 ))}
             </StyledContainer>
         </StyledScrollView>
