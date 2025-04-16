@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, useColorScheme, ColorSchemeName, TouchableOpacity } from 'react-native';
+import { View, Text, useColorScheme, ColorSchemeName, TouchableOpacity, ScrollView } from 'react-native';
 import styled from "styled-components/native";
 import { dummyUsers } from "@/components/home/DummyData";
 import { useQuery } from '@tanstack/react-query';
 import { Avatar, Divider, Button, Icon } from 'react-native-paper';
 import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
+import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
 
 
 export default function BarberProfile() {
@@ -25,6 +26,8 @@ export default function BarberProfile() {
 
     return (
         <StyledView style={{ flex: 1 }}>
+            <ScrollView>
+
             <BarberInfoSection 
             colorScheme={colorScheme} 
             blurIntensity={blurIntensity} 
@@ -52,6 +55,11 @@ export default function BarberProfile() {
             </StyledText>
             <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
+               
+                <DayOfWeekChips colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+                <View />
+                <View />
+            </ScrollView>
         </StyledView>
     )
     
