@@ -28,11 +28,7 @@ export default function HomeScreen() {
   const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
   
   return (
-    <StyledImageBackground 
-    source={selectedImg}
-    resizeMode="repeat"
-    imageStyle={{ opacity: 0.2, width: '100%' }}
-    >
+    <StyledContainer>
       <ScrollView contentContainerStyle={{ display: 'flex', gap: 15}}>
       <SearchBar 
       colorScheme={colorScheme}
@@ -68,7 +64,7 @@ export default function HomeScreen() {
       <View />
       <View />
       </ScrollView>
-      </StyledImageBackground>
+      </StyledContainer>
    
   );
 }
@@ -81,6 +77,15 @@ flex-direction: column;
 gap: 15px;
 padding: 15px;
 `;
+
+const StyledContainer = styled.View`
+flex: 1;
+justify-content: 'center';
+display: flex;
+flex-direction: column;
+gap: 15px;
+padding: 15px;
+`
 
 const StyledText = styled(Text)`
 font-size: ${(props: { fontSize: string | number }) => props.fontSize}px;
