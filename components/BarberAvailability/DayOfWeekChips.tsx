@@ -4,6 +4,8 @@ import { Button, Chip, Icon, Divider, IconButton } from "react-native-paper";
 import styled from 'styled-components/native';
 import { StyledText, StyledBlurItem } from '../shared/SharedStyles';
 import { BlurView } from 'expo-blur';
+import { router } from 'expo-router';
+
 
 interface IDayOfWeekChips {
     day?: string;
@@ -128,7 +130,7 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme }: IDayOfWeekChips) =
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <StyledText style={{ fontSize: 20, fontWeight: 600 }} colorScheme={colorScheme}>${price}.00</StyledText>
                         <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                            console.log(`pressed checkout proceed`)
+                            router.push({ pathname: '/checkout/[id]', params: { id: "TEST-8348434fdsjfls", price: String(price), time: bookingItems.time, name: "TEST-Barber" } })
                         }>
                             <StyledBlurItem style={{ width: 120, backgroundColor: '#007AFF' }} intensity={blurIntensity} tint={blurType}>
                                 <StyledText style={{ fontWeight: 700 }}>Go to Checkout</StyledText>
