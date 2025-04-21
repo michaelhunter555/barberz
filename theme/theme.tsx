@@ -48,14 +48,14 @@ export const lightTheme = {
 
   export const darkTheme = {
     "colors": {
-      "primary": "rgb(220, 184, 255)",
-      "onPrimary": "rgb(71, 12, 122)",
-      "primaryContainer": "rgb(95, 43, 146)",
-      "onPrimaryContainer": "rgb(240, 219, 255)",
-      "secondary": "rgb(208, 193, 218)",
+      "primary": "rgb(255, 255, 255)",
+      "onPrimary": "rgb(0, 0, 0)",
+      "primaryContainer": "rgb(255, 255, 255)",
+      "onPrimaryContainer": "rgb(0, 0, 0)",
+      "secondary": "rgb(0, 0, 0)",
       "onSecondary": "rgb(54, 44, 63)",
-      "secondaryContainer": "rgb(77, 67, 87)",
-      "onSecondaryContainer": "rgb(237, 221, 246)",
+      "secondaryContainer": "rgb(0, 0, 0)",
+      "onSecondaryContainer": "rgb(0, 0, 0)",
       "tertiary": "rgb(243, 183, 190)",
       "onTertiary": "rgb(75, 37, 43)",
       "tertiaryContainer": "rgb(101, 58, 65)",

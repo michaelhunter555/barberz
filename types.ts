@@ -18,7 +18,10 @@ export interface IBarber {
     imageFour: string;
     imageFive: string;
     appleId: string;
-    geoLocation: string;
+    geoLocation?: {
+        type: 'Point';
+        coordinates: [number, number]; // [longitude, latitude]
+      };
     location: string;
     userIsLive: boolean;
     shopName: string;

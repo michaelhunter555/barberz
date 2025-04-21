@@ -34,6 +34,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Bmore Barber to access your location to find barbers near you.",
+          "locationAlwaysAndWhenInUsePermission": "Allow Bmore Barber to access your location even when the app is in the background."
+        }
       ]
     ],
     "experiments": {

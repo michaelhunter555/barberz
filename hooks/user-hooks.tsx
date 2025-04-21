@@ -1,6 +1,7 @@
 import { AuthContext } from '@/context/auth/use-auth';
+import { getUserLocation } from '@/lib/getLocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 
 export const useUser = () => {
     const auth = useContext(AuthContext);
@@ -23,7 +24,43 @@ export const useUser = () => {
         } catch (err) {
             console.log("There was an error trying to retreive user data." + err)
         }
+    };
+
+    const updateUserCoords = useCallback(async (lng: number, lat: number, email: string) => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/update-coordinates`, {
+                method: 'POST',
+                body: JSON.stringify({ lng, lat, email }),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+
+            if (!data.ok) {
+                throw new Error(data.error);
+            }
+            auth?.updateUser({
+                ...auth.userAuth,
+                geoLocation: {
+                    type: "Point",
+                    coordinates: [lng, lat]
+                }
+            });
+
+            AsyncStorage.setItem("@user", JSON.stringify(auth?.userAuth))
+        } catch (err) {
+            console.log("There was an error updating your coordinates", err)
+        }
+    }, [auth]);
+
+    const handleCoords = async () => {
+        const coords = await getUserLocation();
+        if (coords) {
+            await updateUserCoords(coords.longitude, coords.latitude, String(auth?.userAuth?.email));
+        } else {
+            return;
+        }
     }
 
-    return { checkDbUser }
+    return { checkDbUser, updateUserCoords, handleCoords }
 }

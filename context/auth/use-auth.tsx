@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { router } from 'expo-router';
 import { IBarber } from "@/types";
 import React, { createContext, useState, useContext } from "react";
 import * as Google from 'expo-auth-session/providers/google';
@@ -28,19 +29,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
 
   const handleGoogleSignIn = async () => {
       const user = await AsyncStorage.getItem("@user");
-      if(!user) {
-        if(response?.type === "success") {
-          await getUserInfo(response.authentication?.accessToken)
-        }
-      } else {
+      if(user) {
         const parsedUser = JSON.parse(user);
         setAuthUser(parsedUser)
         //check if user exists here and if not, create them
-        console.log(JSON.parse(user))
+        console.log("storaged user found: ", JSON.parse(user))
         await checkDbUser(
           String(parsedUser?.name), 
-          String(parsedUser?.picture), 
+          String(parsedUser?.picture),
           String(parsedUser?.email))
+      } else {
+        if(response?.type === "success") {
+          await getUserInfo(response.authentication?.accessToken)
+        }
       }
     }
     
@@ -76,12 +77,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
           if (!data.ok) {
               throw new Error(data.error);
           }
-          setAuthUser(data.user)
-          AsyncStorage.setItem("@user", JSON.stringify(data.user));
-          return data.user;
+          console.log("DB User: ", data.userData)
+          setAuthUser(data.userData);
+          AsyncStorage.setItem("@user", JSON.stringify(data.userData));
       } catch (err) {
-          console.log("There was an error trying to retreive user data." + err)
+          console.log("There was an error trying to retreive user data." + err);
       }
+  }
+
+  const handleSignOut = () => {
+    AsyncStorage.removeItem("@user");
+    setAuthUser(null);
   }
 
   return (
@@ -90,7 +96,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
       userAuth,
       updateUser: updateUser, 
       signIn: () => promptAsync(), 
-      signOut: () => AsyncStorage.removeItem("@user") }}>
+      signOut: () => handleSignOut() }}>
       {children}
     </AuthContext.Provider>
   );

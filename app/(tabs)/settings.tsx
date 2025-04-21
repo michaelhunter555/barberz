@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useAuth } from '@/context/auth/use-auth';
+import { router } from 'expo-router';
 import { View, useColorScheme, TouchableOpacity, ScrollView } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Icon, Divider, List } from 'react-native-paper';
@@ -29,7 +30,7 @@ export default function UserSettings() {
                 <StyledText colorScheme={colorScheme}>Settings</StyledText>
                 <UserInfoSection
                     name={String(auth?.userAuth?.name)}
-                    userImgPath={String(auth?.userAuth?.picture)}
+                    userImgPath={String(auth?.userAuth?.image)}
                     blurIntensity={blurIntensity}
                     blurType={blurType}
                     colorScheme={colorScheme}
@@ -41,7 +42,7 @@ export default function UserSettings() {
 
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
                     {userSettings.map((setting, i) => (
-                        <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => console.log(`setting ${setting.text} clicked`)}>
+                        <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => router.push({ pathname: '/Faqs'})}>
                             <BlurView
                                 intensity={blurIntensity}
                                 tint={blurType} style={{

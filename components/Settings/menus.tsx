@@ -1,8 +1,8 @@
 
 export const userSettings = [
-    { text: "Help", icon: "help-rhombus", link: "" },
+    { text: "FAQs", icon: "help-rhombus", link: "" },
     { text: "My Wallet", icon: "wallet", link: "" },
-    { text: "Transactions", icon: "receipt", link: "" }
+    { text: "My Activity", icon: "receipt", link: "" }
 ];
 
 export const otherSettings = [

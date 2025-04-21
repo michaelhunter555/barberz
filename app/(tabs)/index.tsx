@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useAuth } from '@/context/auth/use-auth';
 import { View, Text, ScrollView, useColorScheme, ColorSchemeName, Button} from 'react-native';
+import { router } from 'expo-router';
 import { Divider } from 'react-native-paper';
 import styled from 'styled-components/native';
 import { HomeFeatures } from '@/components/home/HomeFeatures/HomeFeatures';
@@ -11,6 +12,7 @@ import { FilterBarberChips } from '@/components/home/FilterChips/FitlerChips';
 import { backgroundGradients } from '@/theme/gradients';
 import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
+import Login from '@/components/Login/Login';
 
 
 export default function HomeScreen() {
@@ -26,6 +28,10 @@ export default function HomeScreen() {
   const darkImg = require("../../assets/images/background.png");
 
   const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
+
+  if(auth?.userAuth !== null) {
+    router.push({ pathname: '/login'})
+  }
   
   return (
     <StyledContainer>
@@ -36,8 +42,9 @@ export default function HomeScreen() {
       onSearchSubmit={setSearchValue}/>
       <View>
         <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
-        {auth?.googleResponse === null && ( <Button onPress={auth.signIn} title="login with google" />)}
-      {(auth?.googleResponse !== null || auth.userAuth?._id) && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
+        {auth?.userAuth === null && ( <Button onPress={auth.signIn} title="login with google" />)}
+        {auth?.userAuth !== null && ( <Button onPress={auth?.signOut} title="Signout" />)}
+      {auth?.userAuth !== null  && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Divider style={{ width: '100%' }} />
@@ -69,14 +76,6 @@ export default function HomeScreen() {
   );
 }
 
-const StyledImageBackground = styled.ImageBackground`
-flex: 1;
-justify-content: 'center';
-display: flex;
-flex-direction: column;
-gap: 15px;
-padding: 15px;
-`;
 
 const StyledContainer = styled.View`
 flex: 1;

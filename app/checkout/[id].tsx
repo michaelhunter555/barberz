@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, Text, ScrollView, useColorScheme, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import styled from 'styled-components/native';
 import { StyledText, StyledBlurItem } from '@/components/shared/SharedStyles';
-import { Button, Avatar, Divider, TextInput  } from 'react-native-paper';
+import { Button, Avatar, Divider, TextInput, Icon  } from 'react-native-paper';
 
 const tipChips = [5,10,15,20,25]
 
@@ -33,18 +33,17 @@ const CheckoutPage = () => {
             </StyledView>
             <StyledView direction="column" gap={2}>
             <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Summary:</StyledText>
-            <StyledText colorScheme={colorScheme}>1 x Standard cut- $50</StyledText>
+            <StyledText colorScheme={colorScheme}>1 x Standard cut- ${price}</StyledText>
             
             <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Payment method:</StyledText>
             <StyledText colorScheme={colorScheme}>Card ending in 3453</StyledText>
             </StyledView>
             <StyledText style={{ fontSize: 50}} colorScheme={colorScheme}>${price}</StyledText>
-
             </StyledView>
             <Divider style={{ width: '100%', marginBottom: 10 }} bold />
+          
             <StyledText style={{ fontWeight: 700 }} colorScheme={colorScheme}>Tip:</StyledText>
             <StyledView direction="row" style={{ alignItems: 'center', }} gap={3}>
-
             {tipChips.map((tip, i) => (
                   <TouchableOpacity key={i} activeOpacity={0.7} onPress={() => {
                     setTipIndex(i);
@@ -59,11 +58,7 @@ const CheckoutPage = () => {
                     setTipIndex(null);
                     setTip(0)
                 }}>
-                 
-
                   <Text style={{ marginLeft: 10, fontSize: 10, color: tip !== null ? '#fff':'#222' }}>Remove</Text> 
-              
-                  
               </TouchableOpacity>
             </StyledView>
             <StyledView style={{ marginVertical: 10}}>
@@ -106,14 +101,24 @@ const CheckoutPage = () => {
                     Total:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                  ${(((Number(price) * 0.06) + Number(price)) - 10).toFixed(2)}
+                  ${tip === null ? (((Number(price) * 0.06) + Number(price)) - 10 ).toFixed(2)
+                  : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2)
+                } 
                 </StyledText>
             </StyledView>
-          
-            </StyledViewContent>
-            <View>
-            <Button mode="contained" buttonColor="white" textColor="black">Send Confirmation</Button>
+            <View style={{height: 90 }}/>
+            <View style={{ marginBottom: 10,}}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/Confirming', })}>
+                    <StyledView direction="row" gap={5} style={{ backgroundColor: '#ffffff', width: '100%', height: 40, overflow: 'hidden', borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
+                        <StyledText style={{ fontSize: 17, color: 'black' }} colorScheme={colorScheme}>
+                            Send Confirmation
+                        </StyledText>
+                        <Icon color='black' source="send" size={20} />
+                    </StyledView>
+                </TouchableOpacity>
             </View>
+            </StyledViewContent>
+           
         </StyledViewContainer>
     )
 }
