@@ -39,15 +39,17 @@ export const useUser = () => {
             if (!data.ok) {
                 throw new Error(data.error);
             }
-            auth?.updateUser({
-                ...auth.userAuth,
-                geoLocation: {
-                    type: "Point",
-                    coordinates: [lng, lat]
-                }
-            });
 
-            AsyncStorage.setItem("@user", JSON.stringify(auth?.userAuth))
+            const updatedUser = {
+                ...auth?.userAuth,
+                geoLocation: {
+                    type: "Point" as const,
+                    coordinates: [lng, lat] as [number, number]
+                }
+            }
+            auth?.updateUser(updatedUser);
+
+            AsyncStorage.setItem("@user", JSON.stringify(updatedUser))
         } catch (err) {
             console.log("There was an error updating your coordinates", err)
         }

@@ -88,6 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
   const handleSignOut = () => {
     AsyncStorage.removeItem("@user");
     setAuthUser(null);
+    router.replace("/login")
   }
 
   return (

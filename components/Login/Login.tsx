@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ColorSchemeName } from "react-native";
 import { StyledText, StyledView, StyledBlurItem } from "../shared/SharedStyles";
 import styled from "styled-components/native";
-import { Button, TouchableRipple, FAB } from "react-native-paper";
+import { Button, FAB } from "react-native-paper";
 import { appFeatures } from "./appFeatures";
 
 interface ILogin {
@@ -14,6 +14,10 @@ export default function Login({ colorScheme, authLogin }: ILogin){
     const lightImg = require("../../assets/images/background-a.png");
     const darkImg = require("../../assets/images/background.png");
     const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
+
+    const handlePressedIndex = (i: number) => {
+        setPressedIndex(i)
+    }
   
     return (
         <StyledImageBackground
@@ -32,7 +36,7 @@ export default function Login({ colorScheme, authLogin }: ILogin){
                 {appFeatures.map((feature, i) => (
                     <StyledView key={i} direction="column" align="center" gap={2}>
                         <StyledView>
-                    <FAB style={{ ...(i === pressedIndex && { backgroundColor: '#999'})}} size="small" icon={feature.icon} onPress={() => setPressedIndex(i)} />
+                    <FAB style={{ ...(i === pressedIndex && { backgroundColor: '#999'})}} size="small" icon={feature.icon} onPress={() => handlePressedIndex(i)} />
                         </StyledView>
                         <StyledView>
                             <StyledText colorScheme={colorScheme}>{feature.text}</StyledText>
@@ -49,7 +53,7 @@ export default function Login({ colorScheme, authLogin }: ILogin){
                 </StyledView>}
             </StyledView>
             <StyledView direction="column" align="center" justify="center">
-                <StyledText colorScheme={colorScheme}>Login</StyledText>
+                <StyledText colorScheme={colorScheme}>Login/Sign-up to get started</StyledText>
             </StyledView>  
             <Button onPress={authLogin} icon="google" mode="contained">Login with Google</Button>
         </StyledImageBackground>

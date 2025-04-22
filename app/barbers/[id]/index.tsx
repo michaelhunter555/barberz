@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, useColorScheme, ColorSchemeName, TouchableOpacity, ScrollView } from 'react-native';
 import styled from "styled-components/native";
@@ -6,9 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import { Avatar, Divider, Button, Icon } from 'react-native-paper';
 import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
 import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
+import AppointmentCalendar from "@/components/Calendar/Calendar";
+import { StyledBlurItem, StyledText as SText, StyledView as Div } from "@/components/shared/SharedStyles";
 
 
 export default function BarberProfile() {
+    const [selectedDate, setSelectedDate] = useState<string>("");
+    const [openBookings, setOpenBookings] = useState<boolean>(false);
     const { id, name, location, price, image } = useLocalSearchParams();
     const colorScheme = useColorScheme();
         const shopImg = require("../../../assets/images/homeImg.png")
@@ -23,6 +28,11 @@ export default function BarberProfile() {
     // })
 
     const barber = { id, name, location, price, image };
+
+    const handleDateSelection = (date: string) => {
+        console.log("selectedDate: ",date)
+        setSelectedDate(date);
+    }
 
     return (
         <StyledView style={{ flex: 1 }}>
@@ -54,9 +64,29 @@ export default function BarberProfile() {
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
             </StyledText>
             <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
+           
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
-               
-                <DayOfWeekChips colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+           
+        
+          
+           {!selectedDate && (
+            <>
+            <StyledBlurItem intensity={55} tint="light" style={{ marginBottom: 10, flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+            <Div>
+                <Icon source="calendar" size={25} />
+            </Div>
+            <Div>
+            <SText colorScheme={colorScheme}>Select Date</SText>
+            </Div>
+           </StyledBlurItem>
+            <AppointmentCalendar 
+            onSelectedDate={(date: string) => handleDateSelection(date)} 
+            colorScheme={colorScheme} />
+            </>
+            )}
+                {selectedDate && (
+                <DayOfWeekChips goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+                )}
                 <View />
                 <View />
             </ScrollView>

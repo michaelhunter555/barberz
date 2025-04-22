@@ -12,10 +12,10 @@ import { FilterBarberChips } from '@/components/home/FilterChips/FitlerChips';
 import { backgroundGradients } from '@/theme/gradients';
 import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
-import Login from '@/components/Login/Login';
+import { withAuthGuard } from '@/context/auth-middleware';
 
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   const auth = useAuth();
   const colorScheme = useColorScheme();
   const [searchValue, setSearchValue] = React.useState<string>("");
@@ -28,10 +28,6 @@ export default function HomeScreen() {
   const darkImg = require("../../assets/images/background.png");
 
   const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
-
-  if(auth?.userAuth !== null) {
-    router.push({ pathname: '/login'})
-  }
   
   return (
     <StyledContainer>
@@ -92,3 +88,4 @@ font-weight: ${(props: { fontWeight: number }) => props.fontWeight};
 color: ${(props: { colorScheme: ColorSchemeName }) => props.colorScheme === 'light' ? '#222': "#f1f1f1"};
 ${(props: any) => props.center ? "text-align:center;":""}
 `;
+export default withAuthGuard(HomeScreen);

@@ -12,16 +12,14 @@ interface IDayOfWeekChips {
     value?: number;
     onPress: () => void;
     colorScheme: ColorSchemeName
+    goBack: () => void;
 };
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const generateGroupedSchedule = () => {
-    const schedule = [];
     let value = 0;
-
-    for (const day of days) {
-        const slots = [];
+    const slots = [];
 
         for (let hour = 8; hour <= 16; hour++) {
             if (hour === 16) {
@@ -34,14 +32,11 @@ const generateGroupedSchedule = () => {
             value++;
         }
 
-        schedule.push({ day, slots });
-    }
-
-    return schedule;
+    return slots;
 };
 
 
-const DayOfWeekChips = ({ day, value, onPress, colorScheme }: IDayOfWeekChips) => {
+const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack }: IDayOfWeekChips) => {
     const [price, setPrice] = React.useState<number>(50);
     const [openSchedule, setOpenSchedule] = React.useState();
     const [dayIndex, setDayIndex] = React.useState<number | null>(null);
@@ -82,43 +77,39 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme }: IDayOfWeekChips) =
         setAddOns((prev) => ({...prev, [addOn]: !prev[addOn as keyof typeof prev] }))
     }
 
+    console.log("booking state: ", booking)
+
     return (
         <StyledView>
-            {!booking && dummySchedule.map(({ day, slots }, i) => {
-                return (
-                    <View key={i}>
-                        <Chip textStyle={{ color: slots[i].value === dayIndex ? 'black' : 'white' }} style={{ backgroundColor: slots[i].value === dayIndex ? 'white' : '#222', marginBottom: 5 }} icon={() => <Icon color={slots[i].value === dayIndex ? "white" : "white"} source="eye" size={20} />} onPress={() => handleSetIndex(slots[i].value)}>
-                            {day} - {slots[0].hour}:{slots[0].minute} to {slots[slots.length - 1].hour}:{slots[slots.length - 1].minute}
-                        </Chip>
-                        {slots[i].value === dayIndex && slots.map((slot, j) => (
-                            <React.Fragment key={`${slot.hour}-${slot.minute}-${j}`}>
-                                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, width: "90%", justifyContent: 'space-between' }}>
-                                    <View>
-                                        <StyledText colorScheme={colorScheme}>{slot.hour}:{slot.minute}-{slot.hour + 2}:00</StyledText>
-                                    </View>
+          
+           {!booking && <IconButton onPress={ () => {
+                goBack();
+                }} icon="arrow-left"/>}
+                {!booking && dummySchedule.map((slot, j) => (
+                    <React.Fragment key={`${slot.hour}-${slot.minute}-${j}`}>
+                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, width: "90%", justifyContent: 'space-between' }}>
+                            <View>
+                                <StyledText colorScheme={colorScheme}>{slot.hour}:{slot.minute}-{slot.hour + 2}:00</StyledText>
+                            </View>
 
-                                    <View style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <TouchableOpacity activeOpacity={0.7} onPress={() => {
-                                            handleCreateBooking(`${slot.hour}:${slot.minute}-${slot.hour + 2}:00`)
-                                            console.log(`pressed ${dummySchedule[i].day} - ${slot.hour}:${slot.minute}`)
-                                        }}>
-                                            <StyledBlurItem style={{ width: 80, ...(j % 3 === 0 && { backgroundColor: '#007AFF' }) }} intensity={blurIntensity} tint={blurType}>
-                                                <StyledText style={{ fontWeight: 700 }}>{j % 3 === 0 ? "Book" : "Taken"}</StyledText>
-                                            </StyledBlurItem>
-                                        </TouchableOpacity>
-                                    </View>
+                            <View style={{ display: 'flex', flexDirection: 'column' }}>
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => {
+                                    handleCreateBooking(`${slot.hour}:${slot.minute}-${slot.hour + 2}:00`)
+                                    console.log(`pressed- ${slot.hour}:${slot.minute}`)
+                                }}>
+                                    <StyledBlurItem style={{ width: 80, ...(j % 3 === 0 && { backgroundColor: '#007AFF' }) }} intensity={blurIntensity} tint={blurType}>
+                                        <StyledText style={{ fontWeight: 700 }}>{j % 3 === 0 ? "Book" : "Taken"}</StyledText>
+                                    </StyledBlurItem>
+                                </TouchableOpacity>
+                            </View>
 
-                                    <View>
-                                        <StyledText colorScheme={colorScheme}>${price} + (extras & tax)</StyledText>
-                                    </View>
-                                </View>
-                                <Divider style={{ width: '100%', marginVertical: 5 }} />
-                            </React.Fragment>
-                        ))
-                        }
-                    </View>
-                )
-            })}
+                            <View>
+                                <StyledText colorScheme={colorScheme}>${price} + (extras & tax)</StyledText>
+                            </View>
+                        </View>
+                        <Divider style={{ width: '100%', marginVertical: 5 }} />
+                    </React.Fragment>
+                ))}
 
             {booking && (
                 <>
