@@ -38,8 +38,6 @@ const HomeScreen = () => {
       onSearchSubmit={setSearchValue}/>
       <View>
         <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
-        {auth?.userAuth === null && ( <Button onPress={auth.signIn} title="login with google" />)}
-        {auth?.userAuth !== null && ( <Button onPress={auth?.signOut} title="Signout" />)}
       {auth?.userAuth !== null  && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
       </View>
       <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

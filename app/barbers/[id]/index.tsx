@@ -9,7 +9,9 @@ import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
 import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
 import AppointmentCalendar from "@/components/Calendar/Calendar";
 import { StyledBlurItem, StyledText as SText, StyledView as Div } from "@/components/shared/SharedStyles";
+import UserReview from "@/components/ReviewsList/UserReview";
 
+const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
 export default function BarberProfile() {
     const [selectedDate, setSelectedDate] = useState<string>("");
@@ -57,13 +59,23 @@ export default function BarberProfile() {
                     </View>
                     
                 </View>
-            <Button icon="calendar-clock-outline" buttonColor="white" textColor="black" mode="contained" onPress={() => console.log("hello")}>Book with {name}</Button>
+            <Button icon="chat" buttonColor="white" textColor="black" mode="contained" onPress={() => console.log("hello")}>Send {name} a message</Button>
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 15}}>About {String(name).split(" ")[0]}:</StyledText>
             <StyledText colorScheme={colorScheme}>
                 I've been cutting hair for the last 10 years at Woogie Woogie Barber shop on 11th ave. I've don't mess around and politic like some of these other barbers do and with
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
             </StyledText>
-            <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
+            <Divider bold style={{ width: '100%', marginVertical: 5}}/>
+            { !selectedDate && <>
+            <StyledText style={{ fontWeight: 700, fontSize: 15 }} colorScheme={colorScheme}>Reviews:</StyledText>
+            <UserReview
+            shouldLink={true}
+            userName={"Jacobi K."}
+            userImage={userImg}
+            reviewRating={4.0}
+             reviewDate="6/25/2025"
+            reviewText="Great haircut I loved this place."/>
+            <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></>}
            
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
            

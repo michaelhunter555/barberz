@@ -40,7 +40,7 @@ const AppointmentCalendar = ({ colorScheme, onSelectedDate }: ICalendarProps) =>
             },
             [selected]: {
                 selected: true,
-                disableTouchEvent: true,
+                disableTouchEvent: false,
                 selectedColor: '#007AFF',
                 selectedTextColor: 'white',
             }

@@ -52,7 +52,7 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                                 {/* <StyledText style={{ fontSize: 8 }}>"best deals & best service"</StyledText> */}
                                                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                                                     {/* <StarRating starSize={15} rating={rating} onChange={setRating} /> */}
-                                                    <StarRatings userRating={4} isReview={false} size={12} color="yellow" />
+                                                    <StarRatings userRating={4} isReview={false} size={12} color="white" />
                                                     <StyledText style={{ color: textColor, fontSize: 10 }}>- </StyledText>
                                                     <StyledText style={{ color: textColor, fontSize: 10 }}>4.5 (15 reviews)</StyledText>
                                                 </View>
