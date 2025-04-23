@@ -11,8 +11,33 @@ import AppointmentCalendar from "@/components/Calendar/Calendar";
 import { StyledBlurItem, StyledText as SText, StyledView as Div } from "@/components/shared/SharedStyles";
 import UserReview from "@/components/ReviewsList/UserReview";
 
-const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
+const formatDateString = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+  
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+  
+    const getOrdinal = (n: number) => {
+      if (n > 3 && n < 21) return `${n}th`;
+      switch (n % 10) {
+        case 1: return `${n}st`;
+        case 2: return `${n}nd`;
+        case 3: return `${n}rd`;
+        default: return `${n}th`;
+      }
+    };
+  
+    return `on ${months[month - 1]} ${getOrdinal(day)}, ${year}`;
+  };
+  
+  console.log(formatDateString("2025-04-23"));
+  // → "on April 23rd, 2025"
+
+  
 export default function BarberProfile() {
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [openBookings, setOpenBookings] = useState<boolean>(false);
@@ -76,8 +101,10 @@ export default function BarberProfile() {
              reviewDate="6/25/2025"
             reviewText="Great haircut I loved this place."/>
             <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></>}
-           
+           <Div direction="row" align="flex-end" gap={5}>
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
+            {selectedDate && <StyledText style={{ fontWeight: 600 }} colorScheme={colorScheme}>{formatDateString(selectedDate)}</StyledText>}
+           </Div>
            
         
           
@@ -92,6 +119,7 @@ export default function BarberProfile() {
             </Div>
            </StyledBlurItem>
             <AppointmentCalendar 
+            selectedDate={selectedDate}
             onSelectedDate={(date: string) => handleDateSelection(date)} 
             colorScheme={colorScheme} />
             </>

@@ -6,6 +6,7 @@ import { Calendar, CalendarUtils } from 'react-native-calendars';
 interface ICalendarProps {
     colorScheme: ColorSchemeName;
     onSelectedDate: (day: string) => void;
+    selectedDate: string;
 }
 
 const date = new Date();
@@ -17,9 +18,11 @@ const testIDs = {
     LAST: 'last_calendar'
   },
 }
-const AppointmentCalendar = ({ colorScheme, onSelectedDate }: ICalendarProps) => {
-    const [selected, setSelected] = useState<string>(initialDate);
-    const [currentMonth, setCurrentMonth] = useState<string>(initialDate);
+const AppointmentCalendar = ({ 
+    colorScheme, 
+    onSelectedDate, 
+    selectedDate 
+}: ICalendarProps) => {
 
     const getDate = (count: number) => {
         const date = new Date(initialDate);
@@ -28,24 +31,24 @@ const AppointmentCalendar = ({ colorScheme, onSelectedDate }: ICalendarProps) =>
       };
     
     const onDayPress = useCallback((day: { dateString: string}) => {
-        setSelected(day.dateString);
         onSelectedDate(day.dateString);
       }, []);
 
       const marked = useMemo(() => {
         return {
-            [getDate(-1)]: {
-                dotColor: 'red',
+            [getDate(0)]: {
+                dotColor: 'white',
                 marked: true,
             },
-            [selected]: {
+            [selectedDate]: {
                 selected: true,
                 disableTouchEvent: false,
                 selectedColor: '#007AFF',
                 selectedTextColor: 'white',
+                enableSwipeMonths: true,
             }
         }
-      }, [selected])
+      }, [selectedDate])
 
     return (
               <Fragment>
@@ -59,11 +62,16 @@ const AppointmentCalendar = ({ colorScheme, onSelectedDate }: ICalendarProps) =>
                         calendarBackground: 'black',
                         dayTextColor: '#fff',
                         monthTextColor: '#fff',
-                        backgroundColor: 'black'
+                        backgroundColor: 'black',
+                        textInactiveColor: "#222",
+                        textDisabledColor: "#444",
                     })
                 }}
                   onDayPress={onDayPress}
-                  markedDates={marked}
+                  markedDates={{
+                    ...marked,
+                  }}
+                  minDate={getDate(0)}
                 />
               </Fragment>
     )
