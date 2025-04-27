@@ -29,3 +29,24 @@ export const StyledView = styled.View`
   ${(props: { justify: Justify}) => props.justify && `justify-content: ${props.justify};`}
 `;
 
+export const StyledContainer = styled.View`
+flex: 1;
+justify-content: 'center';
+display: flex;
+flex-direction: column;
+gap: 15px;
+padding: 15px;
+`
+export const getBlurType = (colorScheme: ColorSchemeName) => colorScheme === 'dark' ? 'light' : 'dark';
+export const getIntensity = (colorScheme: ColorSchemeName) => colorScheme === 'dark' ? 55 : 35;
+
+export const StyledBlurSearch = styled(BlurView)`
+overflow: hidden;
+border-radius: 50px;
+height: 40px;
+gap: 10px;
+width: 100%;
+display: flex;
+flex-direction: row;
+align-items: center;
+`;

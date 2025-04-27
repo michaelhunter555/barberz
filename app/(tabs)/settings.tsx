@@ -10,7 +10,9 @@ import UserOffers from '@/components/Settings/UserOffer';
 import AccountLocationGrid from '@/components/Settings/AccountLocationGrid';
 import { StyledText, StyledView, StyledViewContainer } from '@/components/Settings/SettingStyles';
 import { userSettings, otherSettings } from '@/components/Settings/menus';
+import Card from '@/components/shared/Cards/InfoCard';
 
+const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
 export default function UserSettings() {
     const [isActive, setIsActive] = React.useState<boolean>(false);
@@ -42,7 +44,7 @@ export default function UserSettings() {
 
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
                     {userSettings.map((setting, i) => (
-                        <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => router.push({ pathname: '/Faqs'})}>
+                        <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => router.push({ pathname: setting.link as any })}>
                             <BlurView
                                 intensity={blurIntensity}
                                 tint={blurType} style={{
@@ -62,6 +64,19 @@ export default function UserSettings() {
                     ))}
                 </StyledView>
 
+                <Card
+                colorScheme={colorScheme}
+                blurIntensity={blurIntensity}
+                blurType={blurType}
+                imgPath={tempImgPath}
+                label="Recent"
+                buttonRightText='Need Help?'
+                onRightButtonClick={() => router.push({ pathname: '/Faqs'})}
+                buttonLeftText='Reschedule'
+                onLeftButtonClick={() => console.log("reschedule")}
+                description='3:00pm - Haircut appointment with [shop/person] - Confirmed*'
+                />
+
                 <UserOffers
                     imgPath={shopImg}
                     isActive={isActive}
@@ -80,7 +95,12 @@ export default function UserSettings() {
                 </View>
                 <List.Section style={{ marginVertical: 0 }}>
                     {otherSettings.map((settings, i) => (
-                        <List.Item title={settings.text} left={() => <Icon size={20} source={settings.icon} />} key={i} />
+                        <List.Item 
+                        key={i} 
+                        title={settings.text} 
+                        left={() => <Icon size={20} source={settings.icon} />}
+                        onPress={() => router.push({ pathname: settings.link as any })}
+                        />
                     ))}
                 </List.Section>
             </ScrollView>

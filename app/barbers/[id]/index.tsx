@@ -8,7 +8,7 @@ import { Avatar, Divider, Button, Icon } from 'react-native-paper';
 import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
 import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
 import AppointmentCalendar from "@/components/Calendar/Calendar";
-import { StyledBlurItem, StyledText as SText, StyledView as Div } from "@/components/shared/SharedStyles";
+import { StyledBlurItem, StyledText as SText, StyledView as Div, StyledContainer } from "@/components/shared/SharedStyles";
 import UserReview from "@/components/ReviewsList/UserReview";
 
 const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -62,8 +62,10 @@ export default function BarberProfile() {
     }
 
     return (
-        <StyledView style={{ flex: 1 }}>
-            <ScrollView>
+        <StyledView style={{ flex: 1, paddingBottom: 100 }}>
+            <ScrollView 
+             keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ display: 'flex' }} >
 
             <BarberInfoSection 
             colorScheme={colorScheme} 
@@ -91,7 +93,7 @@ export default function BarberProfile() {
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
             </StyledText>
             <Divider bold style={{ width: '100%', marginVertical: 5}}/>
-            { !selectedDate && <>
+            { !selectedDate && <View>
             <StyledText style={{ fontWeight: 700, fontSize: 15 }} colorScheme={colorScheme}>Reviews:</StyledText>
             <UserReview
             shouldLink={true}
@@ -100,7 +102,7 @@ export default function BarberProfile() {
             reviewRating={4.0}
              reviewDate="6/25/2025"
             reviewText="Great haircut I loved this place."/>
-            <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></>}
+            <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></View>}
            <Div direction="row" align="flex-end" gap={5}>
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
             {selectedDate && <StyledText style={{ fontWeight: 600 }} colorScheme={colorScheme}>{formatDateString(selectedDate)}</StyledText>}
@@ -127,8 +129,8 @@ export default function BarberProfile() {
                 {selectedDate && (
                 <DayOfWeekChips goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
                 )}
-                <View />
-                <View />
+               
+        <View style={{ height: 50 }}/>
             </ScrollView>
         </StyledView>
     )
