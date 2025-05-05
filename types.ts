@@ -93,3 +93,9 @@ export type Inputs = {
   export type Action = InputChangeAction | SetFormAction;
   //endof formhook types
   
+  /**
+   * @name: TBarberApp
+   * @description - Application type for users who want to provide hair services.
+   */
+  export type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean}
+   

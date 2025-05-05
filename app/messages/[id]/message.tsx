@@ -11,10 +11,11 @@ import {
     ColorSchemeName,
     NativeSyntheticEvent, 
     TextInputChangeEventData,
+    Image
  } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { StyledView, StyledText, StyledBlurItem, getBlurType, getIntensity } from "@/components/shared/SharedStyles";
-import { IconButton } from "react-native-paper";
+import { IconButton, Avatar } from "react-native-paper";
 import styled from "styled-components/native";
 
 const conversation = [
@@ -22,12 +23,12 @@ const conversation = [
     { id: '2', type: 'received', text: 'Hello!', timestamp: 12345679 },
     { id: '3', type: 'sent', text: 'How’s it going?', timestamp: 12345680 },
   ];
-
+  const tempImg = "https://images.unsplash.com/photo-1567894340315-735d7c361db0?q=80&w=1037&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 type TMessageBubble = { type: string, text: string, colorScheme: ColorSchemeName };
 const MessageBubble = ({ type, text, colorScheme }: TMessageBubble) => (
     <View style={[
         styles.message,
-        type === 'sent' ? styles.sent: styles.received
+        type === 'sent' ? styles.sent: styles.received,
     ]}>
         <StyledText colorScheme={colorScheme}>{text}</StyledText>
     </View>
@@ -62,7 +63,10 @@ const Conversation = () => {
             data={conversation} 
             keyExtractor={(item) => item.id}
             renderItem={({item}) => (
-                <MessageBubble type={item.type} text={item.text} colorScheme={colorScheme} />
+              <View style={{...(item.type === 'received' && { display: 'flex', flexDirection: 'row', gap: 5})}}>
+              {item.type === 'received' && <Avatar.Image size={40} source={{ uri: tempImg }}  />}
+              <MessageBubble type={item.type} text={item.text} colorScheme={colorScheme} />
+              </View>    
             )}
             contentContainerStyle={styles.messagesContainer}
             inverted

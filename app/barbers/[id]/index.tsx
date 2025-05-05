@@ -62,7 +62,7 @@ export default function BarberProfile() {
     }
 
     return (
-        <StyledView style={{ flex: 1, paddingBottom: 100 }}>
+        <StyledView style={{ flex: 1 }}>
             <ScrollView 
              keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ display: 'flex' }} >

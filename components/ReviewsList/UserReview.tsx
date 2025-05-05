@@ -23,11 +23,10 @@ const UserReview = ({
 }: IUserReview) => {
     const colorScheme = useColorScheme();
     return (
-        <StyledView direction="row" gap={10}>
+        <StyledView direction="row" align="center" gap={10}>
             <StyledView>
                 <Avatar.Image source={{ uri: userImage }} />
             </StyledView>
-
             <StyledView direction="column" gap={3}>
                 <StarRatings
                 isReview={false}

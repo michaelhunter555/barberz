@@ -64,5 +64,27 @@ export const useUser = () => {
         }
     }
 
-    return { checkDbUser, updateUserCoords, handleCoords }
+    type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean}
+    const submitBarberApplication = useCallback(async (application: TBarberApp) => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/join-as-barber`, 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify({ email: auth?.userAuth?.email, application }),
+                    headers: { "Content-Type": "application/json"}
+                 }
+            )
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            const newAuth = { ...data.user }
+            auth?.updateUser(newAuth);
+        } catch(err) {
+            console.log("Error submitting barber application ", err)
+        }
+
+    }, [auth])
+
+    return { checkDbUser, updateUserCoords, handleCoords, submitBarberApplication }
 }
