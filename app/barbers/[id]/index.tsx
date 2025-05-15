@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import { View, Text, useColorScheme, ColorSchemeName, TouchableOpacity, ScrollView } from 'react-native';
 import styled from "styled-components/native";
-import { dummyUsers } from "@/components/home/DummyData";
-import { useQuery } from '@tanstack/react-query';
 import { Avatar, Divider, Button, Icon } from 'react-native-paper';
 import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
 import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
 import AppointmentCalendar from "@/components/Calendar/Calendar";
 import { StyledBlurItem, StyledText as SText, StyledView as Div, StyledContainer } from "@/components/shared/SharedStyles";
 import UserReview from "@/components/ReviewsList/UserReview";
+import ShowCaseGallery from "@/components/BarberProfile/ShowCaseGallery";
+import ImageChanger from "@/components/shared/ImageChanger/ImageChanger";
+import { dummyImgArr } from "@/components/BarberProfile/ShowCaseGallery";
 
 const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -43,16 +44,21 @@ export default function BarberProfile() {
     const [openBookings, setOpenBookings] = useState<boolean>(false);
     const { id, name, location, price, image } = useLocalSearchParams();
     const colorScheme = useColorScheme();
+        const [currentIndex, setCurrentIndex] = useState<number>(0);
+        const [open, setOpen] = useState<boolean>(false);
+        const [path, setImgPath] = useState<string>("");
         const shopImg = require("../../../assets/images/homeImg.png")
         const textColor = colorScheme === 'light' ? "#222" : "#999";
         const blurType = colorScheme === 'light' ? "dark" : "light"
         const iconColor = colorScheme === 'light' ? "#444" : "#f1f1f1"
         const blurIntensity = colorScheme === 'light' ? 35 : 50;
-
-    // const { data, isLoading: barberIsLoading, } = useQuery({
-    //     queryFn: () => {},
-    //     queryKey: ["barber[id]"]
-    // })
+    
+        const handleImageDialog = (path: string, index: number) => {
+            setImgPath(path);
+            setOpen(prev => !prev);
+            setCurrentIndex(index);
+            console.log(path);
+        };
 
     const barber = { id, name, location, price, image };
 
@@ -61,12 +67,24 @@ export default function BarberProfile() {
         setSelectedDate(date);
     }
 
+    const handleNextImageClick = (isNext: boolean) => {
+        setCurrentIndex((prev) => {
+            if(isNext && currentIndex !== dummyImgArr.length - 1) {
+                return prev + 1;
+            }
+            if(!isNext && currentIndex > 0) {
+                return prev - 1;
+            }
+            return prev;
+        })
+    }
+
     return (
         <StyledView style={{ flex: 1 }}>
+            <ImageChanger onNextClick={handleNextImageClick} onClose={() => setOpen(false)} path={dummyImgArr[currentIndex].imgPath} isOpen={open} />
             <ScrollView 
              keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ display: 'flex' }} >
-
             <BarberInfoSection 
             colorScheme={colorScheme} 
             blurIntensity={blurIntensity} 
@@ -86,14 +104,16 @@ export default function BarberProfile() {
                     </View>
                     
                 </View>
-            <Button icon="chat" buttonColor="white" textColor="black" mode="contained" onPress={() => console.log("hello")}>Send {name} a message</Button>
+            <Button icon="chat" buttonColor="white" textColor="black" mode="contained" onPress={() => router.push({ pathname: '/messages/[id]/message', params: { id: String(barber.id) } })}>Send {name} a message</Button>
             <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 15}}>About {String(name).split(" ")[0]}:</StyledText>
             <StyledText colorScheme={colorScheme}>
                 I've been cutting hair for the last 10 years at Woogie Woogie Barber shop on 11th ave. I've don't mess around and politic like some of these other barbers do and with
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
             </StyledText>
-            <Divider bold style={{ width: '100%', marginVertical: 5}}/>
             { !selectedDate && <View>
+            <Divider bold style={{ width: '100%', marginVertical: 5}}/>
+            <ShowCaseGallery onImgSelect={(path: string, index: number) => handleImageDialog(path, index)}/>
+            <Divider bold style={{ width: '100%', marginVertical: 5}}/>
             <StyledText style={{ fontWeight: 700, fontSize: 15 }} colorScheme={colorScheme}>Reviews:</StyledText>
             <UserReview
             shouldLink={true}

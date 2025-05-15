@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { TouchableOpacity, useColorScheme } from 'react-native';
+import { TouchableOpacity, useColorScheme, Button } from 'react-native';
 import { useAuth } from '@/context/auth/use-auth';
 import { ProgressBar, Avatar, Divider } from "react-native-paper";
 import { StyledText, StyledBlurItem, StyledView } from "../shared/SharedStyles";
@@ -36,6 +36,7 @@ const ConfirmingAppointment = () => {
                 <Avatar.Image source={{ uri: auth?.userAuth?.image }}/>
                 <Avatar.Image source={require("../../assets/images/homeImg.png")}/>
             </StyledView>
+            <Button color="red" title="Cancel?" onPress={() => router.push({ pathname: "/"})} />
             <Divider style={{ width: '100%' }} />
             <AlertMessage
             iconSize={15}

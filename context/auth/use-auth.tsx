@@ -24,21 +24,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
 
   useEffect(() => {
     handleGoogleSignIn()
-    console.log("I ran again")
+    console.log("I ran again");
   }, [response])
 
   const handleGoogleSignIn = async () => {
       const user = await AsyncStorage.getItem("@user");
       if(user) {
         const parsedUser = JSON.parse(user);
-        setAuthUser(parsedUser)
+        setAuthUser(parsedUser);
         //check if user exists here and if not, create them
         console.log("storaged user found: ", JSON.parse(user))
-        await checkDbUser(
-          String(parsedUser?.name), 
-          String(parsedUser?.picture),
-          String(parsedUser?.email))
       } else {
+        console.log("No storaged user");
         if(response?.type === "success") {
           await getUserInfo(response.authentication?.accessToken)
         }
@@ -55,7 +52,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
           }
         )
         const user = await response.json();
-        await AsyncStorage.setItem("@user", JSON.stringify(user))
+        await AsyncStorage.setItem("@user", JSON.stringify(user));
+        await checkDbUser(
+          String(user?.name), 
+          String(user?.picture),
+          String(user?.email))
       } catch(err) {
         console.log("Error loggin in: " + err)
       }

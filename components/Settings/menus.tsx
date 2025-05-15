@@ -12,5 +12,4 @@ export const otherSettings = [
     { text: "Provide a service and earn", icon: 'currency-usd', link: "/join" },
     { text: "Privacy", icon: 'lock', link: "/privacy" },
     { text: "Legal", icon: 'cellphone-information', link: "/legal" },
-    { text: "Sign-out", icon: 'cellphone-information', link: "/sign-out" }
 ]

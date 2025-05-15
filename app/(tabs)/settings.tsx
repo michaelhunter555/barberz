@@ -17,7 +17,7 @@ const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e
 export default function UserSettings() {
     const [isActive, setIsActive] = React.useState<boolean>(false);
     const [openDialog, setOpenDialog] = React.useState<boolean>(false);
-    const shopImg = require("../../assets/images/homeImg.png")
+    const shopImg = require("../../assets/images/homeImg.png");
     const auth = useAuth();
     const colorScheme = useColorScheme();
     const textColor = colorScheme === 'light' ? "#222" : "#999";
@@ -76,15 +76,11 @@ export default function UserSettings() {
                 onLeftButtonClick={() => console.log("reschedule")}
                 description='3:00pm - Haircut appointment with [shop/person] - Confirmed*'
                 />
-
                 <UserOffers
                     imgPath={shopImg}
                     isActive={isActive}
                     onActivateOffer={() => setIsActive(true)}
-                    onOpenTerms={() => setOpenDialog(true)}
-                    colorScheme={colorScheme}
-                    blurIntensity={blurIntensity}
-                    blurType={blurType} />
+                    onOpenTerms={() => setOpenDialog(true)} />
 
                 <Divider style={{ width: '100%' }} bold={true} />
 
@@ -102,6 +98,7 @@ export default function UserSettings() {
                         onPress={() => router.push({ pathname: settings.link as any })}
                         />
                     ))}
+                    <List.Item left={() => <Icon size={20} source="cellphone-information" />} title="Sign Out" onPress={auth?.signOut} />
                 </List.Section>
             </ScrollView>
             <View />

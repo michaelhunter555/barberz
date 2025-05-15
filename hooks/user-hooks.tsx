@@ -18,9 +18,9 @@ export const useUser = () => {
             if (!data.ok) {
                 throw new Error(data.error);
             }
-            auth?.updateUser(data.user);
-            AsyncStorage.setItem("@user", data.user);
-            return data.user;
+            auth?.updateUser(data.userData);
+            AsyncStorage.setItem("@user", JSON.stringify(data.userData));
+            return data.userData;
         } catch (err) {
             console.log("There was an error trying to retreive user data." + err)
         }
@@ -80,6 +80,7 @@ export const useUser = () => {
             }
             const newAuth = { ...data.user }
             auth?.updateUser(newAuth);
+            AsyncStorage.setItem("@user", JSON.stringify(newAuth));
         } catch(err) {
             console.log("Error submitting barber application ", err)
         }

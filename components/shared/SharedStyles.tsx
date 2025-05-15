@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ColorSchemeName, useColorScheme, View, StyleProp, TextStyle, ViewStyle } from "react-native";
+import { ColorSchemeName, useColorScheme, View, StyleProp, TextStyle, ViewStyle, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { BlurView } from "expo-blur";
 
@@ -77,15 +77,16 @@ interface IStyledBlurComponent {
   align?: Align;
   justify?: Justify;
   gap?: number;
-
+  onClick?: (value?: any) => void;
 }
-export const StyledBlurView = ({ children, style, isButton, direction, align, justify, gap, }: IStyledBlurComponent) => {
+export const StyledBlurView = ({ children, style, isButton, direction, align, justify, gap, onClick }: IStyledBlurComponent) => {
       const colorScheme = useColorScheme();    
       const blurType = colorScheme === 'dark' ? 'light' : 'dark';
       const intensity = colorScheme === 'dark' ? 55 : 35;
       const buttonStyle: ViewStyle | undefined = isButton ? { backgroundColor: '#007AFF' } : undefined;
 
   return (
+    <TouchableOpacity activeOpacity={0.8} onPress={onClick}>
     <StyledBlur
     direction={direction}
     align={align}
@@ -96,5 +97,6 @@ export const StyledBlurView = ({ children, style, isButton, direction, align, ju
     style={[style, buttonStyle]}>
       {children}
     </StyledBlur>
+    </TouchableOpacity>
   )
 }

@@ -8,7 +8,7 @@ import {
     TextInputChangeEventData,
     TouchableOpacity 
 } from 'react-native';
-import { Icon } from 'react-native-paper';
+import { Icon, IconButton } from 'react-native-paper';
 import { BlurView } from 'expo-blur';
 import styled
  from 'styled-components';
@@ -21,7 +21,13 @@ interface ISearchBar {
 export const SearchBar = ({searchValue, onSearchSubmit, colorScheme}: ISearchBar) => {
     const tint = colorScheme === 'light' ? 'dark':'light';
     const intensity = colorScheme === 'light' ? 35:70;
-    const textColor = colorScheme === 'light' ? "#222": "white"
+    const textColor = colorScheme === 'light' ? "#222": "white";
+
+    const handleSearch = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        e.preventDefault();
+        onSearchSubmit(e.nativeEvent.text);
+    }
+
 return (
     <StyledBlurSearch intensity={intensity} tint={tint} >
         <TouchableOpacity activeOpacity={0.9} onPress={() => console.log(searchValue)}>
@@ -30,12 +36,13 @@ return (
             <Icon size={30} source="search-web" />
         </View>
         </TouchableOpacity>
+        <View style={{ overflow: 'hidden', width: '85%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
         <View>
             <StyledTextInput
             style={{ color: colorScheme === 'light' ? "#222" : "white" }}
             maxLength={70} 
             value={searchValue}
-            onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => onSearchSubmit(e.nativeEvent.text) }
+            onChange={handleSearch}
             inputMode="search"
             textAlign="left"
             textContentType="location"
@@ -43,6 +50,11 @@ return (
             placeholderTextColor={colorScheme === "light" ? "#444":"#f1f1f1"}
             selectionColor={"#fff"}
             />
+        </View>
+       {searchValue && searchValue.trim().length > 0 && 
+       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <IconButton size={15} icon="arrow-right" iconColor='black' containerColor='white' onPress={() => console.log("here")} />
+        </View>}
         </View>
     </StyledBlurSearch>
 )
