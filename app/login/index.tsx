@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from "react-native";
 import { router } from "expo-router";
 import Login from "@/components/Login/Login";
-import { useAuth } from "@/context/auth/use-auth";
+import useAuth from "@/context/auth/use-auth";
 
 const LoginPage = () => {
     const auth = useAuth();

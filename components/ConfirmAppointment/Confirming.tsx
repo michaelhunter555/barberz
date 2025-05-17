@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { TouchableOpacity, useColorScheme, Button } from 'react-native';
-import { useAuth } from '@/context/auth/use-auth';
+import useAuth from '@/context/auth/use-auth';
 import { ProgressBar, Avatar, Divider } from "react-native-paper";
 import { StyledText, StyledBlurItem, StyledView } from "../shared/SharedStyles";
 import AlertMessage from '../../components/shared/Alert/Alert';

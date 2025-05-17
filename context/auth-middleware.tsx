@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { router, usePathname } from 'expo-router';
-import { useAuth } from './auth/use-auth'; 
+import useAuth from './auth/use-auth'; 
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
@@ -39,7 +39,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export const withAuthGuard = (Component: React.ComponentType) => {
+const withAuthGuard = (Component: React.ComponentType) => {
     return function WrappedComponent(props: any) {
       return (
         <AuthGuard>
@@ -48,3 +48,5 @@ export const withAuthGuard = (Component: React.ComponentType) => {
       );
     };
   };
+
+  export default withAuthGuard;

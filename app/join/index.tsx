@@ -9,7 +9,7 @@ import {
     useColorScheme
 } from 'react-native';
 import { useUser } from '@/hooks/user-hooks';
-import { useAuth } from '@/context/auth/use-auth';
+import useAuth from '@/context/auth/use-auth';
 import { useForm } from '@/hooks/use-form';
 import { StyledView, StyleText, StyledBlurView } from '../../components/shared/SharedStyles';
 import { Divider, Button } from 'react-native-paper';

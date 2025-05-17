@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAuth } from '@/context/auth/use-auth';
+import useAuth from '@/context/auth/use-auth';
 import { router } from 'expo-router';
 import { View, useColorScheme, TouchableOpacity, ScrollView } from 'react-native';
 import { BlurView } from 'expo-blur';

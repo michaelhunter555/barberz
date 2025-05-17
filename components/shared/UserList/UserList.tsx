@@ -13,7 +13,7 @@ interface IUserCard<T extends Partial<TUser>> {
     colorScheme: ColorSchemeName;
 }
 
-export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
+const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
     const textColor = colorScheme === 'light' ? '#222' : '#f1f1f1'
     const [rating, setRating] = useState<number>(4.5);
     const blurType = colorScheme === 'dark' ? 'light' : 'dark';
@@ -73,3 +73,5 @@ export const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
         </StyledScrollView>
     )
 }
+
+export default UserCard;

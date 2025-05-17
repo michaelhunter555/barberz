@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { useAuth } from '@/context/auth/use-auth';
+import useAuth from '@/context/auth/use-auth';
 import { View, Text, ScrollView, useColorScheme, ColorSchemeName, Button} from 'react-native';
 import { router } from 'expo-router';
 import { Divider } from 'react-native-paper';
 import styled from 'styled-components/native';
 import { HomeFeatures } from '@/components/home/HomeFeatures/HomeFeatures';
-import { UserCard } from '@/components/shared/UserList/UserList';
+import UserCard from '@/components/shared/UserList/UserList';
 import { dummyUsers } from '@/components/home/DummyData';
 import { IconOptionsList } from '@/components/home/IconList/IconList';
 import { FilterBarberChips } from '@/components/home/FilterChips/FitlerChips';
 import { backgroundGradients } from '@/theme/gradients';
 import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
-import { withAuthGuard } from '@/context/auth-middleware';
+import withAuthGuard from '@/context/auth-middleware';
 
 
 const HomeScreen = () => {

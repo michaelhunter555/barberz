@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, useColorScheme } from 'react-native';
-import { useAuth } from '@/context/auth/use-auth';
+import useAuth from '@/context/auth/use-auth';
 import { StyledView, StyleText, StyledBlurView } from '../../components/shared/SharedStyles';
 import UserOffers from '@/components/Settings/UserOffer';
 import TermsDialog from '@/components/Settings/TermsDialog';

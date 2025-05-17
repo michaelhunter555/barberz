@@ -86,7 +86,6 @@ export default function BarberProfile() {
              keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ display: 'flex' }} >
             <BarberInfoSection 
-            colorScheme={colorScheme} 
             blurIntensity={blurIntensity} 
             blurType={blurType} 
             name={String(name)} 
