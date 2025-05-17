@@ -1,10 +1,15 @@
+import { useState } from 'react';
+import * as Location from 'expo-location';
 import { AuthContext } from '@/context/auth/use-auth';
 import { getUserLocation } from '@/lib/getLocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useContext } from 'react';
+import { LocationGeocodedAddress } from 'expo-location';
 
 export const useUser = () => {
     const auth = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [location, setLocation] = useState<LocationGeocodedAddress[]>([]);
 
     const checkDbUser = async (name: string, imagePath: string, email: string) => {
         try {
@@ -64,28 +69,50 @@ export const useUser = () => {
         }
     }
 
-    type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean}
+    type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean }
     const submitBarberApplication = useCallback(async (application: TBarberApp) => {
         try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/join-as-barber`, 
-                { 
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/join-as-barber`,
+                {
                     method: 'POST',
                     body: JSON.stringify({ email: auth?.userAuth?.email, application }),
-                    headers: { "Content-Type": "application/json"}
-                 }
+                    headers: { "Content-Type": "application/json" }
+                }
             )
             const data = await response.json();
-            if(!data.ok) {
+            if (!data.ok) {
                 throw new Error(data.error);
             }
             const newAuth = { ...data.user }
             auth?.updateUser(newAuth);
             AsyncStorage.setItem("@user", JSON.stringify(newAuth));
-        } catch(err) {
+        } catch (err) {
             console.log("Error submitting barber application ", err)
         }
 
-    }, [auth])
+    }, [auth]);
 
-    return { checkDbUser, updateUserCoords, handleCoords, submitBarberApplication }
+    const getLocation = async () => {
+        setIsLoading(true);
+        const longitude = Number(auth?.userAuth?.geoLocation?.coordinates[0]);
+        const latitude = Number(auth?.userAuth?.geoLocation?.coordinates[1]);
+        try {
+            const userLocation = await Location.reverseGeocodeAsync({ longitude, latitude });
+            setIsLoading(false);
+            setLocation(userLocation);
+        } catch (err) {
+            setIsLoading(false);
+            console.log("error in about.tsx page", err)
+        }
+    };
+
+    return { 
+        checkDbUser, 
+        updateUserCoords, 
+        handleCoords, 
+        submitBarberApplication, 
+        getLocation, 
+        location, 
+        isLoading 
+    }
 }

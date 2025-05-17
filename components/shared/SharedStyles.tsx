@@ -118,9 +118,9 @@ export const StyledBlurView = ({ children, style, isButton, direction, align, ju
 }
 
 
-export const StyledDivder = styled(Divider)`
+export const StyledDivider = styled(Divider)`
 width: ${(props: { orientation: "vertical" | "horizontal"}) => props.orientation === "vertical" ? "1px" : "100%"};
-height: ${(props: { orientation: "vertical" | "horizontal", height: number}) => props.orientation === "vertical" ? `${props.height}px` : "auto"};
+height: ${(props: { orientation: "vertical" | "horizontal", height: number}) => props.orientation === "vertical" ? `${props.height}px` : "1px"};
 margin-top: ${(props: { marginVertical: number}) => props.marginVertical ?? 0}px;
 margin-bottom: ${(props: { marginVertical: number}) => props.marginVertical ?? 0}px;
 `;

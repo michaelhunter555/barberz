@@ -15,7 +15,6 @@ interface IBarberInfoSection {
 // title: "0", id:0 , image: '', rating: 4.5, name: 'Dave Marcus', location: 'Baltimore, Md', price: 80}
 
 const BarberMapProfile = ({ name, userImgPath, location, rating, price, id, handleClose }: IBarberInfoSection) => {
-    console.log("img", userImgPath)
     return (
         <View style={{
             display: 'flex',
@@ -65,6 +64,7 @@ const BarberMapProfile = ({ name, userImgPath, location, rating, price, id, hand
                         id: String(id), 
                         name,
                         location,
+                        image: userImgPath,
                         price: price.toString(),
                         }})} style={{ padding: 10 }}>
                     <StyledView direction="column" align="center">

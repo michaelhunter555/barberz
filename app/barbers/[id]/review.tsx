@@ -1,6 +1,6 @@
 import { useLocalSearchParams, router } from "expo-router";
 import { Image } from "react-native";
-import { StyledView, StyleText, StyledBlurView, StyledDivder } from "@/components/shared/SharedStyles";
+import { StyledView, StyleText, StyledBlurView, StyledDivider } from "@/components/shared/SharedStyles";
 import { Divider, Icon } from "react-native-paper";
 import SelectedReview from "@/components/ReviewsList/SelectedReview";
 import { StarRatings } from "@/components/shared/ratings/ratings";
@@ -21,7 +21,7 @@ const Review = () => {
         reviewDate="4/1/25" 
         reviewRating={5} 
         reviewText={review} />
-        <StyledDivder orientation="vertical" height={50} />
+        <StyledDivider orientation="vertical" height={50} />
         <StyleText style={{ fontSize: 40, fontWeight: 700 }}>5.0</StyleText>
         </StyledView>
         <Divider style={{ width: '100%', marginVertical: 5 }} />

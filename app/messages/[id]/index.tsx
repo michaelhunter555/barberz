@@ -1,6 +1,7 @@
 import { ScrollView, useColorScheme, View } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
-import { useAuth } from "@/context/auth/use-auth";
+import useAuth from "@/context/auth/use-auth";
+import { StyledView, StyleText, StyledDivider} from '@/components/shared/SharedStyles';
 import Message from '@/components/Messages/Message';
 import { Divider } from "react-native-paper";
 
@@ -19,6 +20,9 @@ const Messages = () => {
 
     return (
         <ScrollView>
+            <StyledView style={{ marginTop: 10 }}>
+                <StyleText style={{ fontWeight: 700, fontSize: 13 }}>Messages</StyleText>
+                <StyledDivider marginVertical={10} orientation="horizontal" />
             {dummyMessages.map((message, i) => (
                 <View key={i} >
                 <Message  
@@ -28,6 +32,7 @@ const Messages = () => {
                 <Divider style={{ width: '100%', marginVertical: 5, }} bold />
                 </View>
             ))}
+            </StyledView>
         </ScrollView>
     )
 

@@ -24,11 +24,6 @@ const HomeScreen = () => {
   const isDarkTheme: readonly [string, string, ...string[]] = ["#000","#000"]
   const setGradient = colorScheme === 'light' ? gradientColors : isDarkTheme;
 
-  const lightImg = require("../../assets/images/background-a.png");
-  const darkImg = require("../../assets/images/background.png");
-
-  const selectedImg = colorScheme === 'light' ? lightImg : darkImg;
-  
   return (
     <StyledContainer>
       <ScrollView contentContainerStyle={{ display: 'flex', gap: 15}}>

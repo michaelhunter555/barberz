@@ -1,7 +1,6 @@
-import { StyledView, StyledText } from '../../components/shared/SharedStyles';
+import { StyledView, StyledText, StyleText } from '../../components/shared/SharedStyles';
 import AccordionGroup from '@/components/Accordion/AccordionGroup';
-import { useColorScheme } from 'react-native';
-import { List } from 'react-native-paper';
+import { Button, List } from 'react-native-paper';
 // Array.from({ length: 10 }).map((_, i) => ({ id: i, isOpen: false, questionText: }))
 const FAQS = [
     {id: 0, isOpen: false, questionText: 'How can I contact support?', explanationText: 'You can contact support by opening a support item, live Chat or email @email.com'},
@@ -15,14 +14,16 @@ const FAQS = [
 ];
 
 const FaqAccordion = () => {
-    const colorScheme = useColorScheme()
    return (
     <StyledView>
         <StyledView style={{ marginVertical: 10 }} align="center" justify="center">
-        <StyledText style={{ fontWeight: 700, fontSize: 20 }} colorScheme={colorScheme}>FAQS</StyledText>
-        <StyledText colorScheme={colorScheme}>Don't see your question here? Send us a message!</StyledText>
+        <StyleText style={{ fontWeight: 700, fontSize: 20 }}>FAQS</StyleText>
         </StyledView>
         <AccordionGroup arr={FAQS} />
+        <StyledView style={{ marginTop: 50 }} align="center" justify="center">
+            <StyleText>Don't see your question?</StyleText>
+            <Button mode="outlined">Send us a Message</Button>
+        </StyledView>
     </StyledView>
 ) 
 };
