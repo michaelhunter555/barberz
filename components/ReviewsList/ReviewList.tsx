@@ -1,4 +1,5 @@
-import { ScrollView } from 'react-native';
+import { router } from 'expo-router';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { StyledView, StyledText, StyledBlurItem } from "../shared/SharedStyles";
 import { Divider } from "react-native-paper";
 import UserReview from './UserReview'
@@ -9,7 +10,8 @@ const testImg = "https://plus.unsplash.com/premium_photo-1661542987765-f39368ff3
 const review = "this is a reivew list this is a reivew list  this is a reivew list this is a reivew list this is a reivew list this is a reivew list this is a reivew list";
 const ReviewList = () => {
     return Array.from({ length: 10 }).map((_, i) => (
-       <StyledView key={i} direction="column" justifyContent="flex-start">
+        <TouchableOpacity key={i} activeOpacity={0.8} onPress={() => router.push({ pathname: "/barbers/[id]/review", params: { id: i }})}>
+       <StyledView direction="column" justifyContent="flex-start">
         <UserReview 
         userImage={testImg}
         userName="user name"
@@ -18,6 +20,7 @@ const ReviewList = () => {
         reviewText={review.substring(0,99) + " ..."} />
         <Divider style={{ width: '100%', marginVertical: 2 }} />
        </StyledView>
+        </TouchableOpacity>
 
     ))
 };

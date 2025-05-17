@@ -47,19 +47,21 @@ const HomeScreen = () => {
         <IconOptionsList colorScheme={colorScheme} />
         <HomeFeatures colorScheme={colorScheme}/>
       </View>
+      <View>
+      <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Featured:</StyledText>
+        <FeaturedShop colorScheme={colorScheme}/>
+      </View>
       <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <View>
           <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Near [location]</StyledText>
           <FilterBarberChips colorScheme={colorScheme} />
         </View>
+        
         <View style={{ maxHeight: 270 }}>
           <UserCard userData={dummyUsers} colorScheme={colorScheme} />
         </View>
       </View>
-      <View>
-      <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Featured:</StyledText>
-        <FeaturedShop colorScheme={colorScheme}/>
-      </View>
+      
       <View />
       <View />
       <View />

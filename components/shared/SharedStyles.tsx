@@ -29,7 +29,7 @@ display: flex;
   ${(props: { justify: Justify}) => props.justify && `justify-content: ${props.justify};`}
   overflow: hidden;
   border-radius: ${(props: { borderRadius: number}) => props.borderRadius ? props.borderRadius : 10}px ;
-`
+`;
 export const StyledView = styled.View`
   display: flex;
   ${(props: { direction: FlexDirection}) => props.direction && `flex-direction: ${props.direction};`}
@@ -74,18 +74,20 @@ interface IStyledBlurComponent {
   style?: StyleProp<ViewStyle>;
   isButton?: boolean;
   direction?: FlexDirection;
+  borderRadius?: number;
   align?: Align;
   justify?: Justify;
   gap?: number;
   onClick?: (value?: any) => void;
+  clickable?: boolean;
 }
-export const StyledBlurView = ({ children, style, isButton, direction, align, justify, gap, onClick }: IStyledBlurComponent) => {
+export const StyledBlurView = ({ children, style, isButton, direction, align, justify, gap, onClick, clickable, borderRadius }: IStyledBlurComponent) => {
       const colorScheme = useColorScheme();    
       const blurType = colorScheme === 'dark' ? 'light' : 'dark';
       const intensity = colorScheme === 'dark' ? 55 : 35;
       const buttonStyle: ViewStyle | undefined = isButton ? { backgroundColor: '#007AFF' } : undefined;
 
-  return (
+  return clickable ? (
     <TouchableOpacity activeOpacity={0.8} onPress={onClick}>
     <StyledBlur
     direction={direction}
@@ -93,10 +95,23 @@ export const StyledBlurView = ({ children, style, isButton, direction, align, ju
     justify={justify}
     gap={gap}
     intensity={intensity} 
-    tint={blurType} 
+    tint={blurType}
+    borderRadius={borderRadius}
     style={[style, buttonStyle]}>
       {children}
     </StyledBlur>
     </TouchableOpacity>
+  ) : (
+    <StyledBlur
+    direction={direction}
+    align={align}
+    justify={justify}
+    gap={gap}
+    intensity={intensity} 
+    tint={blurType} 
+    borderRadius={borderRadius}
+    style={[style, buttonStyle]}>
+      {children}
+    </StyledBlur>
   )
 }

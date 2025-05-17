@@ -4,7 +4,7 @@ import { Avatar } from "react-native-paper";
 import { StarRatings } from "../shared/ratings/ratings";
 import { router } from "expo-router";
 
-interface IUserReview {
+interface IReview {
     reviewText: string;
     reviewRating: number;
     reviewDate: string;
@@ -13,14 +13,13 @@ interface IUserReview {
     shouldLink?: boolean;
 }
 
-const UserReview = ({
+const SelectedReview = ({
     reviewText, 
     reviewRating, 
     reviewDate, 
     userName, 
     userImage,
-    shouldLink,
-}: IUserReview) => {
+}: IReview) => {
     return (
         <StyledView direction="row" align="center" gap={10}>
             <StyledView>
@@ -33,23 +32,12 @@ const UserReview = ({
                 color="white" 
                 userRating={reviewRating} />
                 <StyledView direction="row" align="center" gap={3}>
-                    <StyleText style={{ fontWeight: 700,}}>{userName}-</StyleText>
+                    <StyleText style={{ fontWeight: 700, fontSize: 15 }}>{userName} -</StyleText>
                     <StyleText>{reviewDate}</StyleText>
                 </StyledView>
-                    <StyleText>3 more photos</StyleText>
-                <StyledView style={{ textWrap: 'wrap', width: '90%' }}>
-                    <StyleText style={{ flex: 1 }}>
-                        {reviewText}
-                    </StyleText>
-                </StyledView>
             </StyledView>
-           {shouldLink &&  <StyledView direction="row" align="flex-end" justify="flex-end" style={{ paddingLeft: 40}}>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/barbers/[id]/reviews', params: { id: 'TEST-BARBER-Reviews'}})}>
-                    <StyleText style={{ color: '#007AFF' }}>All Reviews</StyleText>
-                </TouchableOpacity>
-            </StyledView>}
         </StyledView>
     )
 }
 
-export default UserReview;
+export default SelectedReview;

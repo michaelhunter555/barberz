@@ -15,7 +15,7 @@ const ImageChanger = ({ path, onClose, isOpen, onNextClick }: ImageChangerProps)
 return (
     <Portal>
         <Dialog visible={isOpen} onDismiss={onClose}>
-            <Dialog.Title><StyleText>ShowCase</StyleText></Dialog.Title>
+           
             <Dialog.Content>
                 <StyledView direction="row" align="center" justify="space-between" style={{ width: "100%" }}>
                     <TouchableOpacity activeOpacity={0.8} onPress={() => onNextClick?.(false)}>
@@ -30,7 +30,7 @@ return (
                 </StyledView>
             </Dialog.Content>
             <Dialog.Actions>
-                <StyledBlurView style={{ padding: 5 }} isButton onClick={onClose}>
+                <StyledBlurView clickable style={{ padding: 5 }} isButton onClick={onClose}>
                    <StyleText>Close</StyleText> 
                 </StyledBlurView>
             </Dialog.Actions>
