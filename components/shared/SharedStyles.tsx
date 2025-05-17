@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { ColorSchemeName, useColorScheme, View, StyleProp, TextStyle, ViewStyle, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { BlurView } from "expo-blur";
+import { Divider } from "react-native-paper";
 
 export const StyledText = styled.Text`
 font-size: 12px;
@@ -115,3 +116,11 @@ export const StyledBlurView = ({ children, style, isButton, direction, align, ju
     </StyledBlur>
   )
 }
+
+
+export const StyledDivder = styled(Divider)`
+width: ${(props: { orientation: "vertical" | "horizontal"}) => props.orientation === "vertical" ? "1px" : "100%"};
+height: ${(props: { orientation: "vertical" | "horizontal", height: number}) => props.orientation === "vertical" ? `${props.height}px` : "auto"};
+margin-top: ${(props: { marginVertical: number}) => props.marginVertical ?? 0}px;
+margin-bottom: ${(props: { marginVertical: number}) => props.marginVertical ?? 0}px;
+`;

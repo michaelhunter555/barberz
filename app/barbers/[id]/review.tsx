@@ -1,8 +1,9 @@
 import { useLocalSearchParams, router } from "expo-router";
 import { Image } from "react-native";
-import { StyledView, StyleText, StyledBlurView } from "@/components/shared/SharedStyles";
+import { StyledView, StyleText, StyledBlurView, StyledDivder } from "@/components/shared/SharedStyles";
 import { Divider, Icon } from "react-native-paper";
 import SelectedReview from "@/components/ReviewsList/SelectedReview";
+import { StarRatings } from "@/components/shared/ratings/ratings";
 
 
 // userReviews.map((review,i) => review{...data})
@@ -14,19 +15,14 @@ const Review = () => {
     return ( 
     <StyledView direction="column" align="flex-start">
         <StyledView direction="row" align="center" gap={10} style={{ marginVertical: 10 }}>
-        <StyledBlurView style={{ marginVertical: 10, paddingHorizontal: 10 }} borderRadius={20} clickable onClick={() => router.back()}>
-        <StyledView direction="row" align="center" gap={5} style={{ marginVertical: 10 }}>
-        <Icon source="arrow-left" size={15} />
-            <StyleText>Go back</StyleText>
-        </StyledView>
-        </StyledBlurView>
-        <Divider style={{ width: 1, height: 40}} />
         <SelectedReview
         userImage={testImg}
         userName="user name"
         reviewDate="4/1/25" 
         reviewRating={5} 
         reviewText={review} />
+        <StyledDivder orientation="vertical" height={50} />
+        <StyleText style={{ fontSize: 40, fontWeight: 700 }}>5.0</StyleText>
         </StyledView>
         <Divider style={{ width: '100%', marginVertical: 5 }} />
         <StyleText>3 Photos</StyleText>
@@ -36,10 +32,33 @@ const Review = () => {
         ))}
         </StyledView>
         <Divider style={{ width: '100%', marginVertical: 5 }} />
+        <StyledView direction="row" align="center" gap={8}>
+        <StyleText style={{ fontSize: 14, fontWeight: 700, paddingBottom: 2 }}>Punctuality:</StyleText>
+        <StarRatings userRating={4.8} isReview size={15} color="white"/>
+
+        </StyledView>
+        <StyledView direction="row" align="center" gap={8}>
+        <StyleText style={{ fontSize: 14, fontWeight: 700, paddingBottom: 2 }}>Cleanliness:</StyleText>
+        <StarRatings userRating={4.8} isReview size={15} color="white"/>
+
+        </StyledView>
+        <StyledView direction="row" align="center" gap={8}>
+
+        <StyleText style={{ fontSize: 14, fontWeight: 700, paddingBottom: 2 }}>Overall:</StyleText>
+        <StarRatings userRating={4.8} isReview size={15} color="white"/>
+        </StyledView>
+        <Divider style={{ marginVertical: 5, width: '80%' }} />
         <StyleText style={{ fontWeight: 700, paddingBottom: 2 }}>Review:</StyleText>
         <StyleText style={{ fontSize: 14 }}>
             {review}
         </StyleText>
+        <StyledBlurView style={{ marginVertical: 10, paddingHorizontal: 10 }} borderRadius={20} clickable onClick={() => router.back()}>
+        <StyledView direction="row" align="center" gap={5} style={{ marginVertical: 10 }}>
+
+        <Icon source="arrow-left" size={15} />
+            <StyleText>Go back</StyleText>
+        </StyledView>
+        </StyledBlurView>
        </StyledView>
        )
 };

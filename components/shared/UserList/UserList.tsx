@@ -61,7 +61,7 @@ const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                                 <StyledText style={{ color: textColor, fontSize: 11 }}>${user.price.toFixed(2)} - {user.location}</StyledText>
                                             </StyledView>
                                         }
-                                        left={(props) => <Avatar.Icon style={{ backgroundColor: "#000" }} size={55} icon={user.image} />}
+                                        left={(props) => <Avatar.Image style={{ backgroundColor: "#000" }} size={55} source={{ uri: user.image}} />}
                                         right={(props) => <IconButton  {...props} icon="dots-vertical" onPress={() => { }} />}
                                     />
                                 </Card>

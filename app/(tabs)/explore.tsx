@@ -12,16 +12,15 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dummyUsers, type TUser } from '@/components/home/DummyData';
 import { AppleMapsMapType, AppleMapsMarker } from 'expo-maps/build/apple/AppleMaps.types';
-import BarberInfoSection from '@/components/BarberProfile/BarberInfo';
+import BarberMapProfile from '@/components/BarberProfile/BarberMapProfile'
 
 export default function Maps() {
   const auth = useAuth();
-  const colorScheme = useColorScheme()
   const { handleCoords } = useUser();
   const [zoom, setZoom] = useState(13);
   const [selectedId, setSelectedId] = useState<string | null>("0");
   const [barber, setBarber] = useState<TUser>(dummyUsers[0]);
-  const blurType = getBlurType
+  const [toggleBarber, setToggleBarber] = useState<boolean>(false);
 
   const defaultCoords = {
     longitude: -98.5795, 
@@ -50,6 +49,7 @@ export default function Maps() {
       setSelectedId(marker.id)
       const barberData = dummyUsers.find((user) => String(user.id) === selectedId);
       setBarber(barberData as TUser);
+      setToggleBarber(true);
     }
   }
 
@@ -81,18 +81,19 @@ export default function Maps() {
     </StyledView>
       </StyledBlurView>
     </SafeAreaView>
-    <SafeAreaView style={{ position: 'absolute', bottom: 0, width: "100%",  paddingBottom: paddingBottom }}>
+ {toggleBarber && <SafeAreaView style={{ position: 'absolute', bottom: 0, width: "100%",  paddingBottom: paddingBottom }}>
       <StyledView style={{ flex: 8,}} pointerEvents="none" />
-      <StyledBlurView>
-        <StyleText style={{ fontWeight: 700 }}>[type]Barber</StyleText>
-    {/* <StyledView align="center" direction="column" justify="center" gap={8} pointerEvents="auto">
-      <IconButton icon="plus" onPress={() => handleZoom("+")} />
-      <Divider style={{ width: '100%' }} />
-      <IconButton icon="minus" onPress={() => handleZoom("-")} />
-    </StyledView> */}
-    <BarberInfoSection name={barber.name} userImgPath={barber.image}  />
+      <StyledBlurView style={{ padding: 5 }}>
+    <BarberMapProfile
+    handleClose={() => setToggleBarber(false)}
+    id={barber.id} 
+    price={barber.price} 
+    rating={barber.rating} 
+    location={barber.location} 
+    name={barber.name} 
+    userImgPath={barber.image}  />
       </StyledBlurView>
-    </SafeAreaView>
+    </SafeAreaView>}
     </View>
   )
 }

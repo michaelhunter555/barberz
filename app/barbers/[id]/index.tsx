@@ -6,7 +6,7 @@ import { Avatar, Divider, Button, Icon } from 'react-native-paper';
 import BarberInfoSection from "@/components/BarberProfile/BarberInfo";
 import DayOfWeekChips from "@/components/BarberAvailability/DayOfWeekChips";
 import AppointmentCalendar from "@/components/Calendar/Calendar";
-import { StyledBlurItem, StyledText as SText, StyledView as Div, StyledContainer } from "@/components/shared/SharedStyles";
+import { StyledBlurItem, StyledText as SText, StyledView as Div, StyledContainer, StyledBlurView, StyleText } from "@/components/shared/SharedStyles";
 import UserReview from "@/components/ReviewsList/UserReview";
 import ShowCaseGallery from "@/components/BarberProfile/ShowCaseGallery";
 import ImageChanger from "@/components/shared/ImageChanger/ImageChanger";
@@ -48,10 +48,6 @@ export default function BarberProfile() {
         const [open, setOpen] = useState<boolean>(false);
         const [path, setImgPath] = useState<string>("");
         const shopImg = require("../../../assets/images/homeImg.png")
-        const textColor = colorScheme === 'light' ? "#222" : "#999";
-        const blurType = colorScheme === 'light' ? "dark" : "light"
-        const iconColor = colorScheme === 'light' ? "#444" : "#f1f1f1"
-        const blurIntensity = colorScheme === 'light' ? 35 : 50;
     
         const handleImageDialog = (path: string, index: number) => {
             setImgPath(path);
@@ -85,11 +81,10 @@ export default function BarberProfile() {
             <ScrollView 
              keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ display: 'flex' }} >
+               
             <BarberInfoSection 
-            blurIntensity={blurIntensity} 
-            blurType={blurType} 
             name={String(name)} 
-            userImgPath={shopImg} />
+            userImgPath={String(barber.image)} />
             <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
                 {/* chat bubble and status */}
                 <View style={{ display: 'flex', flexDirection: 'row',justifyContent:"center", alignItems: 'center', gap: 5, marginBottom: 5 }}>
