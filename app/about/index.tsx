@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
+import { useColorScheme } from 'react-native';
 import useAuth from '@/context/auth/use-auth';
 import { useUser } from '@/hooks/user-hooks';
 import { TouchableOpacity, View } from 'react-native';
 import { StyledView, StyleText, StyledBlurView } from "@/components/shared/SharedStyles";
 import { useForm } from "@/hooks/use-form";
 import { Button, Icon } from 'react-native-paper';
+import Alert from '@/components/shared/Alert/Alert';
 
 const AboutMe = () => {
     const auth = useAuth();
+    const colorScheme = useColorScheme();
     const { getLocation, isLoading,location, handleCoords } = useUser();
     const [formState, inputHandler, setFormData] = useForm({
         name: { value: auth?.userAuth?.name, isValid: true },
@@ -60,10 +63,11 @@ const AboutMe = () => {
 
                     </StyledView>
                 )): <StyleText>...Fetching</StyleText>}
-                <StyledView style={{ marginTop: 50 }} align="center">
+                <StyledView style={{ marginVertical: 30 }} align="center">
                 <StyleText>Change Locations Recently?</StyleText>
-                <Button icon="map-marker-account-outline" onPress={ () => console.log("Location Change")}>Update Location</Button>
+                <Alert fontSize={13} colorScheme={colorScheme} alertType="info" iconSize={15} message="Update if you are traveling or changed locations." />
                 </StyledView>
+                <Button icon="map-marker-account-outline" onPress={ () => console.log("Location Change")}>Update Location</Button>
         </StyledView>
     )
 }

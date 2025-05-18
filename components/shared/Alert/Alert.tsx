@@ -1,5 +1,5 @@
 import { ColorSchemeName } from "react-native";
-import { StyledView, StyledText } from "../SharedStyles";
+import { StyledView, StyleText } from "../SharedStyles";
 import { Icon } from "react-native-paper";
 
 interface IAlert {
@@ -46,7 +46,7 @@ const Alert = ({ iconSize, message, colorScheme, alertType, fontSize }: IAlert) 
         <StyledView direction="row" align="center" gap={3} style={{ backgroundColor: background, borderRadius: 10, padding: 5 }}>
             <StyledView><Icon color={text} source={icon} size={iconSize}/></StyledView>
             <StyledView>
-                <StyledText style={{ fontSize, color: text }} colorScheme={colorScheme}>{message}</StyledText>
+                <StyleText style={{ fontSize, color: text }}>{message}</StyleText>
             </StyledView>
         </StyledView>
     )

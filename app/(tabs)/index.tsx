@@ -13,6 +13,8 @@ import { backgroundGradients } from '@/theme/gradients';
 import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
 import withAuthGuard from '@/context/auth-middleware';
+import UserHomePage from '@/components/Views/UserView/UserHomePage';
+import BarberHomeDashboard from '@/components/Views/BarberView/BarberHomePage';
 
 
 const HomeScreen = () => {
@@ -27,35 +29,11 @@ const HomeScreen = () => {
   return (
     <StyledContainer>
       <ScrollView contentContainerStyle={{ display: 'flex', gap: 15}}>
-      <SearchBar 
-      colorScheme={colorScheme}
-      searchValue={searchValue}
-      onSearchSubmit={setSearchValue}/>
-      <View>
-        <StyledText center colorScheme={colorScheme} fontWeight={700} fontSize={20}>A Barber that fits your needs.</StyledText>
-      {auth?.userAuth !== null  && <StyledText center fontWeight={400} fontSize={14} colorScheme={colorScheme}>Welcome back {auth?.userAuth?.name?.split(" ")[0]}!</StyledText>}
-      </View>
-      <View style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Divider style={{ width: '100%' }} />
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'column', gap: 10}}>
-        <IconOptionsList colorScheme={colorScheme} />
-        <HomeFeatures colorScheme={colorScheme}/>
-      </View>
-      <View>
-      <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Featured:</StyledText>
-        <FeaturedShop colorScheme={colorScheme}/>
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <View>
-          <StyledText fontWeight={600} fontSize={15} colorScheme={colorScheme}>Near [location]</StyledText>
-          <FilterBarberChips colorScheme={colorScheme} />
-        </View>
-        
-        <View style={{ maxHeight: 270 }}>
-          <UserCard userData={dummyUsers} colorScheme={colorScheme} />
-        </View>
-      </View>
+        {auth?.userAuth?.accountType === "user" ? (
+        <UserHomePage searchValue={searchValue} onSearchSubmit={setSearchValue} />
+        ): (
+          <BarberHomeDashboard />
+        )}
       
       <View />
       <View />

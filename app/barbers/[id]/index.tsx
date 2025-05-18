@@ -94,21 +94,22 @@ export default function BarberProfile() {
                     <Divider style={{ height: 10, width: 1 }}/>
                     <View style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2, alignItems: 'center'}}>
                         <Icon color="green" source="checkbox-blank-circle" size={10} /> 
-                    <StyledText colorScheme={colorScheme} style={{ color: 'green'}}>Live</StyledText>
+                    <StyleText style={{ color: 'green'}}>Live</StyleText>
                     </View>
                     
                 </View>
             <Button icon="chat" buttonColor="white" textColor="black" mode="contained" onPress={() => router.push({ pathname: '/messages/[id]/message', params: { id: String(barber.id) } })}>Send {name} a message</Button>
-            <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 15}}>About {String(name).split(" ")[0]}:</StyledText>
-            <StyledText colorScheme={colorScheme}>
+            <StyleText style={{ fontWeight: 700, fontSize: 15, marginTop: 15}}>About {String(name).split(" ")[0]}:</StyleText>
+            <StyleText>
                 I've been cutting hair for the last 10 years at Woogie Woogie Barber shop on 11th ave. I've don't mess around and politic like some of these other barbers do and with
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
-            </StyledText>
+            </StyleText>
             { !selectedDate && <View>
             <Divider bold style={{ width: '100%', marginVertical: 5}}/>
+            <StyleText  style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Showcase:</StyleText>
             <ShowCaseGallery onImgSelect={(path: string, index: number) => handleImageDialog(path, index)}/>
             <Divider bold style={{ width: '100%', marginVertical: 5}}/>
-            <StyledText style={{ fontWeight: 700, fontSize: 15 }} colorScheme={colorScheme}>Reviews:</StyledText>
+            <StyleText style={{ fontWeight: 700, fontSize: 15 }}>Reviews:</StyleText>
             <UserReview
             shouldLink={true}
             userName={"Jacobi K."}
@@ -118,8 +119,8 @@ export default function BarberProfile() {
             reviewText="Great haircut I loved this place."/>
             <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></View>}
            <Div direction="row" align="flex-end" gap={5}>
-            <StyledText colorScheme={colorScheme} style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyledText>
-            {selectedDate && <StyledText style={{ fontWeight: 600 }} colorScheme={colorScheme}>{formatDateString(selectedDate)}</StyledText>}
+            <StyleText style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Availablity:</StyleText>
+            {selectedDate && <StyleText style={{ fontWeight: 600 }} >{formatDateString(selectedDate)}</StyleText>}
            </Div>
            
         
@@ -131,7 +132,7 @@ export default function BarberProfile() {
                 <Icon source="calendar" size={25} />
             </Div>
             <Div>
-            <SText colorScheme={colorScheme}>Select Date</SText>
+            <StyleText>Select Date</StyleText>
             </Div>
            </StyledBlurItem>
             <AppointmentCalendar 

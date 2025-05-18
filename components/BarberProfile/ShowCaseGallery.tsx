@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, ScrollView } from 'react-native';
-import { StyledView, StyledBlurView } from '../../components/shared/SharedStyles';
+import { StyledView, StyledBlurView, StyleText } from '../../components/shared/SharedStyles';
 import ImageChanger from '../shared/ImageChanger/ImageChanger';
 
 /**

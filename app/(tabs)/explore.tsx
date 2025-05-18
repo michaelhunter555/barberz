@@ -12,7 +12,12 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dummyUsers, type TUser } from '@/components/home/DummyData';
 import { AppleMapsMapType, AppleMapsMarker } from 'expo-maps/build/apple/AppleMaps.types';
-import BarberMapProfile from '@/components/BarberProfile/BarberMapProfile'
+import BarberMapProfile from '@/components/BarberProfile/BarberMapProfile';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
 export default function Maps() {
   const auth = useAuth();
@@ -35,6 +40,15 @@ export default function Maps() {
       handleCoords();
     }
   }, []);
+
+  const translateY = useSharedValue(300);
+  useEffect(() => {
+    translateY.value = withTiming(toggleBarber ? 0: 300, { duration: 300 })
+  }, [toggleBarber]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ 
+    transform: [{ translateY: translateY.value }]
+  }))
   
   const tabHeight = useBottomTabBarHeight();
   const { bottom } = useSafeAreaInsets();
@@ -81,7 +95,7 @@ export default function Maps() {
     </StyledView>
       </StyledBlurView>
     </SafeAreaView>
- {toggleBarber && <SafeAreaView style={{ position: 'absolute', bottom: 0, width: "100%",  paddingBottom: paddingBottom }}>
+ {toggleBarber && <Animated.View style={[{ position: 'absolute', bottom: 0, width: "100%",  paddingBottom: paddingBottom }, animatedStyle]}>
       <StyledView style={{ flex: 8,}} pointerEvents="none" />
       <StyledBlurView style={{ padding: 5 }}>
     <BarberMapProfile
@@ -93,7 +107,7 @@ export default function Maps() {
     name={barber.name} 
     userImgPath={barber.image}  />
       </StyledBlurView>
-    </SafeAreaView>}
+    </Animated.View>}
     </View>
   )
 }

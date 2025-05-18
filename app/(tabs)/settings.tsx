@@ -33,14 +33,11 @@ export default function UserSettings() {
                 <UserInfoSection
                     name={String(auth?.userAuth?.name)}
                     userImgPath={String(auth?.userAuth?.image)}
-                    blurIntensity={blurIntensity}
-                    blurType={blurType}
-                    colorScheme={colorScheme}
                 />
 
                 <Divider bold={true} style={{ width: '100%' }} />
 
-                <AccountLocationGrid colorScheme={colorScheme} blurIntensity={blurIntensity} blurType={blurType} />
+                <AccountLocationGrid blurIntensity={blurIntensity} blurType={blurType} />
 
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
                     {userSettings.map((setting, i) => (
@@ -65,9 +62,6 @@ export default function UserSettings() {
                 </StyledView>
 
                 <Card
-                colorScheme={colorScheme}
-                blurIntensity={blurIntensity}
-                blurType={blurType}
                 imgPath={tempImgPath}
                 label="Recent"
                 buttonRightText='Need Help?'
