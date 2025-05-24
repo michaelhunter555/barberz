@@ -32,7 +32,7 @@ const BarberSchedule = () => {
     }
 
     return (
-        <StyledView gap={5}>
+        <StyledView gap={5} style={{ marginTop: 20 }}>
             <StyleText style={{ fontWeight: 700, fontSize: 15 }}>Schedule</StyleText>
         {Object.entries(dummySchedule).map(([key, value]) => (
             <StyledView key={key}>

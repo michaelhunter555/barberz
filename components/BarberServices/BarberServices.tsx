@@ -22,9 +22,7 @@ return (
             </StyledBlurView>
         ))}
         <StyledView direction="column" align="center">
-
         <IconButton onPress={() => console.log("add new service")} size={12} style={{ backgroundColor: "#007AFF" }} icon="plus" />
-        <StyleText style={{ fontSize: 10 }}>Add</StyleText>
         </StyledView>
     </StyledView>
     </View>

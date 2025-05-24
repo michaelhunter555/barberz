@@ -142,7 +142,7 @@ export default function BarberProfile() {
             </>
             )}
                 {selectedDate && (
-                <DayOfWeekChips goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+                <DayOfWeekChips name={String(name)} goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
                 )}
                
         <View style={{ height: 50 }}/>

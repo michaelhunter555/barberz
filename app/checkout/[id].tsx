@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, Text, ScrollView, useColorScheme, TouchableOpacity } from 'react-native';
+import useAuth from '@/context/auth/use-auth';
+import { View, Text, ScrollView, useColorScheme, TouchableOpacity, } from 'react-native';
 import { router, useLocalSearchParams } from "expo-router";
 import styled from 'styled-components/native';
 import { StyledText, StyledBlurItem } from '@/components/shared/SharedStyles';
@@ -8,11 +9,12 @@ import { Button, Avatar, Divider, TextInput, Icon  } from 'react-native-paper';
 const tipChips = [5,10,15,20,25]
 
 const CheckoutPage = () => {
+    const auth = useAuth();
     const [note, setNote] = React.useState<string>("");
     const [tip, setTip] = React.useState<number | null>(null);
     const [tipIndex, setTipIndex] = React.useState<number | null>(null);
     const [color, setColor] = React.useState<string>("#222")
-    const { id, slotId, name, price } = useLocalSearchParams();
+    const { id, slotId, name, price, image } = useLocalSearchParams();
     const colorScheme = useColorScheme();
     const blurType = colorScheme === 'dark' ? 'light' : 'dark';
     const intensity = colorScheme === 'dark' ? 55 : 35;
@@ -21,8 +23,13 @@ const CheckoutPage = () => {
         setColor(() => tip === null ? "#222": "#fff")
     }
     
+    const totalPrice =  tip === null ? (((Number(price) * 0.06) + Number(price)) - 10 ).toFixed(2)
+        : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2);
+
+    // check if user has any coupons
     return (
         <StyledViewContainer>
+            <ScrollView>
             <StyledViewContent style={{ paddingVertical: 5 }}>
             <StyledText style={{ fontWeight: 700, fontSize: 30 }} colorScheme={colorScheme}>Confirm With Barber</StyledText>
             <StyledText colorScheme={colorScheme}>Your booking with {name} is almost set! Please review the price with any add-ons. Once the barber accepts, your card will be charged. </StyledText>
@@ -108,7 +115,7 @@ const CheckoutPage = () => {
             </StyledView>
             <View style={{height: 90 }}/>
             <View style={{ marginBottom: 10,}}>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/Confirming', })}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/Confirming', params: { price: String(price)} })}>
                     <StyledView direction="row" gap={5} style={{ backgroundColor: '#ffffff', width: '100%', height: 40, overflow: 'hidden', borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
                         <StyledText style={{ fontSize: 17, color: 'black' }} colorScheme={colorScheme}>
                             Send Confirmation
@@ -119,6 +126,7 @@ const CheckoutPage = () => {
             </View>
             </StyledViewContent>
            
+        </ScrollView>
         </StyledViewContainer>
     )
 }

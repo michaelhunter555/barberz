@@ -18,9 +18,12 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
+import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
 
 export default function Maps() {
   const auth = useAuth();
+  const colorScheme = useColorScheme();
+  const [searchValue, setSearchValue] = useState<string>("");
   const { handleCoords } = useUser();
   const [zoom, setZoom] = useState(13);
   const [selectedId, setSelectedId] = useState<string | null>("0");
@@ -77,13 +80,18 @@ export default function Maps() {
     }}
     properties={{
       mapType: AppleMapsMapType.STANDARD,
-      selectionEnabled: true,
+      selectionEnabled: false,
     }}
     onMapClick={(e) => console.log(JSON.stringify({ type: "onMapClick", data: e }, null, 2))}
     onMarkerClick={(e: AppleMapsMarker) => handleMarkerClick(e)}
     onCameraMove={(e) => console.log(JSON.stringify({ type: "onCameraMove", data: e }, null, 2))}
     markers={IOSbarbers}
     />
+    <SafeAreaView style={{ position: 'absolute', bottom: 600, right: 70, alignItems: 'center' }}>
+      <StyledView style={{ flex: 8, maxWidth: 250, alignItems: 'flex-end' }} pointerEvents="none">
+        <SearchBar colorScheme={colorScheme} searchValue={searchValue} onSearchSubmit={setSearchValue}  />
+      </StyledView>
+    </SafeAreaView>
     <SafeAreaView style={{ position: 'absolute', bottom: 200, right: 0, alignItems:'center', paddingBottom: paddingBottom }}>
       <StyledView style={{ flex: 8,}} pointerEvents="none" />
       <StyledBlurView>

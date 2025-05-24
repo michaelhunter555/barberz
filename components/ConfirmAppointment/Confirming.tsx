@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { TouchableOpacity, useColorScheme, Button } from 'react-native';
 import useAuth from '@/context/auth/use-auth';
 import { ProgressBar, Avatar, Divider } from "react-native-paper";
@@ -15,6 +15,7 @@ const supportItems = [{ text: 'Privacy Policy', link: '/settings'}, { text: 'Ter
 const ConfirmingAppointment = () => {
     const auth = useAuth();
     const colorScheme = useColorScheme();
+    const { price } = useLocalSearchParams();
     const [progress, SetProgress] = useState<number>(0);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ const ConfirmingAppointment = () => {
                 You will get a notifcation once the appointment is accepted.
             </StyledText>
             <StyledText colorScheme={colorScheme}>
-                You will be charged $[total] after completion.
+                You will be charged ${ price } after completion.
             </StyledText>
             <StyledText colorScheme={colorScheme}>
                 You will get a notifcation once the appointment is accepted.

@@ -13,6 +13,7 @@ interface IDayOfWeekChips {
     onPress: () => void;
     colorScheme: ColorSchemeName
     goBack: () => void;
+    name: string;
 };
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -36,7 +37,7 @@ const generateGroupedSchedule = () => {
 };
 
 
-const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack }: IDayOfWeekChips) => {
+const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack, name }: IDayOfWeekChips) => {
     const [price, setPrice] = React.useState<number>(50);
     const [openSchedule, setOpenSchedule] = React.useState();
     const [dayIndex, setDayIndex] = React.useState<number | null>(null);
@@ -116,12 +117,12 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack }: IDayOfWeek
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between", alignItems: 'flex-end' }}>
                     <View>
                         <IconButton icon={() => <Icon size={15} source="arrow-left" />} onPress={() => setBooking(false)} />
-                        <StyledText colorScheme={colorScheme}>Book [name] for ${price}.00 at {bookingItems.time}?</StyledText>
+                        <StyledText colorScheme={colorScheme}>Book {name.split(" ")[0]} for ${price}.00 at {bookingItems.time}?</StyledText>
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <StyledText style={{ fontSize: 20, fontWeight: 600 }} colorScheme={colorScheme}>${price}.00</StyledText>
                         <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                            router.push({ pathname: '/checkout/[id]', params: { id: "TEST-8348434fdsjfls", price: String(price), time: bookingItems.time, name: "TEST-Barber" } })
+                            router.push({ pathname: '/checkout/[id]', params: { id: "TEST-8348434fdsjfls", price: String(price), time: bookingItems.time, name: String(name) } })
                         }>
                             <StyledBlurItem style={{ width: 120, backgroundColor: '#007AFF' }} intensity={blurIntensity} tint={blurType}>
                                 <StyledText style={{ fontWeight: 700 }}>Go to Checkout</StyledText>

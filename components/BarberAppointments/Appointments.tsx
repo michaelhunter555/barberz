@@ -1,23 +1,41 @@
-import React from 'react';
-import { StyledView } from '../shared/SharedStyles';
+import React, { useState } from 'react';
+import { StyledBlurView, StyledDivider, StyledView, StyleText } from '../shared/SharedStyles';
 import { router } from 'expo-router';
 import Card from '../shared/Cards/InfoCard';
+import { View, TouchableOpacity, Image } from 'react-native';
+import { Avatar, Chip, Icon } from 'react-native-paper';
+import AppointmentCard from './AppointmentCard';
 
-const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
+interface IBarberAppointments {
+    value: number;
+    headerText: string;
+    imgPath: string;
+    id: string | number; 
+    type: string;
+    addOns: string[], 
+    status: string, 
+    customerName: string, 
+    date: string;
+}
 
-const BarberAppointments = () => {
-
+const BarberAppointments = ({ value, headerText, imgPath,  id, type, addOns, status, customerName, date}: IBarberAppointments) => {
     return (
         <StyledView style={{ marginTop: 20 }}>
-            <Card
-            imgPath={tempImgPath}
-            label="Upcoming"
-            buttonRightText='View Booking'
-            onRightButtonClick={() => router.push({ pathname: '/Faqs'})}
-            buttonLeftText='Reschedule'
-            onLeftButtonClick={() => console.log("reschedule")}
-            description='3:00pm - Tim McAllister - Confirmed*'
-            />
+            <StyledView justify="center" align="flex-start">         
+            {/* Confirmed appointment */}
+            <StyleText style={{ fontWeight: 700, fontSize: 15 }}>{headerText}</StyleText>
+            </StyledView>
+            {/* Appointment Card */}
+                   <AppointmentCard
+                    value={value}
+                    customerImg={imgPath}
+                    id={id}
+                    type={type}
+                    addOns={addOns}
+                    status={status}
+                    customerName={customerName}
+                    date={date}
+                   />
         </StyledView>
     )
 }

@@ -16,9 +16,10 @@ interface ISearchBar {
     searchValue: string;
     onSearchSubmit: (query: string) => void;
     colorScheme: ColorSchemeName;
+    placeholder?: string;
 }
 
-export const SearchBar = ({searchValue, onSearchSubmit, colorScheme}: ISearchBar) => {
+export const SearchBar = ({searchValue, onSearchSubmit, colorScheme, placeholder}: ISearchBar) => {
     const tint = colorScheme === 'light' ? 'dark':'light';
     const intensity = colorScheme === 'light' ? 35:70;
     const textColor = colorScheme === 'light' ? "#222": "white";
@@ -46,7 +47,7 @@ return (
             inputMode="search"
             textAlign="left"
             textContentType="location"
-            placeholder="Browse a location..."
+            placeholder={placeholder ? placeholder : "Browse a location..."}
             placeholderTextColor={colorScheme === "light" ? "#444":"#f1f1f1"}
             selectionColor={"#fff"}
             />
