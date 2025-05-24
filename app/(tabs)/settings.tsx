@@ -3,14 +3,15 @@ import useAuth from '@/context/auth/use-auth';
 import { router } from 'expo-router';
 import { View, useColorScheme, TouchableOpacity, ScrollView } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Icon, Divider, List } from 'react-native-paper';
+import { Icon, Divider, List, Badge } from 'react-native-paper';
 import TermsDialog from '@/components/Settings/TermsDialog';
 import UserInfoSection from '@/components/Settings/UserInfoSection';
 import UserOffers from '@/components/Settings/UserOffer';
 import AccountLocationGrid from '@/components/Settings/AccountLocationGrid';
-import { StyledText, StyledView, StyledViewContainer } from '@/components/Settings/SettingStyles';
+import { StyledText, StyledViewContainer } from '@/components/Settings/SettingStyles';
 import { userSettings, otherSettings } from '@/components/Settings/menus';
 import Card from '@/components/shared/Cards/InfoCard';
+import { StyleText, StyledView,} from '@/components/shared/SharedStyles';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
@@ -87,7 +88,13 @@ export default function UserSettings() {
                     {otherSettings.map((settings, i) => (
                         <List.Item 
                         key={i} 
-                        title={settings.text} 
+                        title={
+                            i === 1 ? 
+                            <StyledView direction="row" align="center" gap={15}>
+                                <StyleText style={{ fontSize: 15 }}>{settings.text}</StyleText>
+                                <Badge>{10}</Badge>
+                            </StyledView> : settings.text
+                        } 
                         left={() => <Icon size={20} source={settings.icon} />}
                         onPress={() => router.push({ pathname: settings.link as any })}
                         />
