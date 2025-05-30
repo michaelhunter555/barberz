@@ -28,6 +28,7 @@ const Card = ({
                 </StyleText>
             </View>
             <StyledBlurView
+            isPaper
             direction="row"
             borderRadius={8}
             gap={10}
@@ -47,6 +48,7 @@ const Card = ({
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={0.8} onPress={onRightButtonClick}>
                             <StyledBlurView
+                            isButton
                                 style={{
                                     overflow: 'hidden',
                                     borderRadius: 8,

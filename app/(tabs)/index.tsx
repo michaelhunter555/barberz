@@ -34,7 +34,6 @@ const HomeScreen = () => {
         ): (
           <BarberHomeDashboard />
         )}
-      
       <View />
       <View />
       <View />

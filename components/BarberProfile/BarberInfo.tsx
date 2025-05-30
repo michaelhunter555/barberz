@@ -31,12 +31,12 @@ const BarberInfoSection = ({ name, userImgPath }: IBarberInfoSection) => {
                     <TouchableOpacity activeOpacity={0.7}>
                     <StyleText style={{ color: '#007AFF' }}>15 Reviews</StyleText>
                     </TouchableOpacity>
-                    <StyledBlurView style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}>
-                        <Icon color="white" source="star" size={15} /> 
+                    <StyledBlurView isPaper style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}>
+                        <Icon source="star" size={15} /> 
                     <StyleText>5.0</StyleText>
                     </StyledBlurView>
-                    <StyledBlurView direction="row" gap={5} align="center" borderRadius={5} style={{ padding: 5, }}> 
-                    <Icon color="white" source="check-circle" size={15} /> 
+                    <StyledBlurView isPaper direction="row" gap={5} align="center" borderRadius={5} style={{ padding: 5, }}> 
+                    <Icon source="check-circle" size={15} /> 
                         <StyleText>Verified</StyleText>
                         </StyledBlurView>
                 </StyledView>

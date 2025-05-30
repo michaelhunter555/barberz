@@ -52,7 +52,6 @@ export const StarRatings = ({
                     <TouchableOpacity disabled={!isReview} onPress={() => handleRatingPress(i)} key={`${i}-starRating`}>
                         <Icon
                         source={starIcon} 
-                        color={color} 
                         size={size} />
                     </TouchableOpacity>
                 )

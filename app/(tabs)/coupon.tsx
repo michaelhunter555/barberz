@@ -18,7 +18,6 @@ export default function TabThreeScreen() {
   const shopImg = require("../../assets/images/homeImg.png");
 
   const handleActivateOffer = (index: number): void => {
-    console.log("Coupon", index);
     setCurrentIndex(index);
    setOffer((prev) => {
     return prev.map((offers, i) => {
@@ -34,7 +33,7 @@ export default function TabThreeScreen() {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ padding: 10 }}>
        <TermsDialog openDialog={openDialog} onOpenDialog={() => setOpenDialog((prev) => !prev)} colorScheme={colorScheme} />
       <StyledView style={{ flex: 1 }}>
         <StyleText style={{ fontWeight: 700, fontSize: 20, }}>

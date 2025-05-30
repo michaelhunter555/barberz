@@ -41,6 +41,7 @@ const AppointmentCard = ({
     return (
         <StyledView style={{ width: '100%' }}>
         <StyledBlurView
+        isPaper
         direction="row"
         borderRadius={8}
         gap={10}
@@ -50,6 +51,7 @@ const AppointmentCard = ({
                 padding: 10,
             }}>
                 <StyledView direction="column" align="center">
+                    <StyleText style={{ color: '#888'}}>booking #2948</StyleText>
             <StyledView direction="row" align="center" gap={3}>
                 <Icon color={value > 0 ? "green":"red"} size={12} source={value > 0 ? "plus-circle" : "minus-circle"} />
             <StyleText style={{  fontSize: 25, fontWeight: 700 }}>${value}</StyleText>
@@ -76,7 +78,7 @@ const AppointmentCard = ({
                 { addOns && addOns?.length > 0 && <StyleText>Add Ons:</StyleText>}
                 {addOns && addOns?.length > 0 ? addOns.map((addOn,i) => (
                     <StyledBlurView key={i} style={{ padding: 3, backgroundColor: colorWheel(i) }}>
-                        <StyleText style={{ flex: 1, fontWeight: 600, marginLeft: 5}}>{addOn}</StyleText>
+                        <StyleText style={{ flex: 1, fontWeight: 600, marginLeft: 5, color: 'white'}}>{addOn}</StyleText>
                     </StyledBlurView>
                     ))
                     : (
@@ -100,7 +102,7 @@ const AppointmentCard = ({
                         direction='row'
                         gap={3}
                         style={{ padding: 4 }}>
-                            <StyleText style={{ fontWeight: 600 }}>View</StyleText>
+                            <StyleText style={{ fontWeight: 600, }}>{status === "unconfirmed" ? "Confirm":"View"}</StyleText>
                             <Icon source="eye" size={15} />
                         </StyledBlurView>
                     </TouchableOpacity>

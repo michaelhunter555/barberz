@@ -1,7 +1,7 @@
 import { ColorSchemeName, Text, TouchableOpacity } from "react-native";
 import useAuth from "@/context/auth/use-auth";
 import { StyledGrid, StyledText, StyledBlurGridItem } from "./SettingStyles";
-import { StyleText } from "../shared/SharedStyles";
+import { StyleText, StyledBlurView } from "../shared/SharedStyles";
 import { Icon } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IBarber } from "@/types";
@@ -28,15 +28,20 @@ const AccountLocationGrid = ({
 
     return (
         <StyledGrid>
-        <StyledBlurGridItem intensity={blurIntensity} tint={blurType}>
+        <StyledBlurView 
+        borderRadius={10} 
+        isPaper 
+        justify="center" 
+        align="center" 
+        style={{ width: '48%', padding: 10}}>
             <TouchableOpacity onPress={updateAccountType}>
             <StyleText><Text style={{ fontWeight: 700 }}>Account: </Text>{auth?.userAuth?.accountType}</StyleText>
             </TouchableOpacity>
-        </StyledBlurGridItem>
-        <StyledBlurGridItem intensity={blurIntensity} tint={blurType} style={{ flexDirection: 'row', gap: 10, justifyContent: 'flex-start' }}>
+        </StyledBlurView>
+        <StyledBlurView isPaper direction="row" gap={10} justify="flex-start" style={{ padding: 10, width: "48%" }}>
             <Icon size={20} source="map-marker" />
             <StyleText style={{ fontSize: 12 }}>Baltimore, Md</StyleText>
-        </StyledBlurGridItem>
+        </StyledBlurView>
     </StyledGrid>
     )
 }

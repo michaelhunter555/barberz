@@ -34,9 +34,6 @@ const formatDateString = (dateStr: string) => {
   
     return `on ${months[month - 1]} ${getOrdinal(day)}, ${year}`;
   };
-  
-  console.log(formatDateString("2025-04-23"));
-  // → "on April 23rd, 2025"
 
   
 export default function BarberProfile() {
@@ -53,13 +50,11 @@ export default function BarberProfile() {
             setImgPath(path);
             setOpen(prev => !prev);
             setCurrentIndex(index);
-            console.log(path);
         };
 
     const barber = { id, name, location, price, image };
 
     const handleDateSelection = (date: string) => {
-        console.log("selectedDate: ",date)
         setSelectedDate(date);
     }
 
@@ -80,7 +75,7 @@ export default function BarberProfile() {
             <ImageChanger onNextClick={handleNextImageClick} onClose={() => setOpen(false)} path={dummyImgArr[currentIndex].imgPath} isOpen={open} />
             <ScrollView 
              keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ display: 'flex' }} >
+            contentContainerStyle={{ display: 'flex', padding: 15 }} >
                
             <BarberInfoSection 
             name={String(name)} 
@@ -98,24 +93,31 @@ export default function BarberProfile() {
                     </View>
                     
                 </View>
-            <Button icon="chat" buttonColor="white" textColor="black" mode="contained" onPress={() => router.push({ pathname: '/messages/[id]/message', params: { id: String(barber.id) } })}>Send {name} a message</Button>
+                {/* Chat button */}
+            <Button icon="chat" mode="contained" onPress={() => router.push({ pathname: '/messages/[id]/message', params: { id: String(barber.id), userImage: String(barber.image) } })}>Send {name} a message</Button>
+           
+           {/* User Bio */}
             <StyleText style={{ fontWeight: 700, fontSize: 15, marginTop: 15}}>About {String(name).split(" ")[0]}:</StyleText>
             <StyleText>
                 I've been cutting hair for the last 10 years at Woogie Woogie Barber shop on 11th ave. I've don't mess around and politic like some of these other barbers do and with
                 you know if you choose me you're getting top quality, no-nonsense service. I can come to you or you can visit my personal studio.
             </StyleText>
-            { !selectedDate && <View>
+            
             <Divider bold style={{ width: '100%', marginVertical: 5}}/>
+            {/* Showcase */}
+            { !selectedDate && <View>
             <StyleText  style={{ fontWeight: 700, fontSize: 15, marginTop: 5}}>Showcase:</StyleText>
             <ShowCaseGallery onImgSelect={(path: string, index: number) => handleImageDialog(path, index)}/>
             <Divider bold style={{ width: '100%', marginVertical: 5}}/>
+            
+            {/* Reviews */}
             <StyleText style={{ fontWeight: 700, fontSize: 15 }}>Reviews:</StyleText>
             <UserReview
             shouldLink={true}
             userName={"Jacobi K."}
             userImage={userImg}
             reviewRating={4.0}
-             reviewDate="6/25/2025"
+            reviewDate="6/25/2025"
             reviewText="Great haircut I loved this place."/>
             <Divider bold style={{ width: '100%', marginBottom: 10, marginTop: 2 }}/></View>}
            <Div direction="row" align="flex-end" gap={5}>
@@ -142,10 +144,10 @@ export default function BarberProfile() {
             </>
             )}
                 {selectedDate && (
-                <DayOfWeekChips name={String(name)} goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+                <DayOfWeekChips id={Number(id)} name={String(name)} goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
                 )}
                
-        <View style={{ height: 50 }}/>
+        
             </ScrollView>
         </StyledView>
     )

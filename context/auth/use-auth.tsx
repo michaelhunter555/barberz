@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
           String(user?.picture),
           String(user?.email))
       } catch(err) {
-        console.log("Error loggin in: " + err)
+        console.log("Error loggin in: " + err);
       }
     }
 

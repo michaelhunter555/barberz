@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import useAuth from '@/context/auth/use-auth';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
@@ -9,6 +10,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
+  const auth = useAuth();
+  const isBarber = auth?.userAuth?.accountType === 'barber';
   const colorScheme = useColorScheme();
 
   return (
@@ -30,23 +33,47 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name={"house.fill"} color={color} />,
         }}
       />
-      <Tabs.Screen
+      
+    <Tabs.Screen
         name="explore"
         options={{
+          href: isBarber ? null : undefined,
           title: 'Explore',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
+    <Tabs.Screen
         name="coupon"
         options={{
+          href: isBarber ? null : undefined,
           title: 'Coupon',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="tag.fill" color={color} />,
         }}
       />
+
+       <Tabs.Screen
+        name="create"
+        options={{
+          href: !isBarber ? null : undefined,
+          title: 'Create',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus.circle.fill" color={color} />,
+        }}
+      />
+
+
+      <Tabs.Screen
+        name="upgrades"
+        options={{
+          href: !isBarber ? null : undefined,
+          title: 'Upgrade',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={color} />,
+        }}
+      />
+
+
        <Tabs.Screen
         name="settings"
         options={{

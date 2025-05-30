@@ -13,7 +13,7 @@ const review = "This barber did the full service and I have no complaints. I arr
 const Review = () => {
     const { id, reviewText, totalImages } = useLocalSearchParams();
     return ( 
-    <StyledView direction="column" align="flex-start">
+    <StyledView direction="column" align="flex-start" style={{ padding: 10 }}>
         <StyledView direction="row" align="center" gap={10} style={{ marginVertical: 10 }}>
         <SelectedReview
         userImage={testImg}

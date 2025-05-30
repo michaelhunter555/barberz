@@ -24,6 +24,7 @@ const UserOffers = ({
                 </StyleText>
             </View>}
             <StyledBlurView
+            isPaper
                 style={{
                     width: '100%',
                     flexDirection: 'row',

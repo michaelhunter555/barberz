@@ -27,12 +27,12 @@ const BarberMapProfile = ({ name, userImgPath, location, rating, price, id, hand
 
                 <StyledView direction="row" align="center" gap={10}>
                     <StyleText style={{ fontSize: 20, fontWeight: 600 }}>{name}</StyleText>
-                    <StyledBlurView style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}>
-                        <Icon color="yellow" source="star" size={15} /> 
+                    <StyledBlurView isPaper style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}>
+                        <Icon source="star" size={15} /> 
                     <StyleText>{rating}</StyleText>
                     </StyledBlurView>
-                    <StyledBlurView style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}> 
-                    <Icon color="green" source="check-circle" size={15} />
+                    <StyledBlurView isPaper style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2 }}> 
+                    <Icon source="check-circle" size={15} />
                         <StyleText>Verified</StyleText>
                         </StyledBlurView>
                 </StyledView>
@@ -44,21 +44,23 @@ const BarberMapProfile = ({ name, userImgPath, location, rating, price, id, hand
                 <Avatar.Image style={{ marginVertical: 5 }} size={70} source={{ uri: userImgPath }} />
                 <Divider style={{ width: 1, height: 50 }} />
                   
-                <StyledBlurView style={{ padding: 10 }}>
+                <StyledBlurView isPaper style={{ padding: 10 }}>
                     <StyledView direction="column" align="center">
                         <StyleText>Starting Price:</StyleText>
                         <StyleText style={{ fontSize: 15 }}>${price}</StyleText>
                     </StyledView>
                     </StyledBlurView> 
 
-                    <StyledBlurView style={{ padding: 10 }}>
+                    <StyledBlurView isPaper style={{ padding: 10 }}>
                     <StyledView direction="column" align="center">
                         <StyleText>Status:</StyleText>
                         <StyleText style={{ fontSize: 15 }}>Available</StyleText>
                     </StyledView>
                     </StyledBlurView>   
 
-                    <StyledBlurView isButton clickable onClick={() => router.push({ 
+                    <StyledBlurView 
+                        clickable 
+                        onClick={() => router.push({ 
                         pathname: "/barbers/[id]", 
                         params: {   
                         id: String(id), 
@@ -66,10 +68,10 @@ const BarberMapProfile = ({ name, userImgPath, location, rating, price, id, hand
                         location,
                         image: userImgPath,
                         price: price.toString(),
-                        }})} style={{ padding: 10 }}>
+                        }})} style={{ padding: 10, backgroundColor: '#007AFF' }}>
                     <StyledView direction="column" align="center">
-                        <StyleText>View</StyleText>
-                        <Icon source="arrow-right" size={20} />
+                        <StyleText style={{ color: 'white'}}>View</StyleText>
+                        <Icon color="white" source="arrow-right" size={20} />
                     </StyledView>
                     </StyledBlurView>          
                 </StyledView>

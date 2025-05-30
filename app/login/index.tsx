@@ -13,7 +13,6 @@ const LoginPage = () => {
             router.push({ pathname: "/"});
         }
     }, [auth?.userAuth]);
-    console.log("LoginAuth ", auth?.userAuth)
     
     const handleLogin = () => auth?.signIn();
 

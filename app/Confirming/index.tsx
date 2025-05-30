@@ -1,8 +1,10 @@
 import ConfirmingAppointment from "@/components/ConfirmAppointment/Confirming";
+import { useLocalSearchParams, } from "expo-router";
 
 const ConfirmingPage = () => {
+    const { barberImgPath } = useLocalSearchParams()
 return (
-<ConfirmingAppointment />
+<ConfirmingAppointment barberImgPath={String(barberImgPath)}/>
 )
 };
 

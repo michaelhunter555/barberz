@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, useColorScheme, View } from 'react-native';
 import { StyledView, StyledText, StyledBlurItem } from "../shared/SharedStyles";
 import { Icon } from 'react-native-paper';
 
 interface IAccordionGroup {
     arr: Array<TAccordionProps>;
+    hasComponent?: boolean;
 }
 
 type TAccordionProps = {
@@ -12,9 +13,10 @@ type TAccordionProps = {
     isOpen: boolean;
     questionText: string;
     explanationText: string;
+    Component?: React.ReactNode;
 }
 
-const AccordionGroup = ({ arr }: IAccordionGroup) => {
+const AccordionGroup = ({ arr, hasComponent }: IAccordionGroup) => {
     const [accordion, setAccordion] = useState<Array<TAccordionProps>>(arr);
     const colorScheme = useColorScheme();
 
@@ -31,7 +33,6 @@ const AccordionGroup = ({ arr }: IAccordionGroup) => {
 
     return accordion.map((item) => (
         <StyledView key={item.id} direction="column" style={{ width: '100%', marginBottom: 5 }}>
-
             <TouchableOpacity activeOpacity={0.8} onPress={() => handleTabClick(item.id)}>
                 <View style={{ borderRadius: 10, backgroundColor: '#222', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', paddingLeft: 15, minHeight: 35 }}  >
                     <View style={{ width: '90%' }}>
@@ -47,6 +48,7 @@ const AccordionGroup = ({ arr }: IAccordionGroup) => {
             {item.isOpen && (
                 <StyledView style={{ paddingLeft: 15 }}>
                     <StyledText colorScheme={colorScheme}>{item.explanationText}</StyledText>
+                    {hasComponent && item.Component}
                 </StyledView>
             )}
 

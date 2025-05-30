@@ -21,7 +21,7 @@ interface ISearchBar {
 
 export const SearchBar = ({searchValue, onSearchSubmit, colorScheme, placeholder}: ISearchBar) => {
     const tint = colorScheme === 'light' ? 'dark':'light';
-    const intensity = colorScheme === 'light' ? 35:70;
+    const intensity = colorScheme === 'light' ? 5:70;
     const textColor = colorScheme === 'light' ? "#222": "white";
 
     const handleSearch = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {

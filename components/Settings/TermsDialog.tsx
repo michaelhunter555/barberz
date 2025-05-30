@@ -12,7 +12,7 @@ interface ITermsDialog {
 const TermsDialog = ({openDialog, onOpenDialog, colorScheme}: ITermsDialog) => {
     return (
         <Portal>
-        <Dialog style={{ backgroundColor: 'black' }} visible={openDialog} onDismiss={onOpenDialog}>
+        <Dialog visible={openDialog} onDismiss={onOpenDialog}>
             <Dialog.Title>Terms & Conditions</Dialog.Title>
             <Dialog.Content>
                 <StyledText colorScheme={colorScheme}>

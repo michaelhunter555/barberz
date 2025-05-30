@@ -16,6 +16,7 @@ const dummyMessages: TUserMessage[] = [
 
 const Messages = () => {
     const auth = useAuth();
+    const { userImage, id } = useLocalSearchParams();
     const colorScheme = useColorScheme();
 
     return (

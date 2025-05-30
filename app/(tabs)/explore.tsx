@@ -104,8 +104,8 @@ export default function Maps() {
       </StyledBlurView>
     </SafeAreaView>
  {toggleBarber && <Animated.View style={[{ position: 'absolute', bottom: 0, width: "100%",  paddingBottom: paddingBottom }, animatedStyle]}>
-      <StyledView style={{ flex: 8,}} pointerEvents="none" />
-      <StyledBlurView style={{ padding: 5 }}>
+      <StyledView style={{ flex: 8, }} pointerEvents="none" />
+      <StyledBlurView style={{ padding: 5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, }}>
     <BarberMapProfile
     handleClose={() => setToggleBarber(false)}
     id={barber.id} 

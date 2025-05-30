@@ -3,20 +3,21 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { TouchableOpacity, useColorScheme, Button } from 'react-native';
 import useAuth from '@/context/auth/use-auth';
 import { ProgressBar, Avatar, Divider } from "react-native-paper";
-import { StyledText, StyledBlurItem, StyledView } from "../shared/SharedStyles";
+import { StyledText, StyledBlurItem, StyledView, StyledBlurView, StyleText } from "../shared/SharedStyles";
 import AlertMessage from '../../components/shared/Alert/Alert';
 
 interface IConfirmAppointment {
-
+barberImgPath: string;
 };
 
 const supportItems = [{ text: 'Privacy Policy', link: '/settings'}, { text: 'Terms Of Service', link: '/settings'}, { text: 'View My Account', link: '/settings'}]
 
-const ConfirmingAppointment = () => {
+const ConfirmingAppointment = ( { barberImgPath }: IConfirmAppointment) => {
     const auth = useAuth();
     const colorScheme = useColorScheme();
-    const { price } = useLocalSearchParams();
+    const { price, name } = useLocalSearchParams();
     const [progress, SetProgress] = useState<number>(0);
+    const [time, setTime] = useState<number>(10);
 
     useEffect(() => {
       const interval = setInterval(() => {
@@ -26,18 +27,24 @@ const ConfirmingAppointment = () => {
         })
       }, 50);
 
+      if(time > 0) {
+        setTimeout(() => {
+            setTime((prev) => prev - 1);
+        }, 1000)
+      }
+
       return () => clearInterval(interval);
-    }, [])
+    }, [time])
 
     return (
         <StyledView justify="center" align="center" direction="column" gap={10} style={{ marginTop: 20 }}>
             <StyledText style={{ fontSize: 20 }} colorScheme={colorScheme}>Your Appointment is almost ready!</StyledText>
-            <ProgressBar style={{ height: 10, width: 100 }} progress={progress} color="white"/>
+            <ProgressBar style={{ height: 10, width: 100 }} progress={progress} />
             <StyledView direction="row" align="center" gap={100}>
                 <Avatar.Image source={{ uri: auth?.userAuth?.image }}/>
-                <Avatar.Image source={require("../../assets/images/homeImg.png")}/>
+                <Avatar.Image source={{ uri: barberImgPath }}/>
             </StyledView>
-            <Button color="red" title="Cancel?" onPress={() => router.push({ pathname: "/"})} />
+            <Button disabled={time < 1} color="red" title={`(${time}) Cancel?`} onPress={() => router.push({ pathname: "/"})} />
             <Divider style={{ width: '100%' }} />
             <AlertMessage
             iconSize={15}
@@ -47,20 +54,20 @@ const ConfirmingAppointment = () => {
             fontSize={15}
              />
             <StyledText colorScheme={colorScheme}>
-                You will get a notifcation once the appointment is accepted.
+               &bull; You will get a notifcation once the appointment is accepted.
             </StyledText>
             <StyledText colorScheme={colorScheme}>
-                You will be charged ${ price } after completion.
+               &bull; You will be charged ${ price } after the appointment is accepted.
             </StyledText>
             <StyledText colorScheme={colorScheme}>
-                You will get a notifcation once the appointment is accepted.
+               &bull;You and { String(name).split(" ")[0] } will confirm when the service is completed.
             </StyledText>
-            <StyledView direction="row" align="center" gap={10}>
+            <StyledView direction="row" align="center" gap={10} style={{ marginTop: 10 }}>
                 {supportItems.map((item, i) => (
                     <TouchableOpacity key={item.text} activeOpacity={0.8} onPress={() => router.push({ pathname: '/settings'})}>
-                        <StyledBlurItem intensity={55} tint="light">
-                            <StyledText colorScheme={colorScheme}>{item.text}</StyledText>
-                        </StyledBlurItem>
+                        <StyledBlurView isPaper style={{ padding: 5}}>
+                            <StyleText>{item.text}</StyleText>
+                        </StyledBlurView>
                     </TouchableOpacity>
                 ))}
             </StyledView>

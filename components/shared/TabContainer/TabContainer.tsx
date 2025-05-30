@@ -20,6 +20,7 @@ const Tabs = ({ tabIndex, onSelect }: ITabContainer) => {
             {Object.entries(tabs).map(([key, value]) => (
             <StyledBlurView  
             key={key}
+            isPaper
             style={{ ...(tabIndex === Number(key) && { backgroundColor: "#007AFF" }), borderTopLeftRadius: 8, borderTopRightRadius: 8, height: 30, padding: 5}} 
             clickable 
             onClick={() => onSelect(Number(key))}

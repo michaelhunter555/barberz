@@ -9,7 +9,7 @@ export default function BarberProfile() {
     const { id } = useLocalSearchParams();
 
     return (
-        <ScrollView>
+        <ScrollView style={{ padding: 10 }}>
             <StyledView style={{ marginVertical: 10 }}>
            <GoBackArrow />
             </StyledView>

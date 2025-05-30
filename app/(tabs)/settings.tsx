@@ -11,7 +11,7 @@ import AccountLocationGrid from '@/components/Settings/AccountLocationGrid';
 import { StyledText, StyledViewContainer } from '@/components/Settings/SettingStyles';
 import { userSettings, otherSettings } from '@/components/Settings/menus';
 import Card from '@/components/shared/Cards/InfoCard';
-import { StyleText, StyledView,} from '@/components/shared/SharedStyles';
+import { StyleText, StyledBlurView, StyledView,} from '@/components/shared/SharedStyles';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
@@ -43,9 +43,9 @@ export default function UserSettings() {
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
                     {userSettings.map((setting, i) => (
                         <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => router.push({ pathname: setting.link as any })}>
-                            <BlurView
-                                intensity={blurIntensity}
-                                tint={blurType} style={{
+                            <StyledBlurView
+                                isPaper
+                               style={{
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
@@ -57,7 +57,7 @@ export default function UserSettings() {
                                 }}>
                                 <Icon size={28} source={setting.icon} />
                                 <StyledText style={{ fontWeight: 700 }} colorScheme={colorScheme}>{setting.text}</StyledText>
-                            </BlurView>
+                            </StyledBlurView>
                         </TouchableOpacity>
                     ))}
                 </StyledView>

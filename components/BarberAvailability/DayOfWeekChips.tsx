@@ -14,6 +14,7 @@ interface IDayOfWeekChips {
     colorScheme: ColorSchemeName
     goBack: () => void;
     name: string;
+    id?: number | string;
 };
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -37,7 +38,7 @@ const generateGroupedSchedule = () => {
 };
 
 
-const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack, name }: IDayOfWeekChips) => {
+const DayOfWeekChips = ({id, day, value, onPress, colorScheme, goBack, name }: IDayOfWeekChips) => {
     const [price, setPrice] = React.useState<number>(50);
     const [openSchedule, setOpenSchedule] = React.useState();
     const [dayIndex, setDayIndex] = React.useState<number | null>(null);
@@ -78,17 +79,15 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack, name }: IDay
         setAddOns((prev) => ({...prev, [addOn]: !prev[addOn as keyof typeof prev] }))
     }
 
-    console.log("booking state: ", booking)
-
     return (
-        <StyledView>
+        <StyledView direction="column" align="center" justify="center">
           
            {!booking && <IconButton onPress={ () => {
                 goBack();
                 }} icon="arrow-left"/>}
                 {!booking && dummySchedule.map((slot, j) => (
                     <React.Fragment key={`${slot.hour}-${slot.minute}-${j}`}>
-                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, width: "90%", justifyContent: 'space-between' }}>
+                        <View style={{padding: 5,  display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 15, justifyContent: 'center' }}>
                             <View>
                                 <StyledText colorScheme={colorScheme}>{slot.hour}:{slot.minute}-{slot.hour + 2}:00</StyledText>
                             </View>
@@ -96,7 +95,6 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack, name }: IDay
                             <View style={{ display: 'flex', flexDirection: 'column' }}>
                                 <TouchableOpacity activeOpacity={0.7} onPress={() => {
                                     handleCreateBooking(`${slot.hour}:${slot.minute}-${slot.hour + 2}:00`)
-                                    console.log(`pressed- ${slot.hour}:${slot.minute}`)
                                 }}>
                                     <StyledBlurItem style={{ width: 80, ...(j % 3 === 0 && { backgroundColor: '#007AFF' }) }} intensity={blurIntensity} tint={blurType}>
                                         <StyledText style={{ fontWeight: 700 }}>{j % 3 === 0 ? "Book" : "Taken"}</StyledText>
@@ -122,7 +120,7 @@ const DayOfWeekChips = ({ day, value, onPress, colorScheme, goBack, name }: IDay
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <StyledText style={{ fontSize: 20, fontWeight: 600 }} colorScheme={colorScheme}>${price}.00</StyledText>
                         <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                            router.push({ pathname: '/checkout/[id]', params: { id: "TEST-8348434fdsjfls", price: String(price), time: bookingItems.time, name: String(name) } })
+                            router.push({ pathname: '/checkout/[id]', params: { id: String(id), price: String(price), time: bookingItems.time, name: String(name) } })
                         }>
                             <StyledBlurItem style={{ width: 120, backgroundColor: '#007AFF' }} intensity={blurIntensity} tint={blurType}>
                                 <StyledText style={{ fontWeight: 700 }}>Go to Checkout</StyledText>

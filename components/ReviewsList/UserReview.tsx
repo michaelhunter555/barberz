@@ -43,7 +43,7 @@ const UserReview = ({
                     </StyleText>
                 </StyledView>
             </StyledView>
-           {shouldLink &&  <StyledView direction="row" align="flex-end" justify="flex-end" style={{ paddingLeft: 40}}>
+           {shouldLink &&  <StyledView direction="row" align="flex-end" justify="flex-end">
                 <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/barbers/[id]/reviews', params: { id: 'TEST-BARBER-Reviews'}})}>
                     <StyleText style={{ color: '#007AFF' }}>All Reviews</StyleText>
                 </TouchableOpacity>

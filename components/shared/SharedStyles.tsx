@@ -45,7 +45,7 @@ justify-content: 'center';
 display: flex;
 flex-direction: column;
 gap: 15px;
-padding: 15px;
+padding: 10px;
 `
 export const getBlurType = (colorScheme: ColorSchemeName) => colorScheme === 'dark' ? 'light' : 'dark';
 export const getIntensity = (colorScheme: ColorSchemeName) => colorScheme === 'dark' ? 55 : 35;
@@ -81,24 +81,27 @@ interface IStyledBlurComponent {
   gap?: number;
   onClick?: (value?: any) => void;
   clickable?: boolean;
+  isPaper?: boolean;
+  isDisabled?: boolean;
 }
-export const StyledBlurView = ({ children, style, isButton, direction, align, justify, gap, onClick, clickable, borderRadius }: IStyledBlurComponent) => {
+export const StyledBlurView = ({ children, style, isButton, isDisabled, direction, align, justify, gap, onClick, clickable, borderRadius, isPaper }: IStyledBlurComponent) => {
       const colorScheme = useColorScheme();    
       const blurType = colorScheme === 'dark' ? 'light' : 'dark';
       const intensity = colorScheme === 'dark' ? 55 : 35;
-      const buttonStyle: ViewStyle | undefined = isButton ? { backgroundColor: '#007AFF' } : undefined;
+      const buttonStyle: ViewStyle | undefined = isButton ? { backgroundColor: colorScheme === 'dark' ? '#007AFF': '#fff' } : undefined;
+      const paperize: ViewStyle | undefined = isPaper && colorScheme === 'light' ? { backgroundColor: '#FFF' } : undefined;
 
   return clickable ? (
-    <TouchableOpacity activeOpacity={0.8} onPress={onClick}>
+    <TouchableOpacity disabled={isDisabled} activeOpacity={0.8} onPress={onClick}>
     <StyledBlur
     direction={direction}
     align={align}
     justify={justify}
     gap={gap}
-    intensity={intensity} 
-    tint={blurType}
+    intensity={isPaper && colorScheme === 'light' ? 100 : intensity} 
+    tint={isPaper && colorScheme === 'light' ? 'light': blurType}
     borderRadius={borderRadius}
-    style={[style, buttonStyle]}>
+    style={[style, buttonStyle, paperize]}>
       {children}
     </StyledBlur>
     </TouchableOpacity>
@@ -108,10 +111,10 @@ export const StyledBlurView = ({ children, style, isButton, direction, align, ju
     align={align}
     justify={justify}
     gap={gap}
-    intensity={intensity} 
-    tint={blurType} 
+    intensity={isPaper && colorScheme === 'light' ? 100 : intensity} 
+    tint={ isPaper && colorScheme === 'light' ? 'light': blurType} 
     borderRadius={borderRadius}
-    style={[style, buttonStyle]}>
+    style={[style, buttonStyle, paperize]}>
       {children}
     </StyledBlur>
   )

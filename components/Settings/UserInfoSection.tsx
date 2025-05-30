@@ -20,11 +20,11 @@ const UserInfoSection = ({ name, userImgPath }: IUserInfoSettings) => {
             <View style={{ display: 'flex', flexDirection: 'column' }}>
                 <View><StyleText style={{ fontSize: 30 }}>{name}</StyleText></View>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <StyledBlurView direction="row" borderRadius={5} gap={2} style={{ padding: 5 }}>
+                    <StyledBlurView isPaper direction="row" borderRadius={5} gap={2} style={{ padding: 5 }}>
                         <Icon source="star" size={15} /> 
                     <StyleText>5.0</StyleText>
                     </StyledBlurView>
-                    <StyledBlurView borderRadius={5} style={{  padding: 5 }}> 
+                    <StyledBlurView isPaper borderRadius={5} style={{  padding: 5 }}> 
                         <StyleText>Verified</StyleText>
                         </StyledBlurView>
                 </View>

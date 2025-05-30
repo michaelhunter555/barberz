@@ -3,17 +3,19 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StyleText, StyledView, StyledBlurView } from '../../../components/shared/SharedStyles';
 import { ScrollView } from 'react-native';
 import BookingConfirmationCard from '@/components/BookingConfirmationCard/BookingConfirmationCard';
+import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 
 
 const BookingConfirmation = () => {
     const { id, user } = useLocalSearchParams();
     const customer = JSON.parse(user as string);
-    console.log("customer confirmation: ", customer);
-    console.log("USER", user)
-    console.log("id: ", id)
     return (
-        <ScrollView>
-            <StyledBlurView align="center" justify="center" borderRadius={1} style={{ padding: 3, marginBottom: 10 }}>
+        <ScrollView style={{ padding: 10 }}>
+            <StyledView style={{ marginBottom: 10}}>
+            <GoBackArrow />
+            </StyledView>
+
+            <StyledBlurView align="center" justify="center" borderRadius={10} style={{ padding: 3, marginBottom: 10 }}>
             <StyleText style={{ fontSize: 25, fontWeight: 600 }}>Booking #1778</StyleText>
             </StyledBlurView>
             <BookingConfirmationCard
