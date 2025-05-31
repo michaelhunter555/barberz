@@ -11,10 +11,19 @@ import Alert from '@/components/shared/Alert/Alert';
 
 const AboutMe = () => {
     const auth = useAuth();
+    const isBarber = auth?.userAuth?.accountType === 'barber';
     const colorScheme = useColorScheme();
     const { getLocation, isLoading,location, handleCoords } = useUser();
     const [formState, inputHandler, setFormData] = useForm({
         name: { value: auth?.userAuth?.name, isValid: true },
+        ...(isBarber && {
+            aboutMe: {value: "", isValid: false,},
+            galleryImageOne: { value: undefined, isValid: true,},
+            galleryImageTwo: { value: undefined, isValid: true,},
+            galleryImageThree: { value: undefined, isValid: true,},
+            galleryImageFour: { value: undefined, isValid: true,},
+            galleryImageFive: { value: undefined, isValid: true,},
+        })
     }, false);
 
     useEffect(() => {

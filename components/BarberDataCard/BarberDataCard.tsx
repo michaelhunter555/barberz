@@ -14,7 +14,7 @@ const dummyDataCard = {
 
 const BarberDataCard = () => {
     return (
-        <StyledView direction="row" align="center" gap={20}>
+        <StyledView direction="row" align="center" gap={20} style={{ marginVertical: 10 }}>
             <StyledView direction="column" align="center">
             </StyledView>
             <StyledBlurView isPaper direction="column" align="center" style={{ padding: 5,}}>

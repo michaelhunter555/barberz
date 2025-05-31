@@ -41,7 +41,7 @@ return (
             
             <StyleText style={{ fontWeight: 700 }}>Add ons:</StyleText>
         <StyledView direction="row" gap={10}>
-            {addOns && addOns.length > 0 ? addOns.map((addOn, i) => <StyledBlurView key={i} style={{ backgroundColor: colorWheel(i), padding: 5 }}><StyleText>{addOn}</StyleText></StyledBlurView>): <StyleText>None</StyleText>}
+            {addOns && addOns.length > 0 ? addOns.map((addOn, i) => <StyledBlurView key={i} style={{ backgroundColor: colorWheel(i), padding: 5 }}><StyleText style={{ color: 'white'}}>{addOn}</StyleText></StyledBlurView>): <StyleText>None</StyleText>}
         </StyledView>
 
             <StyledView direction="row" align="center" gap={5}>
@@ -92,14 +92,14 @@ return (
                 <StyledBlurView 
                 clickable
                 onClick={onBookingAction} 
-                isButton={!isStarted} 
+                isButton={!isStarted && !isComplete} 
                 isDisabled={isComplete} 
                 direction="row" 
                 gap={10} 
                 justify="center" 
                 align='center' 
-                borderRadius={20} 
-                style={{ padding: 8, backgroundColor: !isComplete ? 'green': "" }}>
+                borderRadius={20} // isStarted  && !isComplete ? "Mark as Completed" : isStarted  && isComplete ? "Completed" :"Mark as Started"
+                style={{ padding: 8, backgroundColor: isStarted  && !isComplete ? 'green' : !isStarted  && !isComplete ? "#007AFF": ""}}>
                     <StyleText style={{ fontWeight: 700, fontSize: 15 }}>{isStarted  && !isComplete ? "Mark as Completed" : isStarted  && isComplete ? "Completed" :"Mark as Started"}</StyleText>
                     <Icon source="check-circle" size={20} />
                 </StyledBlurView>

@@ -5,45 +5,61 @@ import { Icon } from 'react-native-paper';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import Alert from '@/components/shared/Alert/Alert';
 import { useColorScheme } from 'react-native';
+import { setColorType } from '@/lib/helpers';
 
 const Create = () => {
     const colorScheme = useColorScheme();
+    const color = setColorType("info", colorScheme);
 
     return (
         <StyledContainer>
             <GoBackArrow /> 
             <StyleText style={{ fontSize: 20, fontWeight: 700 }}>Create a service or promotion</StyleText>
-            <StyleText style={{ fontSize: 15 }}>What would you like to create?</StyleText>
             <StyledView gap={20}>
-                <Alert fontSize={12} alertType='info' iconSize={20} colorScheme={colorScheme} message="If you need to increase your limits, please upgrade." />
+                <Alert fontSize={12} alertType='warning' iconSize={20} colorScheme={colorScheme} message="If you need to increase your limits, please upgrade." />
+            <StyleText style={{ fontSize: 15 }}>What would you like to create?</StyleText>
+                <StyledView
+                direction="column"
+                gap={5}
+                > 
+                <StyleText style={{ fontSize: 18 }}>Create Coupon</StyleText>
+                <StyleText>Create a coupon to help users select you in their search</StyleText>
+                <StyleText style={{ fontSize: 10, color: color.text, fontWeight: 600 }}>Max: 4</StyleText>
                 <StyledBlurView 
                 clickable
-                onClick={() => router.push({ pathname: '/serviceForm' })}
+                onClick={() => router.push({ pathname: '/couponform' })}
                 direction="column" 
                 align="center" 
                 gap={2} 
-                justify="center" 
-                style={{ padding: 10 }}>
+                justify="center"
+                borderRadius={20} 
+                style={{ padding: 10, backgroundColor: color.background }}>
                     <StyledView direction="row" align="center" gap={10} justify="center">
-                        <StyleText style={{ fontSize: 16 }}>Create a coupon</StyleText>
-                        <Icon source="plus" size={20} />
+                        <StyleText style={{ fontSize: 16, color: color.text  }}>Create a coupon</StyleText>
+                        <Icon color={ color.text } source="plus" size={20} />
                     </StyledView>
-                    <StyleText style={{ fontSize: 10 }}>Max: 4</StyleText>
                 </StyledBlurView>
+                </StyledView>
+                
+                <StyledView>
+                <StyleText style={{ fontSize: 18 }}>Create a Service Add-on</StyleText>
+                <StyleText>Create add-ons to let to allow customers to select options before providing the haircut. This also helps establish what's included and not included.</StyleText>
+                <StyleText style={{ fontSize: 10, color: color.text, marginBottom: 5 }}>Max: 6</StyleText>
                 <StyledBlurView 
                 clickable 
                 onClick={() => router.push({ pathname: '/serviceForm' })} 
                 direction="column" 
                 align="center" 
                 gap={2} 
-                justify="center" 
-                style={{ padding: 10 }}>
+                justify="center"
+                borderRadius={20}
+                style={{ padding: 10, backgroundColor: color.background }}>
                     <StyledView direction="row" align="center" gap={10} justify="center">
-                        <StyleText style={{ fontSize: 16 }}>Create a Service Add-on</StyleText>
-                        <Icon source="plus" size={20} />
+                        <StyleText style={{ fontSize: 16, color: color.text }}>Create a Service Add-on</StyleText>
+                        <Icon source="plus" size={20} color={ color.text }/>
                     </StyledView>
-                    <StyleText style={{ fontSize: 10 }}>Max: 6</StyleText>
                 </StyledBlurView>
+                </StyledView>
 
             </StyledView>
         </StyledContainer>

@@ -11,7 +11,8 @@ import AccountLocationGrid from '@/components/Settings/AccountLocationGrid';
 import { StyledText, StyledViewContainer } from '@/components/Settings/SettingStyles';
 import { userSettings, otherSettings } from '@/components/Settings/menus';
 import Card from '@/components/shared/Cards/InfoCard';
-import { StyleText, StyledBlurView, StyledView,} from '@/components/shared/SharedStyles';
+import { StyleText, StyledBlurView, StyledDivider, StyledView,} from '@/components/shared/SharedStyles';
+import BarberBasePrice from '@/components/BarberServices/BarberBasePrice';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
@@ -20,6 +21,7 @@ export default function UserSettings() {
     const [openDialog, setOpenDialog] = React.useState<boolean>(false);
     const shopImg = require("../../assets/images/homeImg.png");
     const auth = useAuth();
+    const isBarber = auth?.userAuth?.accountType === 'barber';
     const colorScheme = useColorScheme();
     const textColor = colorScheme === 'light' ? "#222" : "#999";
     const blurType = colorScheme === 'light' ? "dark" : "light"
@@ -38,7 +40,11 @@ export default function UserSettings() {
 
                 <Divider bold={true} style={{ width: '100%' }} />
 
-                <AccountLocationGrid blurIntensity={blurIntensity} blurType={blurType} />
+                {isBarber && (
+                    <BarberBasePrice basePrice={50}/>
+                )}
+                
+                <AccountLocationGrid />
 
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
                     {userSettings.map((setting, i) => (

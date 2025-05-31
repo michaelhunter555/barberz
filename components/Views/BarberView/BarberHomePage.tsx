@@ -13,6 +13,7 @@ import { Button } from 'react-native-paper';
 import { tempData } from '@/lib/dummyDataCards';
 import { BarChart } from 'react-native-gifted-charts';
 import { dummyChartData } from '@/lib/dummyChartData';
+import BarberBasePrice from '@/components/BarberServices/BarberBasePrice';
 
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
@@ -43,8 +44,8 @@ const BarberHomeDashboard = () => {
 
             <StyledDivider orientation="horizontal" marginVertical={10} />
 
-            {/* Data Cards (i.e. stats) */}
-            <StyleText>Your performance today:</StyleText>
+            {/* Data Cards & Chart (i.e. stats) */}
+            <StyleText>Your performance this week:</StyleText>
             <StyledView direction="column" align="center" justify="center" style={{ alignContent: 'center', padding: 5, flex: 1, width: '100%', marginVertical: 10}}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: '100%' }}>
             <BarChart
@@ -68,22 +69,26 @@ const BarberHomeDashboard = () => {
                           paddingVertical: 4,
                           borderRadius: 4,
                         }}>
-                        <StyleText>{item.value}</StyleText>
+                        <StyleText>${item.value}</StyleText>
                       </View>
                     );
                   }}
                 yAxisThickness={0}
                 xAxisThickness={0}
-                initialSpacing={0}
+                initialSpacing={10}
                 isAnimated
             />
                 </View>
             </StyledView>
+            {/* Base Price set by barber */}
+            <BarberBasePrice basePrice={50} />
+
+            {/* Appointment related stats and funds earned */}
             <BarberDataCard />
 
             {/* View Appointments & View unconfirmed */}
             <StyledView
-                style={{ marginTop: 20 }}
+                style={{ marginTop: 10 }}
                 direction="row"
                 align="center"
                 justify="center"

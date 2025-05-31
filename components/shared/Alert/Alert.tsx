@@ -7,7 +7,8 @@ interface IAlert {
     message: string;
     colorScheme: ColorSchemeName;
     fontSize: number;
-    alertType: 'info' | 'warning' | 'error' | 'success'
+    alertType: 'info' | 'warning' | 'error' | 'success';
+    hideIcon?: boolean;
 }
 
 const getColors = (alertType: IAlert['alertType'], scheme: ColorSchemeName) => {
@@ -39,12 +40,12 @@ const getColors = (alertType: IAlert['alertType'], scheme: ColorSchemeName) => {
     return colors[alertType];
   };
   
-const Alert = ({ iconSize, message, colorScheme, alertType, fontSize }: IAlert) => {
+const Alert = ({ iconSize, message, colorScheme, alertType, fontSize, hideIcon, }: IAlert) => {
     const { background, text, icon } = getColors(alertType, colorScheme);
    
     return (
         <StyledView direction="row" align="center" gap={3} style={{ backgroundColor: background, borderRadius: 10, padding: 5 }}>
-            <StyledView><Icon color={text} source={icon} size={iconSize}/></StyledView>
+            {!hideIcon && <StyledView><Icon color={text} source={icon} size={iconSize}/></StyledView>}
             <StyledView>
                 <StyleText style={{ fontSize, color: text }}>{message}</StyleText>
             </StyledView>

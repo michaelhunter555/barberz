@@ -7,6 +7,10 @@ export type Services = {
 
 export type Status = 'Available' | "Busy" | "Away";
 
+/**
+ * @name IBarber
+ * @description Barber interface
+ */
 export interface IBarber {
     _id?: string;
     name: string;
@@ -42,7 +46,7 @@ export interface IBarber {
 };
 
 /**
- * @name: Inputs
+ * @name Inputs
  * @description - Form Inputs for useForm() hook.
  */
 export type Inputs = {
@@ -57,7 +61,7 @@ export type Inputs = {
   };
   
   /**
-   * @name: State
+   * @name State
    * @description - State of form hook.
    */
   export type State = {
@@ -66,7 +70,7 @@ export type Inputs = {
   };
   
   /**
-   * @name: InputChangeAction
+   * @name InputChangeAction
    * @description - input changes in useForm hook.
    */
   export type InputChangeAction = {
@@ -77,7 +81,7 @@ export type Inputs = {
   };
   
   /**
-   * @name: SetFormAction
+   * @name SetFormAction
    * @description - set form to confirm if all fields ar evalid
    */
   export type SetFormAction = {
@@ -87,15 +91,76 @@ export type Inputs = {
   };
   
   /**
-   * @name: Action
+   * @name Action
    * @description - Action types for useForm hook
    */
   export type Action = InputChangeAction | SetFormAction;
   //endof formhook types
   
   /**
-   * @name: TBarberApp
+   * @name TBarberApp
    * @description - Application type for users who want to provide hair services.
    */
   export type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean}
    
+/**
+   * @name THourSlot
+   * @description Schedule representing a time of day for where a booking is available
+   * @types THourSlot props for start and end times.
+   */
+
+  type THourSlot = { value: number; hour: number; minute: number };
+
+  /**
+   * @name IDaySlot
+   * @description slot available for booking and price 
+   * @types uses THourSlot props for start and end times.
+   */
+  export interface IDaySlot {  
+    startTime: THourSlot, 
+    endTime: THourSlot, 
+    price: number, 
+    isBooked: boolean;
+    isChecked?: boolean;
+  }
+  
+  /**
+   * @name IScheduleByDay
+   * @description Schedule representing a time of day for where a booking is available
+   */
+export interface IScheduleByDay {
+    [day: string]: IDaySlot[];
+}
+
+export interface IHours {
+        barberId:  string;
+        schedule: IScheduleByDay
+};
+
+/**
+ * @name ICoupon
+ * @description Coupon properties for creating barber coupon
+ */
+export interface ICoupon {
+  name: string;
+  ownerId: string;
+  isPublic: boolean;
+  isActive: boolean;
+  transactionComplete: boolean;
+  amount: number;
+  terms: string;
+  minPriceActivation: number;
+  expirationDate: Date;
+  transactions: number;
+  onlyForUsers?: [string];
+}
+
+type TService = { name: string, description: string, price: number }
+/**
+ * @name IBarberServices
+ * @description service properties for add-ons including a name, description and price.
+ */
+export interface IBarberServices {
+    barberId: string;
+    service: TService[];
+}
