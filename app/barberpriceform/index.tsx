@@ -6,6 +6,8 @@ import { StyledView, StyledContainer, StyleText, StyledBlurView, StyledDivider }
 import { NativeSyntheticEvent, TextInputChangeEventData, useColorScheme, ScrollView } from 'react-native';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import Alert from '@/components/shared/Alert/Alert';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const BasePriceForm = () => {
 const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -45,7 +47,6 @@ useEffect(() => {
 
     return (
         <ScrollView>
-
         <StyledContainer>
             <GoBackArrow />
             <StyledView direction="row" align="center" gap={10}>

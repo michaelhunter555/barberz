@@ -10,7 +10,7 @@ import WalletActions from "@/components/MyWallet/WalletActions";
 const MyWallet = () => {
     const colorScheme = useColorScheme()
     return(
-        <ScrollView>
+        <ScrollView style={{ padding: 10 }}>
             {/* Wallet Balance and Add Balance Button */}
             <Wallet balance={0.00} addBalance={() => void console.log("nothing")} colorScheme={colorScheme} />
             

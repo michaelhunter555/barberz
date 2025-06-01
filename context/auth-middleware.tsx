@@ -29,7 +29,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     console.log('Pathname:', pathname);
   
     if (isRouterReady && !auth?.userAuth && pathname !== '/login') {
-      console.log('Redirecting to /login');
+      router.push({ pathname: '/login'})
     }
   }, [isRouterReady, auth?.userAuth, pathname]);
   

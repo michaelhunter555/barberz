@@ -36,17 +36,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> 
-      <SafeAreaView style={{ flex: 1 }}>
         <AuthProvider>
       <PaperProvider theme={theme}>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
       </PaperProvider>
         </AuthProvider>
-    </SafeAreaView>
     </ThemeProvider>
   );
 }

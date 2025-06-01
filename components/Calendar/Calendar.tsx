@@ -58,13 +58,15 @@ const AppointmentCalendar = ({
                   current={initialDate}
                   style={{ marginBottom: 10, backgroundColor: 'transparent'}}
                   theme={{ 
-                    ...(colorScheme === 'dark' && { 
+                    ...(colorScheme === 'dark' ? { 
                         calendarBackground: 'black',
                         dayTextColor: '#fff',
                         monthTextColor: '#fff',
                         backgroundColor: 'black',
                         textInactiveColor: "#222",
                         textDisabledColor: "#444",
+                    }: {
+                      calendarBackground: 'transparent'
                     })
                 }}
                   onDayPress={onDayPress}

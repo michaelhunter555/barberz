@@ -17,6 +17,8 @@ import { useLocalSearchParams } from "expo-router";
 import { StyledView, StyledText, StyledBlurItem, getBlurType, getIntensity } from "@/components/shared/SharedStyles";
 import { IconButton, Avatar } from "react-native-paper";
 import styled from "styled-components/native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 
 const tempImg = "https://images.unsplash.com/photo-1567894340315-735d7c361db0?q=80&w=1037&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 type TMessageBubble = { type: string, text: string, colorScheme: ColorSchemeName };
@@ -63,6 +65,10 @@ const Conversation = () => {
     }
 
     return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <StyledView style={{ paddingLeft: 10 }}>
+        <GoBackArrow />
+        </StyledView>
         <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.container}
@@ -103,6 +109,7 @@ const Conversation = () => {
             </View>
             
         </KeyboardAvoidingView>
+      </SafeAreaView>
     )
 
 };
@@ -113,7 +120,7 @@ const StyledTextInput = styled(TextInput)`
 `;
 
 const styles = StyleSheet.create({
-    container: { flex: 1, },
+    container: { flex: 1, padding: 10 },
     messagesContainer: { padding: 10 },
     message: {
       maxWidth: '75%',

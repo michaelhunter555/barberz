@@ -14,6 +14,8 @@ import { tempData } from '@/lib/dummyDataCards';
 import { BarChart } from 'react-native-gifted-charts';
 import { dummyChartData } from '@/lib/dummyChartData';
 import BarberBasePrice from '@/components/BarberServices/BarberBasePrice';
+import ResourceItem from '@/components/shared/Resources/ResourceItem';
+import { dummyImgArr } from '@/components/BarberProfile/ShowCaseGallery';
 
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
@@ -139,6 +141,17 @@ const BarberHomeDashboard = () => {
             <TabContainer
                 tabIndex={tabIndex}
                 onSelect={(i: number) => setTabIndex(i)} />
+
+                <StyledDivider orientation="horizontal" marginVertical={10} />
+
+            <ResourceItem
+            isRow
+            image={dummyImgArr[0].imgPath}
+            header='Optimizing your work flow'
+            content="You now have access to thousands of users, but how to maximize your gains?"
+            actionText='Read More'
+            onViewPress={() => console.log("View article")}
+            />
 
         </StyledView>
     )

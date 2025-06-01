@@ -8,6 +8,7 @@ import { StyledView, StyleText, StyledBlurView } from "@/components/shared/Share
 import { useForm } from "@/hooks/use-form";
 import { Button, Icon } from 'react-native-paper';
 import Alert from '@/components/shared/Alert/Alert';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AboutMe = () => {
     const auth = useAuth();
@@ -46,6 +47,7 @@ const AboutMe = () => {
     }
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
         <StyledView style={{ flex: 1, marginTop: 20,  }} gap={5}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
             <Icon source="arrow-left" size={15} />
@@ -78,6 +80,7 @@ const AboutMe = () => {
                 </StyledView>
                 <Button icon="map-marker-account-outline" onPress={ () => console.log("Location Change")}>Update Location</Button>
         </StyledView>
+        </SafeAreaView>
     )
 }
 

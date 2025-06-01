@@ -119,16 +119,16 @@ const TimeSlotModal = ({
           </StyledView>
           )}
 
-          <StyledView>
             <StyledDivider orientation="horizontal" bold />
-            <Button mode="text" onPress={onClose}>
-              Close
-            </Button>
+          <StyledView direction="column" justify="center"  gap={25}>
             <Button
               mode="contained"
               onPress={handleSubmit}
             >
               {submitLabel ?? "Add Slot +"}
+            </Button>
+            <Button mode="text" textColor='red' onPress={onClose}>
+              Close
             </Button>
           </StyledView>
         </StyledView>

@@ -15,7 +15,7 @@ import { FeaturedShop } from '@/components/home/Featured/FeaturedShop';
 import withAuthGuard from '@/context/auth-middleware';
 import UserHomePage from '@/components/Views/UserView/UserHomePage';
 import BarberHomeDashboard from '@/components/Views/BarberView/BarberHomePage';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
   const auth = useAuth();
@@ -27,11 +27,17 @@ const HomeScreen = () => {
   const setGradient = colorScheme === 'light' ? gradientColors : isDarkTheme;
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <StyledContainer>
-      <ScrollView contentContainerStyle={{ display: 'flex', gap: 15}}>
-        {auth?.userAuth?.accountType === "user" ? (
+      <ScrollView
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false} 
+      contentContainerStyle={{ display: 'flex', gap: 15 }}>
+        {auth?.userAuth?.accountType === "user" && (
         <UserHomePage searchValue={searchValue} onSearchSubmit={setSearchValue} />
-        ): (
+        )}
+
+        {auth?.userAuth?.accountType === "barber" &&(
           <BarberHomeDashboard />
         )}
       <View />
@@ -40,6 +46,7 @@ const HomeScreen = () => {
       <View />
       </ScrollView>
       </StyledContainer>
+    </SafeAreaView>
    
   );
 }
@@ -50,7 +57,7 @@ flex: 1;
 justify-content: 'center';
 display: flex;
 flex-direction: column;
-gap: 15px;
+gap: 20px;
 padding: 15px;
 `
 

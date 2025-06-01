@@ -4,6 +4,7 @@ import useAuth from '@/context/auth/use-auth';
 import { StyledView, StyleText, StyledBlurView } from '../../components/shared/SharedStyles';
 import UserOffers from '@/components/Settings/UserOffer';
 import TermsDialog from '@/components/Settings/TermsDialog';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabThreeScreen() {
   const auth = useAuth();
@@ -33,7 +34,12 @@ export default function TabThreeScreen() {
   }
 
   return (
-    <ScrollView style={{ padding: 10 }}>
+    <SafeAreaView style={{ flex: 1 }}>
+
+    <ScrollView 
+    showsVerticalScrollIndicator={false}
+    showsHorizontalScrollIndicator={false}
+    style={{ padding: 10 }}>
        <TermsDialog openDialog={openDialog} onOpenDialog={() => setOpenDialog((prev) => !prev)} colorScheme={colorScheme} />
       <StyledView style={{ flex: 1 }}>
         <StyleText style={{ fontWeight: 700, fontSize: 20, }}>
@@ -45,5 +51,6 @@ export default function TabThreeScreen() {
         ))}
       </StyledView>
     </ScrollView>
+    </SafeAreaView>
   );
 }

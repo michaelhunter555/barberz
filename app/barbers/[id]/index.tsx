@@ -11,6 +11,8 @@ import UserReview from "@/components/ReviewsList/UserReview";
 import ShowCaseGallery from "@/components/BarberProfile/ShowCaseGallery";
 import ImageChanger from "@/components/shared/ImageChanger/ImageChanger";
 import { dummyImgArr } from "@/components/BarberProfile/ShowCaseGallery";
+import BarberBasePrice from "@/components/BarberServices/BarberBasePrice";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -71,6 +73,8 @@ export default function BarberProfile() {
     }
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
+
         <StyledView style={{ flex: 1 }}>
             <ImageChanger onNextClick={handleNextImageClick} onClose={() => setOpen(false)} path={dummyImgArr[currentIndex].imgPath} isOpen={open} />
             <ScrollView 
@@ -81,18 +85,7 @@ export default function BarberProfile() {
             name={String(name)} 
             userImgPath={String(barber.image)} />
             <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
-                {/* chat bubble and status */}
-                <View style={{ display: 'flex', flexDirection: 'row',justifyContent:"center", alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                    <TouchableOpacity activeOpacity={0.7}>
-                    <Icon source="chat" size={20} />
-                    </TouchableOpacity>
-                    <Divider style={{ height: 10, width: 1 }}/>
-                    <View style={{ overflow: 'hidden', borderRadius: 5, padding: 5, flexDirection: 'row', gap: 2, alignItems: 'center'}}>
-                        <Icon color="green" source="checkbox-blank-circle" size={10} /> 
-                    <StyleText style={{ color: 'green'}}>Live</StyleText>
-                    </View>
-                    
-                </View>
+            
                 {/* Chat button */}
             <Button icon="chat" mode="contained" onPress={() => router.push({ pathname: '/messages/[id]/message', params: { id: String(barber.id), userImage: String(barber.image) } })}>Send {name} a message</Button>
            
@@ -150,6 +143,7 @@ export default function BarberProfile() {
         
             </ScrollView>
         </StyledView>
+        </SafeAreaView>
     )
     
 }

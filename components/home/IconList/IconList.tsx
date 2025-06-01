@@ -5,6 +5,7 @@ import { iconList } from './IconData';
 import styled from 'styled-components/native';
 import { BlurView } from 'expo-blur';
 import { Link } from 'expo-router';
+import { StyledBlurView, StyledView, StyleText } from '../../shared/SharedStyles';
 
 interface IconOptionsListProps {
     colorScheme: ColorSchemeName;
@@ -16,12 +17,21 @@ export const IconOptionsList = ({ colorScheme }: IconOptionsListProps) => {
     const iconColor = colorScheme === 'light' ? "#444" : "#f1f1f1"
     const blurIntensity = colorScheme === 'light' ? 35 : 50;
     return (
-        <StyledScrollView horizontal={true} bounces={true}>
+        <StyledScrollView
+        showsVerticalScrollIndicator={false}
+  showsHorizontalScrollIndicator={false} 
+        horizontal={true} 
+        bounces={true}>
             <StyledContainer>
                 {iconList.map(({ icon, title, color, link }, i) => (
                     <TouchableOpacity activeOpacity={0.7} key={i} onPress={() => console.log(`${title} clicked`)}>
                         
-                        <StyledBlurContainer intensity={blurIntensity} tint={blurType} key={String(icon) + `${i}`}>
+                        <StyledBlurView
+                        isPaper 
+                        key={String(icon) + `${i}`}
+                        borderRadius={10}
+                        justify='center' 
+                        style={{ minWidth: 70, padding: 2 }}>
 
                             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -29,7 +39,7 @@ export const IconOptionsList = ({ colorScheme }: IconOptionsListProps) => {
 
                                 <Text style={{ fontSize: 10, color: textColor }}>{title}</Text>
                             </View>
-                        </StyledBlurContainer>
+                        </StyledBlurView>
                     </TouchableOpacity>
                 ))}
             </StyledContainer>

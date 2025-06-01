@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 import { BlurView } from 'expo-blur';
 import { backgroundGradients } from '@/theme/gradients';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StyledView, StyleText, StyledBlurView } from '../../shared/SharedStyles';
 
 const featureList = [
     { icon: 'tag', text: "$10 off", textLong: 'Take $10 off your first cut.', imgSrc: "offer" },
@@ -28,9 +29,19 @@ export const HomeFeatures = ({ colorScheme }: IHomeFeatures) =>{
     const gList = backgroundGradients.slice(2)
 
     return (
-        <StyledScrollView horizontal={true} bounces={true}>
+        <StyledScrollView
+        showsVerticalScrollIndicator={false}
+  showsHorizontalScrollIndicator={false} 
+        horizontal={true} 
+        bounces={true}>
             {featureList.map((feature, i) => (
-                <StyledBlurCard intensity={blurIntensity} tint={blurTint} key={feature.icon}>
+                <StyledBlurView 
+                key={feature.icon}
+                isPaper
+                justify='center'
+                borderRadius={10}
+                style={{ flex: 1, padding: 5, marginRight: 10 }}
+                >
                     <LinearGradient colors={[gList[i].colors[0], gList[i].colors[1], ...gList[i].colors]} style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -50,7 +61,7 @@ export const HomeFeatures = ({ colorScheme }: IHomeFeatures) =>{
                             </TouchableOpacity>
                         </View>
                     </View>
-                </StyledBlurCard>
+                </StyledBlurView>
 
             ))}
         </StyledScrollView>

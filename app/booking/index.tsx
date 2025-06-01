@@ -6,6 +6,7 @@ import AppointmentCard from "@/components/BarberAppointments/AppointmentCard";
 import { tempData } from '@/lib/dummyDataCards';
 import { IconButton } from 'react-native-paper';
 import { SearchBar } from '@/components/shared/SearchBar/SearchBar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 //get status, price, customer name, img, date and type + booking id
@@ -14,8 +15,9 @@ const BookingsPage = () => {
     const [search, setSearch] = useState<string>("");
     // TODO: onLoad retreive all bookings for barber
     return(
-        <StyledView style={{ flex: 1, padding: 5 }}>
+        <SafeAreaView style={{ flex: 1 }}>
 
+        <StyledView style={{ flex: 1, padding: 5 }}>
             {/* Go back */}
             <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
         <StyledView direction="row" align="center" style={{ marginBottom: 10}}>
@@ -47,6 +49,7 @@ const BookingsPage = () => {
         </StyledView>
         </ScrollView>
         </StyledView>
+        </SafeAreaView>
     )
 }
 

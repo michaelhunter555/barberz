@@ -6,6 +6,8 @@ import styled from 'styled-components/native';
 import { StyledText, StyledBlurItem, StyleText, StyledBlurView } from '@/components/shared/SharedStyles';
 import { Button, Avatar, Divider, TextInput, Icon  } from 'react-native-paper';
 import { dummyUsers } from '@/components/home/DummyData';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 
 const tipChips = [5,10,15,20,25]
 
@@ -29,6 +31,8 @@ const CheckoutPage = () => {
 
     // check if user has any coupons
     return (
+        <SafeAreaView>
+            <GoBackArrow />
             <ScrollView>
         <StyledViewContainer>
             <StyledViewContent style={{ paddingVertical: 5 }}>
@@ -139,6 +143,7 @@ const CheckoutPage = () => {
            
         </StyledViewContainer>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -147,11 +152,13 @@ display: flex;
 flex-direction: column;
 height: 100%;
 padding: 10px;
+gap: 10px;
 `;
 
 const StyledViewContent = styled.View`
 display: flex;
 flex: 1;
+gap: 10px;
 `;
 
 const StyledView = styled.View`

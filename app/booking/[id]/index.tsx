@@ -4,13 +4,17 @@ import { StyleText, StyledView, StyledBlurView } from '../../../components/share
 import { ScrollView } from 'react-native';
 import BookingConfirmationCard from '@/components/BookingConfirmationCard/BookingConfirmationCard';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BookingConfirmation = () => {
     const { id, user } = useLocalSearchParams();
     const customer = JSON.parse(user as string);
     return (
-        <ScrollView style={{ padding: 10 }}>
+        <SafeAreaView>
+        <ScrollView
+        showsVerticalScrollIndicator={false}
+  showsHorizontalScrollIndicator={false} 
+        style={{ padding: 10 }}>
             <StyledView style={{ marginBottom: 10}}>
             <GoBackArrow />
             </StyledView>
@@ -34,6 +38,7 @@ const BookingConfirmation = () => {
 
 
         </ScrollView>
+        </SafeAreaView>
     )
 };
 

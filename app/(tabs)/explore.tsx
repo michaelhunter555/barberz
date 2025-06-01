@@ -71,6 +71,8 @@ export default function Maps() {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1}}>
+
     <View style={{ flex: 1 }}>  
     <AppleMaps.View 
     style={StyleSheet.absoluteFill}
@@ -117,5 +119,6 @@ export default function Maps() {
       </StyledBlurView>
     </Animated.View>}
     </View>
+    </SafeAreaView>
   )
 }

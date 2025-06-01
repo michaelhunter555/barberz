@@ -13,6 +13,7 @@ import { userSettings, otherSettings } from '@/components/Settings/menus';
 import Card from '@/components/shared/Cards/InfoCard';
 import { StyleText, StyledBlurView, StyledDivider, StyledView,} from '@/components/shared/SharedStyles';
 import BarberBasePrice from '@/components/BarberServices/BarberBasePrice';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
@@ -29,9 +30,14 @@ export default function UserSettings() {
     const blurIntensity = colorScheme === 'light' ? 35 : 50;
 
     return (
+        <SafeAreaView style={{ flex: 1}}>
+
         <StyledViewContainer style={{ marginVertical: 5, }}>
             <TermsDialog openDialog={openDialog} onOpenDialog={() => setOpenDialog((prev) => !prev)} colorScheme={colorScheme} />
-            <ScrollView contentContainerStyle={{ display: 'flex', gap: 15 }}>
+            <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={{ display: 'flex', gap: 15 }}>
                 <StyledText colorScheme={colorScheme}>Settings</StyledText>
                 <UserInfoSection
                     name={String(auth?.userAuth?.name)}
@@ -43,7 +49,7 @@ export default function UserSettings() {
                 {isBarber && (
                     <BarberBasePrice basePrice={50}/>
                 )}
-                
+
                 <AccountLocationGrid />
 
                 <StyledView style={{ display: 'flex', flexDirection: 'row', gap: 20, }}>
@@ -111,6 +117,7 @@ export default function UserSettings() {
             <View />
             <View />
         </StyledViewContainer>
+        </SafeAreaView>
     )
 
 }

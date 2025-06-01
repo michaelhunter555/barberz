@@ -4,6 +4,7 @@ import { StyleText, StyledView } from '@/components/shared/SharedStyles';
 import styled from "styled-components/native";
 import ReviewList from "@/components/ReviewsList/ReviewList";
 import GoBackArrow from "@/components/shared/BackArrow/GoBackArrow";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BarberProfile() {
     const { id } = useLocalSearchParams();
@@ -15,6 +16,7 @@ export default function BarberProfile() {
             </StyledView>
             <ReviewList />
         </ScrollView>
+           
     )
     
 }

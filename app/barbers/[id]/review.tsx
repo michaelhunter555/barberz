@@ -4,6 +4,7 @@ import { StyledView, StyleText, StyledBlurView, StyledDivider } from "@/componen
 import { Divider, Icon } from "react-native-paper";
 import SelectedReview from "@/components/ReviewsList/SelectedReview";
 import { StarRatings } from "@/components/shared/ratings/ratings";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 // userReviews.map((review,i) => review{...data})
