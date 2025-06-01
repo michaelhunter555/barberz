@@ -1,5 +1,10 @@
 import { ColorSchemeName } from "react-native";
 
+/**
+ * @name setColorType
+ * @param colorType - tuple option to choose the following color mix
+ * @param scheme - whether the user has light or dark mode
+ */
 export const setColorType = (colorType: 'info' | 'warning' | 'error' | 'success', scheme: ColorSchemeName) => {
     const isDark = scheme === 'dark';
   
@@ -28,3 +33,15 @@ export const setColorType = (colorType: 'info' | 'warning' | 'error' | 'success'
   
     return colors[colorType];
   };
+
+  /**
+   * @name toDate
+   * @param hour - value representing hour as a number
+   * @param minute - value repesenting minutes as a number [0,15,30,45] only.
+   * @returns Date object
+   */
+  export const toDate = (hour: number, minute: number): Date => {
+    const d = new Date();
+    d.setHours(hour, minute, 0, 0);
+    return d;
+  }

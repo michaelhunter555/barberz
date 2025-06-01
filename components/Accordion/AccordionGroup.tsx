@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, useColorScheme, View } from 'react-native';
-import { StyledView, StyledText, StyledBlurItem } from "../shared/SharedStyles";
+import { StyledView, StyleText, StyledBlurItem } from "../shared/SharedStyles";
 import { Icon } from 'react-native-paper';
 
 interface IAccordionGroup {
@@ -36,18 +36,18 @@ const AccordionGroup = ({ arr, hasComponent }: IAccordionGroup) => {
             <TouchableOpacity activeOpacity={0.8} onPress={() => handleTabClick(item.id)}>
                 <View style={{ borderRadius: 10, backgroundColor: '#222', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', paddingLeft: 15, minHeight: 35 }}  >
                     <View style={{ width: '90%' }}>
-                        <StyledText style={{ flexWrap: 'wrap', fontWeight: 700  }} colorScheme={colorScheme}>{item.questionText}</StyledText>
+                        <StyleText style={{ flexWrap: 'wrap', fontWeight: 700, color: 'white'  }}>{item.questionText}</StyleText>
                     </View>
 
                     <View style={{ width: '10%' }}>
-                        <Icon source={item.isOpen ? 'arrow-down' : 'arrow-up'} size={15} />
+                        <Icon color="white" source={item.isOpen ? 'arrow-down' : 'arrow-up'} size={15} />
                     </View>
                 </View>
             </TouchableOpacity>
 
             {item.isOpen && (
                 <StyledView style={{ paddingLeft: 15 }}>
-                    <StyledText colorScheme={colorScheme}>{item.explanationText}</StyledText>
+                    <StyleText>{item.explanationText}</StyleText>
                     {hasComponent && item.Component}
                 </StyledView>
             )}

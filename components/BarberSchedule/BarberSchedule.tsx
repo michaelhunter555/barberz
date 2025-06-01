@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleText, StyledView, StyledBlurView, StyledDivider } from '../shared/SharedStyles';
 import { Icon, IconButton, Checkbox, Button } from 'react-native-paper';
-import { TouchableOpacity, View, } from 'react-native';
+import { TouchableOpacity, View, LayoutAnimation} from 'react-native';
 import { IScheduleByDay, IDaySlot } from '@/types';
 import Modal from '../shared/Modals/Modal';
+import SelectTimePicker from '../shared/Picker/SelectPicker';
+import { toDate } from '@/lib/helpers';
 
 const dummySchedule =
     {
@@ -31,9 +33,18 @@ const BarberSchedule = () => {
     const [schedule, setSchedule] = useState<IScheduleByDay>(dummySchedule);
     const [toggle, setToggle] = useState<boolean>(false);
     const [currentKey, setCurrentKey] = useState<string>("");
-    const [confirmDelete, setConfirmDelete] = useState<boolean>(false);    
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+    const [isOpenSelectTime, setIsOpenSelectTime] = useState<boolean>(false);
+    const [editing, setIsEditing] = useState<{day: string; index: number} | null>(null);  
 
     const handleTimeToggle = (key: string) => {
+        LayoutAnimation.configureNext(
+            LayoutAnimation.create(
+                500, // duration in ms (you can change this)
+                LayoutAnimation.Types.easeInEaseOut,
+                LayoutAnimation.Properties.opacity
+              )
+        );
         setCurrentKey(key);
         setToggle((prev) => !prev);
     }
@@ -56,6 +67,7 @@ const BarberSchedule = () => {
         })
       };
 
+      // remove flots
       const handleRemoveSlots = (day: string) => {
         setSchedule((prev) => {
             const currentSchedule = { ...prev };
@@ -66,22 +78,93 @@ const BarberSchedule = () => {
         setConfirmDelete(false);
       }
 
+      // flag to determine if we any items have been selected for removal
       const canDelete = schedule[currentKey]?.some((key, i) => key.isChecked);
 
-      const handleAddNewSlots = (day: string, daySlot: IDaySlot) => {
+      // Add new time slot
+      const handleAddNewSlots = (day: string, startTime: Date, endTime: Date) => {
+        console.log(startTime,"-", endTime);
+        const newStartTime =  startTime.toLocaleTimeString();
+        const newEndTime = endTime.toLocaleTimeString();
+        const startValue = newStartTime.split(":");
+        const endValue = newEndTime.split(":");
+        const start = { value: Number(startValue[0]), hour: Number(startValue[0]), minute: Number(startValue[1])};
+        const end = { value: Number(endValue[0]), hour: Number(endValue[0]), minute: Number(endValue[1])};
+
+        const newSlot: IDaySlot = { isBooked: false, price: 50, startTime: start, endTime: end };
+
         setSchedule((prev) => {
             const curr = { ...prev };
-            curr[day] = [...curr[day], daySlot];
+            curr[day] = [...curr[day], newSlot];
             return curr;
         })
       }
+
+      // Edit time slots
+      const handleEditSlot = (
+        day: string,
+        index: number,
+        start: Date,
+        end: Date
+      ) => {
+        setSchedule((prev) => {
+          const updated = { ...prev };
+      
+          const updatedSlot = {
+            ...updated[day][index],
+            startTime: {
+              value: start.getHours(),
+              hour: start.getHours(),
+              minute: start.getMinutes(),
+            },
+            endTime: {
+              value: end.getHours(),
+              hour: end.getHours(),
+              minute: end.getMinutes(),
+            },
+          };
+      
+          updated[day][index] = updatedSlot;
+          return updated;
+        });
+      
+        setIsEditing(null);
+      };
+      
 
       const handleConfirmDelete = () => {
         setConfirmDelete(prev => !prev);
       }
 
+      const handleSelectTimeModal = () => {
+        setIsOpenSelectTime(prev => !prev);
+      }
+      
     return (
         <StyledView gap={5} style={{ marginTop: 20 }}>
+{/* Editing Time Slots */}
+{ editing && schedule[editing.day]?.[editing.index] && <SelectTimePicker
+  isOpen={!!editing}
+  onClose={() => setIsEditing(null)}
+  initialStartTime={toDate(
+    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.hour,
+    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.minute
+  )}
+  initialEndTime={toDate(
+    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.hour,
+    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.minute
+  )}
+  onAddSlot={(start, end) => handleEditSlot(editing!.day, editing!.index, start, end)}
+  submitLabel="Save Changes"
+/> }
+
+{/* Adding New Time Slot */}
+            <SelectTimePicker
+            onAddSlot={
+                (startTime: Date, endTime: Date) => handleAddNewSlots(currentKey, startTime, endTime)
+                } isOpen={isOpenSelectTime} 
+                onClose={handleSelectTimeModal}  
+                />
             <Modal header="Confirm Delete" text="you are about delete schedule slot(s). Please confirm." isOpen={confirmDelete} onClose={handleConfirmDelete}>
                 <Button buttonColor='red' textColor='white' onPress={() => handleRemoveSlots(currentKey)}>Confirm Delete</Button>
             </Modal>
@@ -131,7 +214,7 @@ const BarberSchedule = () => {
                         gap={5}
                         style={{  width: 60, padding: 5 }} 
                         borderRadius={20} 
-                        onClick={() => console.log("edit")}>
+                        onClick={() => setIsEditing({ day: currentKey, index: j }) }>
                             <StyleText>
                                 Edit
                             </StyleText>
@@ -147,7 +230,7 @@ const BarberSchedule = () => {
             {toggle && key === currentKey && (
             <StyledView direction="row" align="center" justify="center">
                 <StyleText>Add New slot</StyleText>
-                <IconButton iconColor='#007AFF' icon="plus-circle" size={20} onPress={() => console.log("new slot")}/>
+                <IconButton iconColor='#007AFF' icon="plus-circle" size={20} onPress={handleSelectTimeModal}/>
             </StyledView>
                 )}
             </StyledView>

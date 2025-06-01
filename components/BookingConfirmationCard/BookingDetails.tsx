@@ -100,8 +100,8 @@ return (
                 align='center' 
                 borderRadius={20} // isStarted  && !isComplete ? "Mark as Completed" : isStarted  && isComplete ? "Completed" :"Mark as Started"
                 style={{ padding: 8, backgroundColor: isStarted  && !isComplete ? 'green' : !isStarted  && !isComplete ? "#007AFF": ""}}>
-                    <StyleText style={{ fontWeight: 700, fontSize: 15 }}>{isStarted  && !isComplete ? "Mark as Completed" : isStarted  && isComplete ? "Completed" :"Mark as Started"}</StyleText>
-                    <Icon source="check-circle" size={20} />
+                    <StyleText style={{ fontWeight: 700, fontSize: 15, ...(isStarted  && !isComplete && { color: 'white' }) }}>{isStarted  && !isComplete ? "Mark as Completed" : isStarted  && isComplete ? "Completed" :"Mark as Started"}</StyleText>
+                    <Icon color={isStarted && !isComplete ? "white" : ""} source="check-circle" size={20} />
                 </StyledBlurView>
             </StyledView>
                 </>
