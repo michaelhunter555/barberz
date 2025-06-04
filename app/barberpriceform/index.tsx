@@ -46,6 +46,7 @@ useEffect(() => {
     }
 
     return (
+        <SafeAreaView>
         <ScrollView>
         <StyledContainer>
             <GoBackArrow />
@@ -80,6 +81,7 @@ useEffect(() => {
             mode="contained">{isLoading ? "Loading..." : "Update Price"}</Button>
         </StyledContainer>
         </ScrollView>
+        </SafeAreaView>
     )
 
 };

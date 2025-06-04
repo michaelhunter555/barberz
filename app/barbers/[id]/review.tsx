@@ -13,7 +13,8 @@ const testImg = "https://plus.unsplash.com/premium_photo-1661542987765-f39368ff3
 const review = "This barber did the full service and I have no complaints. I arrived at 10 o clock and the chair was ready. He asked me what I would like and I gave a brief description which I thought was quite vague, but he got it perfectly. In terms of cleanliness, the shop clippers, blade and chair was all good. I was very happy with this cut. Didn't push my hairline back and found a way to keep it sharp. Highly Recommended!";
 const Review = () => {
     const { id, reviewText, totalImages } = useLocalSearchParams();
-    return ( 
+    return (
+        <SafeAreaView>
     <StyledView direction="column" align="flex-start" style={{ padding: 10 }}>
         <StyledView direction="row" align="center" gap={10} style={{ marginVertical: 10 }}>
         <SelectedReview
@@ -61,6 +62,7 @@ const Review = () => {
         </StyledView>
         </StyledBlurView>
        </StyledView>
+        </SafeAreaView>
        )
 };
 

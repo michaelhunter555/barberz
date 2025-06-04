@@ -1,5 +1,6 @@
 import { StyledView, StyledText, StyleText } from '../../components/shared/SharedStyles';
 import AccordionGroup from '@/components/Accordion/AccordionGroup';
+import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import { Button, List } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // Array.from({ length: 10 }).map((_, i) => ({ id: i, isOpen: false, questionText: }))
@@ -17,7 +18,7 @@ const FAQS = [
 const FaqAccordion = () => {
    return (
     <SafeAreaView style={{ flex: 1}}>
-
+        <GoBackArrow />
     <StyledView style={{ padding: 10}}>
         <StyledView style={{ marginVertical: 10 }} align="center" justify="center">
         <StyleText style={{ fontWeight: 700, fontSize: 20 }}>FAQS</StyleText>

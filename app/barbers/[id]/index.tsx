@@ -70,7 +70,7 @@ export default function BarberProfile() {
             }
             return prev;
         })
-    }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -122,14 +122,14 @@ export default function BarberProfile() {
           
            {!selectedDate && (
             <>
-            <StyledBlurItem intensity={55} tint="light" style={{ marginBottom: 10, flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+            <StyledBlurView isPaper direction="row" align="center" justify="center" gap={10} style={{ padding: 10, marginBottom: 10,}}>
             <Div>
                 <Icon source="calendar" size={25} />
             </Div>
             <Div>
             <StyleText>Select Date</StyleText>
             </Div>
-           </StyledBlurItem>
+           </StyledBlurView>
             <AppointmentCalendar 
             selectedDate={selectedDate}
             onSelectedDate={(date: string) => handleDateSelection(date)} 
@@ -137,7 +137,12 @@ export default function BarberProfile() {
             </>
             )}
                 {selectedDate && (
-                <DayOfWeekChips id={Number(id)} name={String(name)} goBack={() => setSelectedDate("")} colorScheme={colorScheme} onPress={() => console.log("nothing")} />
+                <DayOfWeekChips 
+                id={Number(id)} 
+                name={String(name)} 
+                goBack={() => setSelectedDate("")} 
+                colorScheme={colorScheme} 
+                onPress={() => console.log("nothing")} />
                 )}
                
         

@@ -14,6 +14,8 @@ import { useForm } from '@/hooks/use-form';
 import { StyledView, StyleText, StyledBlurView } from '../../components/shared/SharedStyles';
 import { Divider, Button } from 'react-native-paper';
 import { TBarberApp } from '@/types';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 
 const Join = () => {
 const auth = useAuth();
@@ -100,7 +102,11 @@ const handleSubmitApplication = async () => {
 }
 
 return (
+    <SafeAreaView>
     <ScrollView>
+        <StyledView style={{ marginTop: 10, }}>
+        <GoBackArrow />
+        </StyledView>
     <StyledView direction="column" gap={10} style={{ flex: 1, padding: 10 }}>
         <StyledView>
             <StyleText>
@@ -185,21 +191,9 @@ return (
         <Button onPress={handleSubmitApplication} disabled={!formState.isValid} textColor="black" style={{ backgroundColor: !formState.isValid ? '#222':'white' }}>Submit Application</Button>
     </StyledView>
     </ScrollView>
+    </SafeAreaView>
 )
 
 }
 
 export default Join;
-
-// /<StyledTextInput
-//             style={{ color: colorScheme === 'light' ? "#222" : "white" }}
-//             maxLength={70} 
-//             value={searchValue}
-//             onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => onSearchSubmit(e.nativeEvent.text) }
-//             inputMode="search"
-//             textAlign="left"
-//             textContentType="location"
-//             placeholder="Browse a location..."
-//             placeholderTextColor={colorScheme === "light" ? "#444":"#f1f1f1"}
-//             selectionColor={"#fff"}
-//             />

@@ -8,6 +8,7 @@ import { Button, Avatar, Divider, TextInput, Icon  } from 'react-native-paper';
 import { dummyUsers } from '@/components/home/DummyData';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
+import { setColorType } from '@/lib/helpers';
 
 const tipChips = [5,10,15,20,25]
 
@@ -20,7 +21,8 @@ const CheckoutPage = () => {
     const { id, slotId, name, price, image } = useLocalSearchParams();
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
-    const barber = dummyUsers.find(b => b.id === Number(id))
+    const barber = dummyUsers.find(b => b.id === Number(id));
+    const { background, text } = setColorType("success", colorScheme);
 
     const handleRemoveColor = () => {
         setColor(() => tip === null ? "#222": "#fff")
@@ -36,7 +38,7 @@ const CheckoutPage = () => {
             <ScrollView>
         <StyledViewContainer>
             <StyledViewContent style={{ paddingVertical: 5 }}>
-            <StyledText style={{ fontWeight: 700, fontSize: 30 }} colorScheme={colorScheme}>Confirm With Barber</StyledText>
+            <StyledText style={{ fontWeight: 700, fontSize: 20 }} colorScheme={colorScheme}>Confirm With Barber</StyledText>
             <StyledText colorScheme={colorScheme}>Your booking with {name} is almost set! Please review the price with any add-ons. Once the barber accepts, your card will be charged. </StyledText>
             <StyledView direction="row" gap={10} style={{ marginVertical: 10}}>
             <StyledView direction="column" gap={3}>
@@ -92,7 +94,7 @@ const CheckoutPage = () => {
             </StyledView>
 
             {/* Transaction Breakdown */}
-            <StyledView direction="row" gap={5} style={{marginVertical: 5, alignItems: "center", justifyContent: 'flex-end'}}>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Subtotal:
                 </StyledText>
@@ -100,7 +102,7 @@ const CheckoutPage = () => {
                    ${ price }.00
                 </StyledText>
             </StyledView>
-            <StyledView direction="row" gap={5} style={{marginVertical: 5, alignItems: "center", justifyContent: 'flex-end'}}>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Tax:
                 </StyledText>
@@ -108,15 +110,18 @@ const CheckoutPage = () => {
                    ${ (Number(price) * 0.06).toFixed(2) }
                 </StyledText>
             </StyledView>
-            <StyledView direction="row" gap={5} style={{marginVertical: 5, alignItems: "center", justifyContent: 'flex-end'}}>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Discount:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                   -$10
+                   $0.00
                 </StyledText>
+                <StyledBlurView clickable style={{ padding: 5, backgroundColor: background}}>
+                    <StyleText style={{ color: text }}>Check for coupons?</StyleText>
+                </StyledBlurView>
             </StyledView>
-            <StyledView direction="row" gap={5} style={{marginVertical: 5, alignItems: "center", justifyContent: 'flex-end'}}>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Total:
                 </StyledText>
@@ -127,7 +132,7 @@ const CheckoutPage = () => {
                 </StyledText>
             </StyledView>
             
-            <View style={{ height: 50 }} />
+            
             {/* Confirmation Button */}
             </StyledViewContent>
             <View>

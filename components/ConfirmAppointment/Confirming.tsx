@@ -60,7 +60,7 @@ const ConfirmingAppointment = ( { barberImgPath }: IConfirmAppointment) => {
                &bull; You will be charged ${ price } after the appointment is accepted.
             </StyledText>
             <StyledText colorScheme={colorScheme}>
-               &bull;You and { String(name).split(" ")[0] } will confirm when the service is completed.
+               &bull;You and { String(name).split(" ")[0] } will both confirm when the service is completed.
             </StyledText>
             <StyledView direction="row" align="center" gap={10} style={{ marginTop: 10 }}>
                 {supportItems.map((item, i) => (

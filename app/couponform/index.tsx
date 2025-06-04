@@ -5,6 +5,7 @@ import { StyledView, StyledContainer, StyleText, StyledBlurView, StyledDivider }
 import { NativeSyntheticEvent, TextInputChangeEventData, useColorScheme, ScrollView, Switch } from 'react-native';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import Alert from '@/components/shared/Alert/Alert';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CouponForm = () => {
 const colorScheme = useColorScheme();
@@ -64,6 +65,7 @@ useEffect(() => {
     }
 
     return (
+        <SafeAreaView>
         <ScrollView>
   <StyledContainer>
     <GoBackArrow />
@@ -190,6 +192,7 @@ useEffect(() => {
     </Button>
   </StyledContainer>
 </ScrollView>
+        </SafeAreaView>
 
     )
 

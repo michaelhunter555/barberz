@@ -5,6 +5,7 @@ import { StyledView, StyledContainer, StyleText, StyledBlurView, StyledDivider }
 import { NativeSyntheticEvent, TextInputChangeEventData, useColorScheme, ScrollView } from 'react-native';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import Alert from '@/components/shared/Alert/Alert';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ServiceForm = () => {
 const colorScheme = useColorScheme();
@@ -46,6 +47,7 @@ useEffect(() => {
     }
 
     return (
+        <SafeAreaView>
         <ScrollView>
 
         <StyledContainer>
@@ -102,6 +104,7 @@ useEffect(() => {
             mode="contained">Create Add-on</Button>
         </StyledContainer>
         </ScrollView>
+        </SafeAreaView>
     )
 
 };

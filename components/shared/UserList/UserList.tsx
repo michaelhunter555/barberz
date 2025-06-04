@@ -51,7 +51,7 @@ const UserCard = ({ userData, colorScheme }: IUserCard<TUser>) => {
                                                     <StyleText style={{ color: isDarkMode ? '#999': '#555' }}>(15 reviews)</StyleText>
                                                 </View>
                                                 <View style={{ display: 'flex', alignItems: 'center', gap: 5, flexDirection: 'row', marginBottom: 3 }}>
-                                                <StyleText style={{ color: isDarkMode ? '#999': '#555' }}>Availableve Now</StyleText>
+                                                <StyleText style={{ color: isDarkMode ? '#999': '#555' }}>Available Now</StyleText>
                                                     <Icon source="circle" size={10} color="green" />
                                                 </View>
                                                 <StyleText style={{ fontSize: 14, fontWeight: 600 }}>{user.name}</StyleText>

@@ -5,6 +5,8 @@ import { StyledView, StyleText, StyledDivider} from '@/components/shared/SharedS
 import Message from '@/components/Messages/Message';
 import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import GoBackArrow from "@/components/shared/BackArrow/GoBackArrow";
+
 type TUserMessage = { id: string; userName: string, date: string, imagePath: string, messageText: string};
 
 const tempImg = "https://images.unsplash.com/photo-1567894340315-735d7c361db0?q=80&w=1037&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -20,6 +22,8 @@ const Messages = () => {
     const colorScheme = useColorScheme();
 
     return (
+        <SafeAreaView>
+            <GoBackArrow marginVertical={10}/>
         <ScrollView style={{ padding: 10 }}>
             <StyledView style={{ marginTop: 10 }}>
                 <StyleText style={{ fontWeight: 700, fontSize: 13 }}>Messages</StyleText>
@@ -35,6 +39,7 @@ const Messages = () => {
             ))}
             </StyledView>
         </ScrollView>
+        </SafeAreaView>
     )
 
 }
