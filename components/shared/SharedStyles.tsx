@@ -3,6 +3,7 @@ import { ColorSchemeName, useColorScheme, View, StyleProp, TextStyle, ViewStyle,
 import styled from "styled-components/native";
 import { BlurView } from "expo-blur";
 import { Divider } from "react-native-paper";
+import { setColorType } from "@/lib/helpers";
 
 export const StyledText = styled.Text`
 font-size: 12px;
@@ -61,10 +62,10 @@ flex-direction: row;
 align-items: center;
 `;
 
-export const StyleText = ({ children, style }: { children: ReactNode, style?: StyleProp<TextStyle> }) => {
+export const StyleText = ({ children, style, onPress, }: { children: ReactNode, style?: StyleProp<TextStyle>, onPress?: () => void }) => {
   const colorScheme = useColorScheme();
   return (
-    <StyledText colorScheme={colorScheme} style={style}>
+    <StyledText onPress={onPress} colorScheme={colorScheme} style={style}>
       {children}
     </StyledText>
   )

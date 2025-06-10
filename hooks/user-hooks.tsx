@@ -5,6 +5,7 @@ import { getUserLocation } from '@/lib/getLocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useContext } from 'react';
 import { LocationGeocodedAddress } from 'expo-location';
+import { LicenseInfo, TBarberApp } from '../types';
 
 export const useUser = () => {
     const auth = useContext(AuthContext);
@@ -69,13 +70,12 @@ export const useUser = () => {
         }
     }
 
-    type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean }
-    const submitBarberApplication = useCallback(async (application: TBarberApp) => {
+    const submitBarberApplication = useCallback(async (application: TBarberApp & LicenseInfo) => {
         try {
             const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/join-as-barber`,
                 {
                     method: 'POST',
-                    body: JSON.stringify({ email: auth?.userAuth?.email, application }),
+                    body: JSON.stringify({ id: auth?.userAuth?.id, application }),
                     headers: { "Content-Type": "application/json" }
                 }
             )
@@ -85,7 +85,7 @@ export const useUser = () => {
             }
             const newAuth = { ...data.user }
             auth?.updateUser(newAuth);
-            AsyncStorage.setItem("@user", JSON.stringify(newAuth));
+            // AsyncStorage.setItem("@user", JSON.stringify(newAuth));
         } catch (err) {
             console.log("Error submitting barber application ", err)
         }

@@ -63,7 +63,7 @@ const AboutMe = () => {
             <StyledBlurView style={{ padding: 10 }}>
                     <StyleText>{details.city}</StyleText>
             </StyledBlurView>
-            <StyleText>Distric:</StyleText>
+            <StyleText>District:</StyleText>
              <StyledBlurView style={{ padding: 10 }}>
              <StyleText>{details.district}</StyleText>
      </StyledBlurView>

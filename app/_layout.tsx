@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider,} from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { lightTheme, darkTheme } from '@/theme/theme';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -16,6 +17,8 @@ import * as WebBrowser from 'expo-web-browser';
 WebBrowser.maybeCompleteAuthSession()
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient({})
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -37,6 +40,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> 
         <AuthProvider>
+          <QueryClientProvider client={queryClient}>
       <PaperProvider theme={theme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -44,6 +48,7 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
       </PaperProvider>
+          </QueryClientProvider>
         </AuthProvider>
     </ThemeProvider>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import useAuth from '@/context/auth/use-auth';
 import { useColorScheme } from 'react-native';
 import { StyleText, StyledView, StyledBlurView, StyledDivider } from '../shared/SharedStyles';
 import colorWheel from '@/lib/colorWheel';
@@ -15,8 +16,10 @@ onBookingAction?: () => void;
 };
 
 const BookingDetails = ({ date, price, addOns, status, isStarted, isComplete, onBookingAction}: IBookingDetails) => {
+    const auth = useAuth();
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
+    const isBarber = auth?.userAuth?.accountType === 'barber';
 return (
     <StyledView style={{ flex: 1, marginTop: 10 }}>
         <StyleText style={{ fontWeight: 700, fontSize: 20 }}>Booking Details</StyleText>
@@ -54,7 +57,9 @@ return (
                 <StyleText style={{ fontSize: 15 }}>$0.00</StyleText>
             </StyledView>
 
-            <StyledView direction="row" align="center" gap={5}>
+            {isBarber && (
+                <>
+                <StyledView direction="row" align="center" gap={5}>
                 <StyleText>Fees (10%) <Icon source="information"size={10} />: </StyleText>
                 <StyleText style={{ fontSize: 15 }}>${ (price * 0.10).toFixed(2) }</StyleText>
             </StyledView>
@@ -76,6 +81,9 @@ return (
                 <StyleText style={{ fontSize: 15, color: isDark ? 'lightcoral': "red", fontWeight: 700, }}>${(price * 0.10).toFixed(2)}</StyleText>
                 <StyleText>will be deducted.</StyleText>
             </StyledView>
+                </>
+            )}
+            
 
             {/* 
             Completed Service Button - Important! Only shown when a booking is confirmed  and:
@@ -85,7 +93,7 @@ return (
             TESTING: using status
             */}
 
-            {status === 'confirmed' && (
+            {status === 'confirmed' && isBarber && (
                 <>
             <StyledDivider orientation="horizontal" marginVertical={5}/>
             <StyledView gap={10}>

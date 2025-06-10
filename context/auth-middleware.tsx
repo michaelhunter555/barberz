@@ -18,21 +18,10 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isRouterReady && !auth?.userAuth === null && pathname !== "/login") {
+    if (isRouterReady && auth?.userAuth === null && pathname !== "/login") {
       router.replace('/login'); 
     }
   }, [isRouterReady,pathname, auth?.userAuth]);
-
-  useEffect(() => {
-    console.log('Router ready:', isRouterReady);
-    console.log('User auth:', auth?.userAuth);
-    console.log('Pathname:', pathname);
-  
-    if (isRouterReady && !auth?.userAuth && pathname !== '/login') {
-      router.push({ pathname: '/login'})
-    }
-  }, [isRouterReady, auth?.userAuth, pathname]);
-  
 
   if (!isRouterReady || (!auth?.userAuth && pathname !== '/login')) return null;
 

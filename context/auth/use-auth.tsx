@@ -63,7 +63,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     }
 
     const updateUser = async (updateUser: Partial<IBarber>) => {
-      setAuthUser((prev) => (prev ? { ...prev, ...updateUser } : null))
+      setAuthUser((prev) => (prev ? { ...prev, ...updateUser } : null)); 
+      const stored = await AsyncStorage.getItem("@user");
+      const parsed = stored ? JSON.parse(stored) : null;
+      const updated = { ...parsed, ...updateUser};
+      await AsyncStorage.setItem("@user", JSON.stringify(updated));
     }
 
     const checkDbUser = async (name: string, imagePath: string, email: string) => {

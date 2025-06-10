@@ -28,6 +28,7 @@ const BarberHomeDashboard = () => {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
     const auth = useAuth();
+    const barber = auth?.userAuth;
     const [tabIndex, setTabIndex] = useState<number>(0);
     const [isPublic, setIsPublic] = useState<boolean>(false);
 
@@ -83,7 +84,7 @@ const BarberHomeDashboard = () => {
                 </View>
             </StyledView>
             {/* Base Price set by barber */}
-            <BarberBasePrice basePrice={50} />
+            <BarberBasePrice basePrice={Number(barber?.startingPrice ?? 0)} />
 
             {/* Appointment related stats and funds earned */}
             <BarberDataCard />

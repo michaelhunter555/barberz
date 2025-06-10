@@ -13,6 +13,7 @@ export type Status = 'Available' | "Busy" | "Away";
  */
 export interface IBarber {
     _id?: string;
+    id?: string;
     name: string;
     email: string;
     image: string;
@@ -101,7 +102,7 @@ export type Inputs = {
    * @name TBarberApp
    * @description - Application type for users who want to provide hair services.
    */
-  export type TBarberApp = { name: string; location: string; licensed: boolean; termsApproved: boolean; onDemand: boolean}
+  export type TBarberApp = { location?: string; licensed: boolean; termsApproved: boolean; onDemand: boolean, signature: string }
    
 /**
    * @name THourSlot
@@ -129,7 +130,7 @@ export type Inputs = {
    * @description Schedule representing a time of day for where a booking is available
    */
 export interface IScheduleByDay {
-    [day: string]: IDaySlot[];
+    [day: string]: IDaySlot[] | [];
 }
 
 export interface IHours {
@@ -164,3 +165,59 @@ export interface IBarberServices {
     barberId: string;
     service: TService[];
 }
+
+/**
+ * @name LicenseInfo
+ * @description the required fields for Maryland Licensed Barbers/Salons. Every Certified Barber should have this information available.
+ */
+export type LicenseInfo = {
+   firstName: string;
+   lastName: string;
+    city: string;
+    state: string;
+    zip: number;
+    expiration: string | Date;
+    category: string;
+    registrationNumber: number;
+  }
+
+  /**
+   * @name TCoupon
+   * @description Shape of coupon form submission for barbers
+   */
+
+  export type TCoupon = {
+    /* coupon document id */
+    _id?: number | string;
+
+    /* name of the coupon - cannot exceed 45 characters */
+    name: string;
+
+    /*The owner of the id */
+    ownerId: string | number;
+
+     /* discount amount */
+    amount: number;
+
+     /* terms and conditions regarding coupon usage and activation */
+    terms: string;
+
+     /* min price set in terms */
+    minPriceActivation: number;
+
+     /* expiration date of coupon - point when it is no longer applicable */
+    expirationDate: string;
+
+     /* whether or not he coupon is available to the public */
+    isPublic?: boolean;
+
+     /* whether or not the coupon is active or not */
+    isActive?: boolean; 
+
+    /* total number of transactions */
+    transactions?: number;
+
+    /* created only for past customers (based on transaction history) */
+    onlyForUsers?: (string|number)[];
+
+  }

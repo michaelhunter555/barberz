@@ -14,6 +14,8 @@ import Card from '@/components/shared/Cards/InfoCard';
 import { StyleText, StyledBlurView, StyledDivider, StyledView,} from '@/components/shared/SharedStyles';
 import BarberBasePrice from '@/components/BarberServices/BarberBasePrice';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BarberAppointments from '@/components/BarberAppointments/Appointments';
+import { SkeletonCard } from '@/components/shared/LoadingSkeleton/Skeletons';
 
 const tempImgPath = "https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFyYmVyfGVufDB8fDB8fHww";
 
@@ -83,6 +85,20 @@ export default function UserSettings() {
                 onLeftButtonClick={() => console.log("reschedule")}
                 description='3:00pm - Haircut appointment with [shop/person] - Confirmed*'
                 />
+                {auth?.userAuth?.accountType === "user" && (
+                    // maybe can map this
+                <BarberAppointments 
+                id={898}
+                value={45}
+                headerText="Recent"
+                imgPath={tempImgPath}
+                type="Standard"
+                status='confirmed'
+                customerName={'John Wallace'}
+                date="June 4th @3:30pm"
+                addOns={[]}
+                />
+                )}
                 <UserOffers
                     imgPath={shopImg}
                     isActive={isActive}

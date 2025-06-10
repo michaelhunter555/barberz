@@ -7,10 +7,13 @@ import { NativeSyntheticEvent, TextInputChangeEventData, useColorScheme, ScrollV
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import Alert from '@/components/shared/Alert/Alert';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SkeletonLoading from '@/components/shared/LoadingSkeleton/LoadingSkeleton';
+import { SkeletonButton, SkeletonInput } from '@/components/shared/LoadingSkeleton/Skeletons';
+import { useBarber } from '@/hooks/barber-hooks';
 
 
 const BasePriceForm = () => {
-const [isLoading, setIsLoading] = React.useState<boolean>(false);
+const { updateStartingPrice, isLoading: priceIsUpdating } = useBarber();
 const { currentBasePrice } = useLocalSearchParams();
 const colorScheme = useColorScheme();
 const [ formState, inputHandler, setFormData ] = useForm({
@@ -34,16 +37,15 @@ useEffect(() => {
     };
 
     const handleUpdatePrice = async () => {
-        // simulate loading sequence
-        setIsLoading(true)
-        setTimeout(() => {
+        if(formState.isValid) {
+            await updateStartingPrice(Number(price.value));
             setFormData({
-                price: { value: "", isValid: false }
-            }, false)
-            setIsLoading(false);
-            router.push({ pathname: "/" })
-        }, 2000);
+                price: { value: Number(price.value), isValid: false }
+            }, false);
+            router.push("/");
+        }
     }
+
 
     return (
         <SafeAreaView>
@@ -62,23 +64,24 @@ useEffect(() => {
             
             <StyledView>
                 <StyleText style={{ fontSize: 14, fontWeight: 600 }}>Update price</StyleText>
-            <TextInput
+            {!priceIsUpdating ? <TextInput
             placeholder='Enter a price...'
             style={{ height: 50 }}
             left={ <TextInput.Icon icon="currency-usd" />}
             mode="outlined"
             value={String(price.value)}
             onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => handleInputs("price", e.nativeEvent.text, Number(e.nativeEvent.text) > 1)}
-             />
+             />:
+             <SkeletonInput />}
             </StyledView>
 
             <StyledDivider orientation="horizontal" marginVertical={5} />
 
-            <Button
+           {!priceIsUpdating ? <Button
             icon="plus"
             onPress={handleUpdatePrice}
             disabled={!formState.isValid} 
-            mode="contained">{isLoading ? "Loading..." : "Update Price"}</Button>
+            mode="contained">{priceIsUpdating ? "Loading..." : "Update Price"}</Button> : <SkeletonButton />}
         </StyledContainer>
         </ScrollView>
         </SafeAreaView>

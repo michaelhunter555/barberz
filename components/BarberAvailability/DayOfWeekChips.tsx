@@ -4,8 +4,9 @@ import { Button, Chip, Icon, Divider, IconButton, SegmentedButtons } from "react
 import styled from 'styled-components/native';
 import { StyledText, StyledBlurItem, StyleText, StyledBlurView, StyledView, StyledDivider } from '../shared/SharedStyles';
 import { BlurView } from 'expo-blur';
-import { router } from 'expo-router';
+import { router, Link } from 'expo-router';
 import colorWheel from '@/lib/colorWheel';
+import { setColorType } from '@/lib/helpers';
 
 
 interface IDayOfWeekChips {
@@ -58,6 +59,7 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
     })
     const [addOnItems, setAddOnItems] = React.useState<string[]>([]);
     const [serviceLocationType, setServiceLocationType] = React.useState<"shop" | "home">("shop");
+    const { background, text } = setColorType("info", colorScheme)
     const handleServiceLocation = () => {
         setServiceLocationType((prev) => {
           setPrice(prevPrice => prev === 'shop' ? prevPrice + 150 : prevPrice - 150);
@@ -137,7 +139,7 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                           <View>
                                     <StyledView direction="column" gap={5}>
                                         <StyledView direction="row" align="center" gap={3}>
-                                            <StyleText style={{ fontWeight: 700 }}>Booking Preview with {name}</StyleText>  
+                                            <StyleText style={{ fontWeight: 700, fontSize: 18 }}>Booking Preview</StyleText>  
                                         </StyledView>
                                         
                                     </StyledView>
@@ -168,36 +170,38 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                             <StyledView direction="row" gap={10}>
                         
                                
-                                  {/* Time & Location */}
-                                  <StyledView direction="row" align="center" gap={4}>
-                                    
+                                  {/* Service Type & Location */}
+                                  <StyledView direction="row" align="center" gap={4} style={{ marginTop: 5}}>
+                                    <StyledBlurView direction="row" gap={4} style={{ padding: 3}}>
                                     <StyledView direction="row" align="center" gap={2}>
-                                        <Icon source={serviceLocationType === 'home' ? 'walk' : 'store'} size={15} />
-                                        <StyleText style={{ fontSize: 15 }}>{serviceLocationType === 'home' ? 'House call' : 'Shop Visit'}</StyleText>
+                                        <Icon color={text} source={serviceLocationType === 'home' ? 'walk' : 'store'} size={15} />
+                                        <StyleText style={{ fontSize: 15, color: text }}>{serviceLocationType === 'home' ? 'House call' : 'Shop Visit'}</StyleText>
                                     </StyledView>
                                     <StyledView direction="row" align="center" gap={3}>
-                                        {/* <StyleText>Time: </StyleText> */}
-                                        <StyleText style={{ fontWeight: 600 }}>@{bookingItems.time}</StyleText>
+
+                                        <StyleText style={{ fontWeight: 600, color: text }}>@{bookingItems.time}</StyleText>
                                     </StyledView>
+                                    </StyledBlurView>
                                 </StyledView>
                             </StyledView>
                         </StyledView>
                                 {/* Add on items */}
                                 <StyledView direction="row" align="center" gap={5} style={{ marginVertical: 10, flexWrap: 'wrap', }}>
                                     <StyleText style={{ fontWeight: 700 }}>Add ons:</StyleText>
-                                    {addOnItems && addOnItems.length > 0 ? addOnItems.map((addOn, i) => <StyledBlurView align="center" key={i} style={{ backgroundColor: colorWheel(i), padding: 3 }}><StyleText style={{ color: 'white', fontSize: 11 }}>{addOn}</StyleText></StyledBlurView>) : <StyleText>None</StyleText>}
+                                    {addOnItems && addOnItems.length > 0 ? addOnItems.map((addOn, i) => <StyledBlurView align="center" key={i} style={{ backgroundColor: colorWheel(i), padding: 3 }}><StyleText style={{ color: 'white', fontSize: 12, fontWeight: 600 }}>{addOn}</StyleText></StyledBlurView>) : <StyleText>None</StyleText>}
                                 </StyledView>
                                 <StyledView style={{ marginBottom: 10 }}>
 
                     {/* <StyleText style={{ fontSize: 15 }}>Location:</StyleText> */}
                     { serviceLocationType === 'home' &&  <StyledView direction="row" gap={3}>
-                        <Icon source="information-outline" size={13} />
-                    <StyleText>{name.split(" ")[0]} will come to your listed address. {String.fromCodePoint(0x1F699)}</StyleText>
+                        <Icon color={text} source="information-outline" size={13} />
+                    <StyleText style={{ color: text }}>{name.split(" ")[0]} will come to your listed address.</StyleText>
                     </StyledView>}
 
-                    <StyledView direction="row" gap={3} style={{ marginTop: 10 }}>
+                    <StyledView direction="row" align="center" style={{ marginTop: 8 }}>
                         <Icon source="map-marker" size={13} />
-                    <StyleText style={{ color: '#007AFF' }}> {serviceLocationType === 'home' ? "4340 shakespear rd. Baltimore, MD, 21245" : "St Drury Ln, Baltimore, Maryland 21232"} </StyleText>
+                        {/* <Button onPress={() => router.push({ pathname: "/explore" })} textColor='#007AFF' mode="text">{serviceLocationType === 'home' ? "4340 shakespear rd. Baltimore, MD, 21245" : "St Drury Ln, Baltimore, Maryland 21232"} </Button> */}
+                    <StyleText> {serviceLocationType === 'home' ? "4340 shakespear rd. Baltimore, MD, 21245" : "St Drury Ln, Baltimore, Maryland 21232"} </StyleText>
                     </StyledView>
 
 

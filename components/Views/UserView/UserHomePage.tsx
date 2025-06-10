@@ -49,7 +49,7 @@ const UserHomePage = ({ searchValue, onSearchSubmit}: IUserHomePage) => {
         
         <StyledView gap={10} style={{ maxHeight: 350,  }}>
           <UserCard userData={dummyUsers} colorScheme={colorScheme} />
-            <Button icon="eye" mode="outlined">View all Barbers</Button>
+            <Button onPress={() => console.log("Barbers")} icon="eye" mode="outlined">Search Barbers</Button>
         </StyledView>
 
         <StyledDivider orientation="horizontal" marginVertical={10} />

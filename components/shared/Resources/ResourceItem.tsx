@@ -11,6 +11,7 @@ content?: string;
 onViewPress?: () => void;
 actionText?: string;
 isRow?: boolean;
+isOffer?: boolean;
 };
 
 const ResourceItem = ({ 
@@ -21,7 +22,8 @@ const ResourceItem = ({
     content,
     actionText,
     isRow,
-    onViewPress
+    onViewPress,
+    isOffer
 }:IResourceItem) => {
     const [imagePath, setImagePath] = useState<string | string[]>(image ?? "");
     const [index, setIndex] = useState<number>(0)
@@ -54,7 +56,7 @@ const ResourceItem = ({
             </ScrollView>
             <StyledView>
                 <StyleText style={{ flex: 1,}}>{content}</StyleText>
-                <StyleText style={{ marginTop: 2}}>by Barber App team</StyleText>
+                {!isOffer && <StyleText style={{ marginTop: 2}}>by Barber App team</StyleText>}
             </StyledView>
             <StyledDivider orientation="horizontal" marginVertical={5} />
             <StyledView style={{ ...(isRow && {  

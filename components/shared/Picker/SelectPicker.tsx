@@ -71,10 +71,10 @@ const TimeSlotModal = ({
         <StyledBlurView style={{ padding: 20, flex: 1, width: '100%' }} justify="center" align="center">
       <StyledView style={{ width: '100%'}}>
         <StyledView direction="column" gap={10}>
-          <StyleText>Add Time Slot</StyleText>
+          <StyleText style={{ color: 'white' }}>Add Time Slot</StyleText>
 
           <StyledBlurView clickable onClick={handleShowStartTime} style={{ padding: 10 }}>
-            <StyleText style={{ fontSize: 15, fontWeight: 600 }}>Start Time: {formatTime(startTime)}</StyleText>
+            <StyleText style={{ fontSize: 15, fontWeight: 600, color: 'white' }}>Start Time: {formatTime(startTime)}</StyleText>
             </StyledBlurView>
 
           {showStartPicker && (
@@ -90,7 +90,7 @@ const TimeSlotModal = ({
             />
           <StyledView align="center">
             <StyledBlurView borderRadius={20} align='center' isButton clickable onClick={() => setShowStartPicker(false)} style={{ padding: 8, }}>
-                <StyleText style={{ fontWeight: 600 }}>Set Start Time</StyleText>
+                <StyleText style={{ fontWeight: 600, }}>Set Start Time</StyleText>
             </StyledBlurView>
           </StyledView>
         </StyledView>
@@ -98,7 +98,7 @@ const TimeSlotModal = ({
 
 
 <StyledBlurView clickable onClick={handleShowEndTime} style={{ padding: 10 }}>
-            <StyleText style={{ fontSize: 15, fontWeight: 600 }}>End Time: {formatTime(endTime)}</StyleText>
+            <StyleText style={{ fontSize: 15, fontWeight: 600, color: 'white' }}>End Time: {formatTime(endTime)}</StyleText>
           </StyledBlurView>
           {showEndPicker && (
         <StyledView>  

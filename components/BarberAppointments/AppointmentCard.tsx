@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useAuth from '@/context/auth/use-auth';
 import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
 import { StyledView, StyleText, StyledBlurView, StyledDivider } from '../shared/SharedStyles';
@@ -26,6 +27,8 @@ const AppointmentCard = ({
     customerName,
     date
 }: IAppointmentCard) => {
+    const auth = useAuth();
+    const isBarber = auth?.userAuth?.accountType === 'barber';
 
     const user = {
     id, 
@@ -52,10 +55,10 @@ const AppointmentCard = ({
             }}>
                 <StyledView direction="column" align="center">
                     <StyleText style={{ color: '#888'}}>booking #2948</StyleText>
-            <StyledView direction="row" align="center" gap={3}>
+            {isBarber && <StyledView direction="row" align="center" gap={3}>
                 <Icon color={value > 0 ? "green":"red"} size={12} source={value > 0 ? "plus-circle" : "minus-circle"} />
             <StyleText style={{  fontSize: 25, fontWeight: 700 }}>${value}</StyleText>
-            </StyledView>
+            </StyledView>}
             <Chip mode="flat" icon={() => <Icon source="information" size={15} color={type === "premium" ? "gold":"white"} />} theme={{ roundness: 10 }} textStyle={{ color: type === "premium" ? "gold" : 'white' }}>
                 {type}
             </Chip>

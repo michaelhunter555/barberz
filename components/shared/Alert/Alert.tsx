@@ -1,6 +1,7 @@
 import { ColorSchemeName } from "react-native";
 import { StyledView, StyleText } from "../SharedStyles";
 import { Icon } from "react-native-paper";
+import { router } from "expo-router";
 
 interface IAlert {
     iconSize: number;
@@ -9,6 +10,7 @@ interface IAlert {
     fontSize: number;
     alertType: 'info' | 'warning' | 'error' | 'success';
     hideIcon?: boolean;
+    link?: string;
 }
 
 const getColors = (alertType: IAlert['alertType'], scheme: ColorSchemeName) => {
@@ -40,7 +42,7 @@ const getColors = (alertType: IAlert['alertType'], scheme: ColorSchemeName) => {
     return colors[alertType];
   };
   
-const Alert = ({ iconSize, message, colorScheme, alertType, fontSize, hideIcon, }: IAlert) => {
+const Alert = ({ iconSize, message, colorScheme, alertType, fontSize, hideIcon, link }: IAlert) => {
     const { background, text, icon } = getColors(alertType, colorScheme);
    
     return (
@@ -48,6 +50,7 @@ const Alert = ({ iconSize, message, colorScheme, alertType, fontSize, hideIcon, 
             {!hideIcon && <StyledView><Icon color={text} source={icon} size={iconSize}/></StyledView>}
             <StyledView>
                 <StyleText style={{ fontSize, color: text }}>{message}</StyleText>
+               {link && <StyleText onPress={() => router.push({ pathname: '/upgrades' })} style={{ fontSize, color: text }}>{link}</StyleText> }
             </StyledView>
         </StyledView>
     )

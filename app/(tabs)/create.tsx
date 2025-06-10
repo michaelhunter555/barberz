@@ -19,7 +19,7 @@ const Create = () => {
             <GoBackArrow /> 
             <StyleText style={{ fontSize: 20, fontWeight: 700 }}>Create a service or promotion</StyleText>
             <StyledView gap={20}>
-                <Alert fontSize={12} alertType='warning' iconSize={20} colorScheme={colorScheme} message="If you need to increase your limits, please upgrade." />
+                <Alert fontSize={12} alertType='warning' iconSize={20} colorScheme={colorScheme} message="If you need to increase your limits." link="Please Upgrade" />
             <StyleText style={{ fontSize: 15 }}>What would you like to create?</StyleText>
                 <StyledView
                 direction="column"
