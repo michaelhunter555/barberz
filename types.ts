@@ -156,7 +156,7 @@ export interface ICoupon {
   onlyForUsers?: [string];
 }
 
-type TService = { name: string, description: string, price: number }
+export type TService = { _id?: string | number; name: string, description: string, price: number }
 /**
  * @name IBarberServices
  * @description service properties for add-ons including a name, description and price.
