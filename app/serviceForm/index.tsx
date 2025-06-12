@@ -185,7 +185,7 @@ const ServiceForm = () => {
                             icon={editService?._id ? "pencil":"plus"}
                             onPress={handleCreateNewService}
                             disabled={!formState.isValid}
-                            mode="contained">{editService?._id ? "Edit Coupon" : "Create Add-on"}</Button>
+                            mode="contained">{editService?._id ? "Edit Add-on" : "Create Add-on"}</Button>
                              
                              {editService?._id && <Button
                             icon="trash-can-outline"

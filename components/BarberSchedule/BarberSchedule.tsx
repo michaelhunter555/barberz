@@ -1,52 +1,66 @@
 import React, { useState, useEffect } from 'react';
+import { useBarber } from '@/hooks/barber-hooks';
 import { StyleText, StyledView, StyledBlurView, StyledDivider } from '../shared/SharedStyles';
 import { Icon, IconButton, Checkbox, Button } from 'react-native-paper';
 import { TouchableOpacity, View, LayoutAnimation } from 'react-native';
 import { IScheduleByDay, IDaySlot } from '@/types';
 import Modal from '../shared/Modals/Modal';
 import SelectTimePicker from '../shared/Picker/SelectPicker';
-import { toDate } from '@/lib/helpers';
+import { setColorType, toDate } from '@/lib/helpers';
+import { useDesign } from '@/hooks/design-hooks';
 
 const dummySchedule =
 {
-    "Monday": [
+    "monday": [
         { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
         { startTime: { value: 10, hour: 10, minute: 30 }, endTime: { value: 11, hour: 11, minute: 30 }, isBooked: true, price: 50, isChecked: false },
         { startTime: { value: 11, hour: 11, minute: 30 }, endTime: { value: 1, hour: 1, minute: 0 }, isBooked: false, price: 50, isChecked: false },
     ],
-    "Tuesday": [
+    "tuesday": [
         { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
     ],
 
-    "Wednesday": [
+    "wednesday": [
         { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
     ],
-    "Thursday": [
+    "thursday": [
         { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
     ],
-    "Friday": [
+    "friday": [
+        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
+    ],
+    "saturday": [
+        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
+    ],
+    "sunday": [
         { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
     ]
 };
 
 const initialSchedule =
 {
-    "Monday": [],
-    "Tuesday": [],
-    "Wednesday": [],
-    "Thursday": [],
-    "Friday": []
+    "monday": [],
+    "tuesday": [],
+    "wednesday": [],
+    "thursday": [],
+    "friday": [],
+    "saturday": [],
+    "sunday": []
 };
 
 const BarberSchedule = () => {
     const [schedule, setSchedule] = useState<IScheduleByDay>(dummySchedule);
     const [toggle, setToggle] = useState<boolean>(false);
-    const [currentKey, setCurrentKey] = useState<string>("");
+    const [currentKey, setCurrentKey] = useState<string | null>("");
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
     const [isOpenSelectTime, setIsOpenSelectTime] = useState<boolean>(false);
     const [editing, setIsEditing] = useState<{ day: string; index: number } | null>(null);
     const [openClearSchedule, setOpenClearSchedule] = useState<boolean>(false);
-
+    const { colorType } = useDesign();
+    const { background, text } = colorType('error');
+    const [isBulkUpdate, setIsBulkUpdate] = useState<boolean>(false);
+    const [bulkDays, setBulkDays] = useState<string[]>([]);
+    
     const handleTimeToggle = (key: string) => {
         LayoutAnimation.configureNext(
             LayoutAnimation.create(
@@ -55,8 +69,7 @@ const BarberSchedule = () => {
                 LayoutAnimation.Properties.opacity
             )
         );
-        setCurrentKey(key);
-        setToggle((prev) => !prev);
+        setCurrentKey((prev) => prev === key ? null : key);
     }
 
     useEffect(() => {
@@ -89,7 +102,7 @@ const BarberSchedule = () => {
     }
 
     // flag to determine if we any items have been selected for removal
-    const canDelete = schedule[currentKey]?.some((key, i) => key.isChecked);
+    const canDelete = schedule[String(currentKey)]?.some((key, i) => key.isChecked);
 
     // Add new time slot
     const handleAddNewSlots = (day: string, startTime: Date, endTime: Date) => {
@@ -105,6 +118,19 @@ const BarberSchedule = () => {
 
         setSchedule((prev) => {
             const curr = { ...prev };
+            // handle bulk days for a time slot
+            if(isBulkUpdate && bulkDays.length > 0) {
+                for(const d of bulkDays) {
+                    const currDay = d.toLowerCase();
+                    if(curr[currDay].length > 0) {
+                        curr[currDay] = [...curr[currDay], newSlot];
+                    } else {
+                        curr[currDay] = [newSlot];
+                    }
+                }
+                return curr;
+            };
+            // otherwise single day
             curr[day] = [...curr[day], newSlot];
             return curr;
         })
@@ -153,7 +179,22 @@ const BarberSchedule = () => {
 
     const handleSelectTimeModal = () => {
         setIsOpenSelectTime(prev => !prev);
+        if(isBulkUpdate){
+            setIsBulkUpdate(false);
+        }
     }
+
+    const handleBulkUpdate = () => {
+        setIsBulkUpdate(true)
+        setIsOpenSelectTime(true);
+    }
+
+    const handleBulkDays = (day: string) => {
+        console.log("Added: ", day)
+        setBulkDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
+      }
+      console.log("IsBulkUpdate: ", isBulkUpdate);
+      console.log("bulkDay: ", bulkDays)
 
     return (
         <StyledView gap={5} style={{ marginTop: 20 }}>
@@ -171,39 +212,60 @@ const BarberSchedule = () => {
                 )}
                 onAddSlot={(start, end) => handleEditSlot(editing!.day, editing!.index, start, end)}
                 submitLabel="Save Changes"
-            />}
+                />}
 
             {/* Adding New Time Slot */}
             <SelectTimePicker
+                isBulkUpdate={isBulkUpdate}
                 onAddSlot={
-                    (startTime: Date, endTime: Date) => handleAddNewSlots(currentKey, startTime, endTime)
-                } isOpen={isOpenSelectTime}
+                    (startTime: Date, endTime: Date) => handleAddNewSlots(String(currentKey), startTime, endTime)
+                } 
+                isOpen={isOpenSelectTime}
                 onClose={handleSelectTimeModal}
+                bulkDays={bulkDays}
+                onAddDay={(day: string) => handleBulkDays(day)}
             />
             {/* Confirm Modal for delete */}
             <Modal header="Confirm Delete" text="You are about delete schedule slot(s). Please confirm." isOpen={confirmDelete} onClose={handleConfirmDelete}>
-                <Button buttonColor='red' textColor='white' onPress={() => handleRemoveSlots(currentKey)}>Confirm Delete</Button>
+                <Button buttonColor='red' textColor='white' onPress={() => handleRemoveSlots(String(currentKey))}>Confirm Delete</Button>
             </Modal>
             {/* Clear Schedule Modal */}
             <Modal header="Confirm Delete" text="You are about to delete your entire schedule. This action cannot be undone. Please confirm." isOpen={openClearSchedule} onClose={() => setOpenClearSchedule(false)}>
                 <Button buttonColor='red' textColor='white' onPress={handleClearSchedule}>Confirm Delete</Button>
             </Modal>
             <StyleText style={{ fontWeight: 700, fontSize: 15 }}>Schedule</StyleText>
-            <StyledView direction="row" justify="flex-end">
-                <Button icon="delete-empty" mode="outlined" onPress={() => setOpenClearSchedule(true)}>Clear Schedule</Button>
+            <StyledView direction="row" justify="flex-end" gap={10}>
+                  <StyledView justify="center" gap={3}>
+                           <StyledView align="center" justify="center">
+                           <StyledBlurView direction="row" align="center" gap={3} clickable style={{ padding: 8 }} onClick={handleBulkUpdate}>
+                            <Icon source="update" size={12} />
+                               <StyleText>Bulk Update</StyleText>
+                               </StyledBlurView>
+                           </StyledView>
+                         </StyledView>
+                <StyledBlurView
+                clickable
+                onClick={() => setOpenClearSchedule(true)} 
+                direction="row" 
+                align="center" 
+                gap={3} 
+                style={{ padding: 8, backgroundColor: background,}}>
+                    <Icon color={text} source="delete-empty" size={12} />
+                    <StyleText style={{ color: text }}>Clear Schedule</StyleText>
+                </StyledBlurView>
             </StyledView>
             {Object.entries(schedule).map(([key, value]) => (
                 <StyledView key={key}>
                     <StyledBlurView isPaper direction="row" align="center" justify="space-between" clickable onClick={() => handleTimeToggle(key)} style={{ padding: 5 }}>
                         <StyledView>
-                            <StyleText style={{ paddingLeft: 10, fontSize: 14, fontWeight: 600 }}>{key}</StyleText>
+                            <StyleText style={{ paddingLeft: 10, fontSize: 14, fontWeight: 600 }}>{key.toUpperCase()}</StyleText>
                         </StyledView>
                         <StyledView direction="row">
                             {canDelete && currentKey === key && <IconButton icon="close" iconColor='red' size={15} onPress={handleConfirmDelete} />}
                             <IconButton icon="eye" size={15} onPress={() => console.log("edit time slots")} />
                         </StyledView>
                     </StyledBlurView>
-                    {toggle && key === currentKey && value.map((slots, j) => {
+                    {key === currentKey && value.map((slots, j) => {
                         const startHour = slots.startTime.hour;
                         const startMinute = slots.startTime.minute;
                         const endHour = slots.endTime.hour;
@@ -250,7 +312,7 @@ const BarberSchedule = () => {
                             </View>
                         )
                     })}
-                    {toggle && key === currentKey && (
+                    {key === currentKey && (
                         <StyledView direction="row" align="center" justify="center">
                             <StyleText>Add New slot</StyleText>
                             <IconButton iconColor='#007AFF' icon="plus-circle" size={20} onPress={handleSelectTimeModal} />

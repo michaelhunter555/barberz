@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import useAuth from '@/context/auth/use-auth';
-import { TService, type TCoupon } from '@/types';
+import { DaysOfWeek, IHours, IScheduleByDay, TService, type TCoupon } from '@/types';
 
 export const useBarber = () => {
     const auth = useAuth();
@@ -150,9 +150,9 @@ export const useBarber = () => {
 
        /**
      * @name updateAddOn
-     * @description Deletes an existing addOn by id
+     * @description Updates an existing addOn by id
      * @parameters - service: TService - service shape (name, description, price);
-     * @parameters - id: string - The addOn id to be deleted
+     * @parameters - id: string - user id
      */
      const updateAddOn = useCallback(async( editService: TService, id: string) => {
         try {
@@ -237,6 +237,96 @@ export const useBarber = () => {
         }
     }, []);
 
+    /* Hours (Schedule) */
+
+    /**
+     * @name getSchedule
+     * @description retrieves all time slots for a M-S Schedule.
+     * @parameters id: string - user id
+     */
+    const getSchedule = async () => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/get-schedule?barberId=${barber?.id}`);
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data.schedule as IHours;
+        } catch(err) {
+            console.log("There was an error getting your schedule.", err);
+        }
+    };
+
+     /**
+     * @name createSchedule
+     * @description handles individual editing or additions to slots for a M-S Schedule.
+     * @parameters id: string - user id
+     * @parameters schedule: IScheduleByDay[] | IScheduleByDay
+     * @parameters day?: Day of the week | undefined (all days)
+     */
+
+    const createSchedule = useCallback(
+        async (day: DaysOfWeek, schedule: IScheduleByDay | IScheduleByDay[]): Promise<void> => {
+        try {
+            const response = await fetch(
+                `${process.env.EXPO_PUBLIC_API_SERVER}/barber/manage-schedule?barber=${barber?.id}`, {
+                method: 'POST',
+                body: JSON.stringify({ schedule }),
+                headers: { "Content-Type" : "application/json" },
+            });
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+        } catch(err) {
+            console.log("error trying to update schedule management changes.", err);
+        }
+    }, []);
+
+      /**
+     * @name editSchedule
+     * @description handles individual editing to existing slots for a M-S Schedule.
+     * @parameters id: string - user id
+     * @parameters schedule: IScheduleByDay[] | IScheduleByDay
+     * @parameters day?: Day of the week | undefined (all days)
+     * @parameters timeSlotId - id of the timeslot to be edited.
+     */
+    const editSchedule = useCallback(
+        async (day: DaysOfWeek, schedule: IScheduleByDay | IScheduleByDay[], timeSlotId?: string): Promise<void> => {
+        try {
+            const response = await fetch(
+                `${process.env.EXPO_PUBLIC_API_SERVER}/barber/manage-schedule?barber=${barber?.id}`, {
+                method: 'POST',
+                body: JSON.stringify({ schedule, timeSlotId, day }),
+                headers: { "Content-Type" : "application/json" },
+            });
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+        } catch(err) {
+            console.log("error trying to update schedule management changes.", err);
+        }
+    }, []);
+
+     /**
+     * @name deleteSchedule
+     * @description removes time slots for a M-S Schedule.
+     * @parameters id: string | string[] - timeSlot id to be removed
+     */
+    const deleteSchedule = useCallback(async (timeSlotIds: string[]) => {
+        try {
+            await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/delete-schedule`, {
+                method: 'DELETE',
+                body: JSON.stringify({ timeSlotIds }),
+                headers: { "Content-Type":"application/json" },
+            })
+
+        } catch(err) {
+            console.log("Error attempting to delete time slots.")
+        }
+    }, [])
+
     return {
         // addons
         getAddOns,
@@ -252,6 +342,11 @@ export const useBarber = () => {
         createCoupon,
         updateCoupon,
         deleteCoupon,
+        // schedule
+        createSchedule,
+        deleteSchedule,
+        editSchedule,
+        getSchedule,
         isLoading
     }
 }

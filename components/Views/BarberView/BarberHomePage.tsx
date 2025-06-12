@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import { useBarber } from '@/hooks/barber-hooks';
 import { Switch, View, useColorScheme } from 'react-native';
 import useAuth from '@/context/auth/use-auth';
 import { StyleText, StyledView, StyledDivider } from '@/components/shared/SharedStyles';
@@ -25,18 +27,24 @@ const tempUnconfirmed = 5;
 const unconfirmed = tempData.find((b) => b.status === "unconfirmed");
 
 const BarberHomeDashboard = () => {
+    const auth = useAuth();
+    const { getSchedule } = useBarber();
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
-    const auth = useAuth();
     const barber = auth?.userAuth;
     const [tabIndex, setTabIndex] = useState<number>(0);
     const [isPublic, setIsPublic] = useState<boolean>(false);
 
     const handleVisibility = (value: boolean) => setIsPublic(value);
 
+    const { data: schedule, isLoading: isScheduleLoading } = useQuery({
+        queryKey: ["get-schedule", auth?.userAuth?.id],
+        queryFn: () => getSchedule(),
+        enabled: Boolean(auth?.userAuth?.id),
+    })
+
     // Get latest data
     // TODO: get status, price, customer name, img, date and type + booking id
-
     return (
         <StyledView>
             {/* user info */}
@@ -140,6 +148,7 @@ const BarberHomeDashboard = () => {
 
             {/* Schedule, Services & Coupons & Create */}
             <TabContainer
+            barberSchedule={schedule}
                 tabIndex={tabIndex}
                 onSelect={(i: number) => setTabIndex(i)} />
 

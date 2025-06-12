@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { StyleText, StyledView, StyledBlurView } from '../SharedStyles';
 import BarberSchedule from '@/components/BarberSchedule/BarberSchedule';
 import BarberServices from '@/components/BarberServices/BarberServices';
 import BarberCoupons from '@/components/BarberServices/BarberCoupons';
+import { IHours } from '@/types';
 
 interface ITabContainer {
     tabIndex: number;
     onSelect: (i: number) => void;
+    barberSchedule?: IHours;
 };
 
 const tabs = {
@@ -32,14 +35,14 @@ const Tabs = ({ tabIndex, onSelect }: ITabContainer) => {
         </StyledView>
 }
 
-const TabContainer = ({ tabIndex, onSelect,}: ITabContainer) => {
+const TabContainer = ({ tabIndex, onSelect, barberSchedule}: ITabContainer) => {
 
     return (
         <StyledView style={{ flex: 1, }}>
             <Tabs onSelect={onSelect} tabIndex={tabIndex} />
             <StyledView style={{ borderTopWidth: 1, borderColor: 'white', borderRadius: 8 }}>
 
-            {tabIndex === 0 && <BarberSchedule />}
+            {tabIndex === 0 && <BarberSchedule barberSchedule={barberSchedule as IHours} />}
             {tabIndex === 1 && <BarberServices />}
             {tabIndex === 2 && <BarberCoupons />}
             </StyledView>

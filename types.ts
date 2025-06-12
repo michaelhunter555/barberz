@@ -117,12 +117,23 @@ export type Inputs = {
    * @description slot available for booking and price 
    * @types uses THourSlot props for start and end times.
    */
-  export interface IDaySlot {  
+  export interface IDaySlot { 
+    _id?: string, 
     startTime: THourSlot, 
     endTime: THourSlot, 
     price: number, 
     isBooked: boolean;
     isChecked?: boolean;
+  }
+
+  export enum DaysOfWeek {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
   }
   
   /**

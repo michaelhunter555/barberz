@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Platform } from 'react-native';
+import React, { useState, useEffect, } from 'react';
+import { Modal, Platform, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Button } from 'react-native-paper';
+import { Button, Checkbox, RadioButton } from 'react-native-paper';
 import { StyledView, StyleText, StyledBlurView, StyledDivider } from '../SharedStyles';
+import { DaysOfWeek } from '@/types';
+
 
 interface TimeSlotModalProps {
   isOpen: boolean;
@@ -11,6 +14,9 @@ interface TimeSlotModalProps {
   initialStartTime?: Date;
   initialEndTime?: Date;   
  submitLabel?: string;
+ isBulkUpdate?: boolean;
+ bulkDays?: string[];
+ onAddDay?: (day: string) => void;
 }
 
 const TimeSlotModal = ({ 
@@ -19,12 +25,16 @@ const TimeSlotModal = ({
     onAddSlot,
     initialEndTime,
     initialStartTime,
-    submitLabel
+    submitLabel,
+    isBulkUpdate,
+    bulkDays,
+    onAddDay,
 }: TimeSlotModalProps) => {
   const [startTime, setStartTime] = useState<Date>( initialStartTime ?? new Date());
   const [endTime, setEndTime] = useState<Date>(initialEndTime ?? new Date());
   const [showStartPicker, setShowStartPicker] = useState<boolean>(false);
   const [showEndPicker, setShowEndPicker] = useState<boolean>(false);
+  const [displayBulkDays, setDisplayBulkDays] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -68,6 +78,8 @@ const TimeSlotModal = ({
 
   return (
     <Modal visible={isOpen} animationType="slide" transparent>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center', }}>
+            <ScrollView>
         <StyledBlurView style={{ padding: 20, flex: 1, width: '100%' }} justify="center" align="center">
       <StyledView style={{ width: '100%'}}>
         <StyledView direction="column" gap={10}>
@@ -119,6 +131,12 @@ const TimeSlotModal = ({
           </StyledView>
           )}
 
+         {isBulkUpdate &&  <StyledView justify="center">   
+            {Object.entries(DaysOfWeek).filter(([key, value]) => isNaN(Number(key))).map(([key, value], i) => (
+                <Checkbox.Item label={key} key={key} status={bulkDays?.indexOf(key) === -1  ? "unchecked": "checked"} onPress={() => onAddDay?.(key) } />
+            ))}
+          </StyledView>}
+
             <StyledDivider orientation="horizontal" bold />
           <StyledView direction="column" justify="center"  gap={25}>
             <Button
@@ -134,6 +152,8 @@ const TimeSlotModal = ({
         </StyledView>
       </StyledView>
         </StyledBlurView>
+            </ScrollView>
+        </SafeAreaView>
     </Modal>
   );
 };
