@@ -41,8 +41,9 @@ const BarberHomeDashboard = () => {
         queryKey: ["get-schedule", auth?.userAuth?.id],
         queryFn: () => getSchedule(),
         enabled: Boolean(auth?.userAuth?.id),
-    })
+    });
 
+    console.log(schedule)
     // Get latest data
     // TODO: get status, price, customer name, img, date and type + booking id
     return (
@@ -148,9 +149,10 @@ const BarberHomeDashboard = () => {
 
             {/* Schedule, Services & Coupons & Create */}
             <TabContainer
+            isScheduleLoading={isScheduleLoading}
             barberSchedule={schedule}
-                tabIndex={tabIndex}
-                onSelect={(i: number) => setTabIndex(i)} />
+            tabIndex={tabIndex}
+            onSelect={(i: number) => setTabIndex(i)} />
 
                 <StyledDivider orientation="horizontal" marginVertical={10} />
 

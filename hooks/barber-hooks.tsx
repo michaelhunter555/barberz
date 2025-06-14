@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import useAuth from '@/context/auth/use-auth';
-import { DaysOfWeek, IHours, IScheduleByDay, TService, type TCoupon } from '@/types';
+import { DaysOfWeek, IDaySlot, IHours, IScheduleByDay, TService, type TCoupon } from '@/types';
 
 export const useBarber = () => {
     const auth = useAuth();
@@ -251,11 +251,39 @@ export const useBarber = () => {
             if(!data.ok) {
                 throw new Error(data.error);
             }
-            return data.schedule as IHours;
+            return data.schedule as IScheduleByDay;
         } catch(err) {
             console.log("There was an error getting your schedule.", err);
         }
     };
+    /**
+     * @name addTimeSlot
+     * @description handles individual editing or additions to slots for a M-S Schedule.
+     * @parameters id: string - user id
+     * @parameters schedule: IScheduleByDay[] | IScheduleByDay
+     * @parameters day?: Day of the week | undefined (all days)
+     */
+
+    const addTimeSlot = useCallback( async (
+     timeSlot: IDaySlot | IDaySlot[],
+     day?: string,
+     bulkDays?: string[],
+    ): Promise<IScheduleByDay | undefined> => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/add-time-slot`, {
+                method: 'POST',
+                body: JSON.stringify({day,  bulkDays, timeSlot, barberId: barber?.id }),
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data.schedule;
+        } catch(err) {
+            console.log("Error adding time slot", err);
+        }
+    }, [])
 
      /**
      * @name createSchedule
@@ -266,7 +294,7 @@ export const useBarber = () => {
      */
 
     const createSchedule = useCallback(
-        async (day: DaysOfWeek, schedule: IScheduleByDay | IScheduleByDay[]): Promise<void> => {
+        async (day: keyof DaysOfWeek, schedule: IScheduleByDay | IScheduleByDay[]): Promise<void> => {
         try {
             const response = await fetch(
                 `${process.env.EXPO_PUBLIC_API_SERVER}/barber/manage-schedule?barber=${barber?.id}`, {
@@ -343,6 +371,7 @@ export const useBarber = () => {
         updateCoupon,
         deleteCoupon,
         // schedule
+        addTimeSlot,
         createSchedule,
         deleteSchedule,
         editSchedule,

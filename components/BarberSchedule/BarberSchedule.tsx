@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import useAuth from '@/context/auth/use-auth';
+import { useMutation } from '@tanstack/react-query';
 import { useBarber } from '@/hooks/barber-hooks';
 import { StyleText, StyledView, StyledBlurView, StyledDivider } from '../shared/SharedStyles';
 import { Icon, IconButton, Checkbox, Button } from 'react-native-paper';
 import { TouchableOpacity, View, LayoutAnimation } from 'react-native';
-import { IScheduleByDay, IDaySlot } from '@/types';
+import { IScheduleByDay, IDaySlot, IHours, DaysOfWeek } from '@/types';
 import Modal from '../shared/Modals/Modal';
 import SelectTimePicker from '../shared/Picker/SelectPicker';
 import { setColorType, toDate } from '@/lib/helpers';
 import { useDesign } from '@/hooks/design-hooks';
+import { scheduleConflictCheck } from '@/lib/scheduleConflict';
+import { ManySkeletonTextLines } from '../shared/LoadingSkeleton/Skeletons';
+import { useInvalidateQuery } from '@/hooks/invalidate-query';
 
 const dummySchedule =
 {
@@ -48,9 +53,15 @@ const initialSchedule =
     "sunday": []
 };
 
-const BarberSchedule = () => {
-    const [schedule, setSchedule] = useState<IScheduleByDay>(dummySchedule);
-    const [toggle, setToggle] = useState<boolean>(false);
+interface IBarberSchedule {
+    barberSchedule?: IScheduleByDay;
+    isScheduleLoading?: boolean;
+}
+
+const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) => {
+    const auth = useAuth();
+    const barber = auth?.userAuth;
+    const [schedule, setSchedule] = useState<IScheduleByDay | undefined>(barberSchedule);
     const [currentKey, setCurrentKey] = useState<string | null>("");
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
     const [isOpenSelectTime, setIsOpenSelectTime] = useState<boolean>(false);
@@ -60,21 +71,25 @@ const BarberSchedule = () => {
     const { background, text } = colorType('error');
     const [isBulkUpdate, setIsBulkUpdate] = useState<boolean>(false);
     const [bulkDays, setBulkDays] = useState<string[]>([]);
-    
-    const handleTimeToggle = (key: string) => {
-        LayoutAnimation.configureNext(
-            LayoutAnimation.create(
-                500, // duration in ms (you can change this)
-                LayoutAnimation.Types.easeInEaseOut,
-                LayoutAnimation.Properties.opacity
-            )
-        );
-        setCurrentKey((prev) => prev === key ? null : key);
-    }
+    const { addTimeSlot } = useBarber();
+    const { invalidateQuery } = useInvalidateQuery()
 
     useEffect(() => {
-        setSchedule(dummySchedule); // force update if you change dummySchedule
-    }, []);
+        if (barberSchedule) {
+          setSchedule(barberSchedule);
+        }
+      }, []);
+
+    const mutateTimeSlot = useMutation({
+        mutationKey: ["add-time-slot"],
+        mutationFn: async (payload: {slot: IDaySlot, day: string}) => {
+            return await addTimeSlot(payload.slot, payload.day, bulkDays);
+        }
+    })
+
+    const handleTimeToggle = (key: string) => {
+        setCurrentKey((prev) => prev === key ? null : key);
+    }
 
     const handleCheck = (day: string, index: number) => {
         setSchedule((prev) => {
@@ -102,10 +117,10 @@ const BarberSchedule = () => {
     }
 
     // flag to determine if we any items have been selected for removal
-    const canDelete = schedule[String(currentKey)]?.some((key, i) => key.isChecked);
+    const canDelete = schedule?.[String(currentKey)]?.some((key, i) => key?.isChecked);
 
     // Add new time slot
-    const handleAddNewSlots = (day: string, startTime: Date, endTime: Date) => {
+    const handleAddNewSlots = async (day: string, startTime: Date, endTime: Date) => {
         console.log(startTime, "-", endTime);
         const newStartTime = startTime.toLocaleTimeString();
         const newEndTime = endTime.toLocaleTimeString();
@@ -113,31 +128,41 @@ const BarberSchedule = () => {
         const endValue = newEndTime.split(":");
         const start = { value: Number(startValue[0]), hour: Number(startValue[0]), minute: Number(startValue[1]) };
         const end = { value: Number(endValue[0]), hour: Number(endValue[0]), minute: Number(endValue[1]) };
+        
+        const newSlot: IDaySlot = { isBooked: false, price: Number(barber?.startingPrice), startTime: start, endTime: end, isChecked: false};
 
-        const newSlot: IDaySlot = { isBooked: false, price: 50, startTime: start, endTime: end };
-
-        setSchedule((prev) => {
-            const curr = { ...prev };
-            // handle bulk days for a time slot
-            if(isBulkUpdate && bulkDays.length > 0) {
-                for(const d of bulkDays) {
-                    const currDay = d.toLowerCase();
-                    if(curr[currDay].length > 0) {
-                        curr[currDay] = [...curr[currDay], newSlot];
-                    } else {
-                        curr[currDay] = [newSlot];
+            mutateTimeSlot.mutate( 
+                {slot: newSlot, day}, {
+                onSuccess: async (data) => {
+                    if(data) {
+                        setSchedule(data);
                     }
-                }
-                return curr;
-            };
-            // otherwise single day
-            curr[day] = [...curr[day], newSlot];
-            return curr;
-        })
+                },
+                onError: (err) => console.log(err),
+            });
+       
+        // setSchedule((prev) => {
+        //     const curr = { ...prev };
+        //     // handle bulk days for a time slot
+        //     if(isBulkUpdate && bulkDays.length > 0) {
+        //         for(const d of bulkDays) {
+        //             const currDay = d.toLowerCase();
+        //             if(curr[currDay].length > 0) {
+        //                 curr[currDay] = [...curr[currDay], newSlot];
+        //             } else {
+        //                 curr[currDay] = [newSlot];
+        //             }
+        //         }
+        //         return curr;
+        //     };
+        //     // otherwise single day
+        //     curr[day] = [...curr[day], newSlot];
+        //     return curr;
+        // })
     }
 
     // Edit time slots
-    const handleEditSlot = (
+    const handleEditSlot = async (
         day: string,
         index: number,
         start: Date,
@@ -193,15 +218,21 @@ const BarberSchedule = () => {
         console.log("Added: ", day)
         setBulkDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
       }
-      console.log("IsBulkUpdate: ", isBulkUpdate);
-      console.log("bulkDay: ", bulkDays)
 
-    return (
+      if(isScheduleLoading) {
+        return (
+            <ManySkeletonTextLines lines={3} width={50} />
+        )
+      }
+
+    return  (
         <StyledView gap={5} style={{ marginTop: 20 }}>
+            
             {/* Editing Time Slots */}
-            {editing && schedule[editing.day]?.[editing.index] && <SelectTimePicker
+            {editing && schedule?.[editing.day]?.[editing.index] && <SelectTimePicker
                 isOpen={!!editing}
                 onClose={() => setIsEditing(null)}
+                existingSlots={schedule[currentKey as string] || []}
                 initialStartTime={toDate(
                     schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.hour,
                     schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.minute
@@ -212,6 +243,7 @@ const BarberSchedule = () => {
                 )}
                 onAddSlot={(start, end) => handleEditSlot(editing!.day, editing!.index, start, end)}
                 submitLabel="Save Changes"
+            
                 />}
 
             {/* Adding New Time Slot */}
@@ -224,6 +256,8 @@ const BarberSchedule = () => {
                 onClose={handleSelectTimeModal}
                 bulkDays={bulkDays}
                 onAddDay={(day: string) => handleBulkDays(day)}
+                existingSlots={schedule?.[currentKey as string] || []}
+                isLoading={mutateTimeSlot.isPending }
             />
             {/* Confirm Modal for delete */}
             <Modal header="Confirm Delete" text="You are about delete schedule slot(s). Please confirm." isOpen={confirmDelete} onClose={handleConfirmDelete}>
@@ -254,7 +288,7 @@ const BarberSchedule = () => {
                     <StyleText style={{ color: text }}>Clear Schedule</StyleText>
                 </StyledBlurView>
             </StyledView>
-            {Object.entries(schedule).map(([key, value]) => (
+            {schedule && Object.entries(schedule).map(([key, value]) => (
                 <StyledView key={key}>
                     <StyledBlurView isPaper direction="row" align="center" justify="space-between" clickable onClick={() => handleTimeToggle(key)} style={{ padding: 5 }}>
                         <StyledView>
@@ -265,17 +299,17 @@ const BarberSchedule = () => {
                             <IconButton icon="eye" size={15} onPress={() => console.log("edit time slots")} />
                         </StyledView>
                     </StyledBlurView>
-                    {key === currentKey && value.map((slots, j) => {
-                        const startHour = slots.startTime.hour;
-                        const startMinute = slots.startTime.minute;
-                        const endHour = slots.endTime.hour;
-                        const endMinute = slots.endTime.minute;
+                    {key === currentKey && value?.map((slots, j) => {
+                        const startHour = slots?.startTime.hour;
+                        const startMinute = slots?.startTime.minute;
+                        const endHour = slots?.endTime.hour;
+                        const endMinute = slots?.endTime.minute;
                         return (
                             <View key={j}>
                                 <StyledView direction="row" justify="space-evenly" alignItems="center" gap={10} style={{ padding: 5 }}>
                                     <StyledView direction="row" alignItems="center" gap={10}>
                                         <TouchableOpacity activeOpacity={0.8} onPress={() => handleCheck(currentKey, j)}>
-                                            <Icon source="minus-circle" size={20} color={!slots.isChecked ? "#333" : 'red'} />
+                                            <Icon source="minus-circle" size={20} color={!slots?.isChecked ? "#333" : 'red'} />
                                         </TouchableOpacity>
 
                                         <StyledView direction="row" align="center">
@@ -286,7 +320,7 @@ const BarberSchedule = () => {
                                         </StyledView>
                                     </StyledView>
                                     <StyledView>
-                                        <StyleText style={{ fontSize: 13, fontWeight: 600 }}>${slots.price}</StyleText>
+                                        <StyleText style={{ fontSize: 13, fontWeight: 600 }}>${slots?.price}</StyleText>
                                     </StyledView>
 
                                     <StyledView>

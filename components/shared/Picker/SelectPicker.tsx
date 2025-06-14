@@ -4,19 +4,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Button, Checkbox, RadioButton } from 'react-native-paper';
 import { StyledView, StyleText, StyledBlurView, StyledDivider } from '../SharedStyles';
-import { DaysOfWeek } from '@/types';
-
+import { DaysOfWeek, IDaySlot } from '@/types';
+import { scheduleConflictCheck } from '@/lib/scheduleConflict';
 
 interface TimeSlotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddSlot: (start: Date, end: Date) => void;
+  onAddSlot: (start: Date, end: Date) => Promise<void>;
   initialStartTime?: Date;
   initialEndTime?: Date;   
  submitLabel?: string;
  isBulkUpdate?: boolean;
  bulkDays?: string[];
  onAddDay?: (day: string) => void;
+ existingSlots?: IDaySlot[]; 
+editingSlotId?: string;
+isLoading?:boolean;
 }
 
 const TimeSlotModal = ({ 
@@ -29,6 +32,9 @@ const TimeSlotModal = ({
     isBulkUpdate,
     bulkDays,
     onAddDay,
+    existingSlots,
+    editingSlotId,
+    isLoading,
 }: TimeSlotModalProps) => {
   const [startTime, setStartTime] = useState<Date>( initialStartTime ?? new Date());
   const [endTime, setEndTime] = useState<Date>(initialEndTime ?? new Date());
@@ -42,6 +48,45 @@ const TimeSlotModal = ({
       setEndTime(initialEndTime ?? new Date());
     }
   },[isOpen, initialStartTime, initialEndTime]);
+
+  const [liveError, setLiveError] = useState<string | null>(null);
+
+useEffect(() => {
+  if (!isOpen) return;
+
+  const newStart = startTime.getHours() * 60 + startTime.getMinutes();
+  const newEnd = endTime.getHours() * 60 + endTime.getMinutes();
+
+  if (newEnd <= newStart) {
+    setLiveError("❌ End time must be after start time");
+    return;
+  }
+
+  if (newEnd - newStart < 60) {
+    setLiveError("❌ Slot must be at least 1 hour");
+    return;
+  }
+  if(!existingSlots) {
+    return;
+  }
+
+  for (let slot of existingSlots) {
+    if (editingSlotId && slot._id === editingSlotId) continue;
+    const existingStart = slot.startTime.hour * 60 + slot.startTime.minute;
+    const existingEnd = slot.endTime.hour * 60 + slot.endTime.minute;
+
+    const isOverlap = !(newEnd <= existingStart || newStart >= existingEnd);
+    if (isOverlap) {
+      setLiveError(
+        `❌ Overlaps with ${slot.startTime.hour}:${String(slot.startTime.minute).padStart(2, "0")} - ${slot.endTime.hour}:${String(slot.endTime.minute).padStart(2, "0")}`
+      );
+      return;
+    }
+  }
+
+  setLiveError(null); // all good
+}, [startTime, endTime, isOpen, existingSlots]);
+
 
   const handleStartChange = (_: DateTimePickerEvent, selected?: Date) => {
     if (selected) setStartTime(selected);
@@ -69,11 +114,14 @@ const TimeSlotModal = ({
   }
 
   const handleSubmit = () => {
-    if (endTime <= startTime) {
+    if (liveError) {
         return;
       }
-      onAddSlot(startTime, endTime);
-      onClose();
+      onAddSlot(startTime, endTime).then(() => {
+        if(!isLoading) {
+            onClose();
+        }
+      });
   };
 
   return (
@@ -136,14 +184,20 @@ const TimeSlotModal = ({
                 <Checkbox.Item label={key} key={key} status={bulkDays?.indexOf(key) === -1  ? "unchecked": "checked"} onPress={() => onAddDay?.(key) } />
             ))}
           </StyledView>}
+          {liveError && (
+  <StyledView>
+    <StyleText style={{ fontSize: 11, color: 'red' }}>{liveError}</StyleText>
+  </StyledView>
+)}
 
             <StyledDivider orientation="horizontal" bold />
           <StyledView direction="column" justify="center"  gap={25}>
             <Button
+            disabled={!!liveError}
               mode="contained"
               onPress={handleSubmit}
             >
-              {submitLabel ?? "Add Slot +"}
+              {submitLabel ? submitLabel : isLoading ? "Loading..." : "Add Slot +"}
             </Button>
             <Button mode="text" textColor='red' onPress={onClose}>
               Close
