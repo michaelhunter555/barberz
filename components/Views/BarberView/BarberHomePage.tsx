@@ -28,7 +28,6 @@ const unconfirmed = tempData.find((b) => b.status === "unconfirmed");
 
 const BarberHomeDashboard = () => {
     const auth = useAuth();
-    const { getSchedule } = useBarber();
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
     const barber = auth?.userAuth;
@@ -36,14 +35,6 @@ const BarberHomeDashboard = () => {
     const [isPublic, setIsPublic] = useState<boolean>(false);
 
     const handleVisibility = (value: boolean) => setIsPublic(value);
-
-    const { data: schedule, isLoading: isScheduleLoading } = useQuery({
-        queryKey: ["get-schedule", auth?.userAuth?.id],
-        queryFn: () => getSchedule(),
-        enabled: Boolean(auth?.userAuth?.id),
-    });
-
-    console.log(schedule)
     // Get latest data
     // TODO: get status, price, customer name, img, date and type + booking id
     return (
@@ -51,6 +42,7 @@ const BarberHomeDashboard = () => {
             {/* user info */}
             <StyleText>Home Dashboard</StyleText>
             <UserInfoSection
+                isDashboard
                 userImgPath={String(auth?.userAuth?.image)}
                 name={String(auth?.userAuth?.name)} />
 
@@ -96,7 +88,10 @@ const BarberHomeDashboard = () => {
             <BarberBasePrice basePrice={Number(barber?.startingPrice ?? 0)} />
 
             {/* Appointment related stats and funds earned */}
-            <BarberDataCard />
+            <BarberDataCard 
+            bookings={Number(barber?.customerBookings?.length)}
+            requestedBookings={Number(barber?.requestedBooking)}
+            earnings={0} />
 
             {/* View Appointments & View unconfirmed */}
             <StyledView
@@ -149,8 +144,6 @@ const BarberHomeDashboard = () => {
 
             {/* Schedule, Services & Coupons & Create */}
             <TabContainer
-            isScheduleLoading={isScheduleLoading}
-            barberSchedule={schedule}
             tabIndex={tabIndex}
             onSelect={(i: number) => setTabIndex(i)} />
 

@@ -50,9 +50,7 @@ const ServiceForm = () => {
         formState.isValid]);
 
     const { name, description, price } = formState.inputs;
-
-    console.log(formState.inputs)
-
+    
     const handleInputs = (id: string, text: string, isValid: boolean) => {
         inputHandler(id, text, isValid);
     };

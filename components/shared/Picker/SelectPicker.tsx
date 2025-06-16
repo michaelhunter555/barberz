@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Button, Checkbox, RadioButton } from 'react-native-paper';
 import { StyledView, StyleText, StyledBlurView, StyledDivider } from '../SharedStyles';
-import { DaysOfWeek, IDaySlot } from '@/types';
+import { DaysOfWeek, IDaySlot, IScheduleByDay } from '@/types';
 import { scheduleConflictCheck } from '@/lib/scheduleConflict';
 
 interface TimeSlotModalProps {
@@ -20,6 +20,7 @@ interface TimeSlotModalProps {
  existingSlots?: IDaySlot[]; 
 editingSlotId?: string;
 isLoading?:boolean;
+schedule?: IScheduleByDay;
 }
 
 const TimeSlotModal = ({ 
@@ -35,12 +36,16 @@ const TimeSlotModal = ({
     existingSlots,
     editingSlotId,
     isLoading,
+    schedule
 }: TimeSlotModalProps) => {
-  const [startTime, setStartTime] = useState<Date>( initialStartTime ?? new Date());
+  console.log("initial start :", initialStartTime)
+  console.log("initial end :", initialEndTime)
+  
+  const [startTime, setStartTime] = useState<Date>(initialStartTime ?? new Date());
   const [endTime, setEndTime] = useState<Date>(initialEndTime ?? new Date());
   const [showStartPicker, setShowStartPicker] = useState<boolean>(false);
   const [showEndPicker, setShowEndPicker] = useState<boolean>(false);
-  const [displayBulkDays, setDisplayBulkDays] = useState<boolean>(false);
+  // console.log("slotId?:", editingSlotId)
 
   useEffect(() => {
     if (isOpen) {
@@ -72,6 +77,7 @@ useEffect(() => {
 
   for (let slot of existingSlots) {
     if (editingSlotId && slot._id === editingSlotId) continue;
+    if(isBulkUpdate && bulkDays && bulkDays.length > 0) continue;
     const existingStart = slot.startTime.hour * 60 + slot.startTime.minute;
     const existingEnd = slot.endTime.hour * 60 + slot.endTime.minute;
 
@@ -83,9 +89,32 @@ useEffect(() => {
       return;
     }
   }
+  console.log("useeffect",Boolean(isBulkUpdate && bulkDays && bulkDays?.length > 0 && schedule))
+
+  //bulk update validation
+  if(isBulkUpdate && bulkDays && bulkDays?.length > 0 && schedule) {
+    for(const day of bulkDays) {
+      console.log("days: ", day);
+        const daySlots = schedule[day] || [];
+        console.log(daySlots)
+        for(const time of daySlots){
+          console.log("times: ", time);
+          const existingStart = time.startTime.hour * 60 + time.startTime.minute;
+          const existingEnd = time.endTime.hour * 60 + time.endTime.minute;
+          const isOverlap = !(newEnd <= existingStart || newStart >= existingEnd);
+          console.log("comparing for overlaps :", isOverlap)
+          if(isOverlap) {
+            setLiveError(
+               `❌ Overlaps on ${day} with ${time.startTime.hour}:${String(time.startTime.minute).padStart(2, "0")} - ${time.endTime.hour}:${String(time.endTime.minute).padStart(2, "0")}`
+            );
+            return;
+          }
+        }
+    }
+  }
 
   setLiveError(null); // all good
-}, [startTime, endTime, isOpen, existingSlots]);
+}, [startTime, endTime, isOpen, existingSlots, schedule]);
 
 
   const handleStartChange = (_: DateTimePickerEvent, selected?: Date) => {
@@ -126,11 +155,11 @@ useEffect(() => {
 
   return (
     <Modal visible={isOpen} animationType="slide" transparent>
-        <SafeAreaView style={{ flex: 1, justifyContent: 'center', }}>
+        <StyledBlurView style={{ padding: 20, flex: 1, width: '100%' }} justify="center">
+        <SafeAreaView style={{ flex: 1 }}>
             <ScrollView>
-        <StyledBlurView style={{ padding: 20, flex: 1, width: '100%' }} justify="center" align="center">
-      <StyledView style={{ width: '100%'}}>
-        <StyledView direction="column" gap={10}>
+      <StyledView style={{ width: '100%', marginTop: 30 }}>
+        <StyledView direction="column" gap={10} justify="center">
           <StyleText style={{ color: 'white' }}>Add Time Slot</StyleText>
 
           <StyledBlurView clickable onClick={handleShowStartTime} style={{ padding: 10 }}>
@@ -146,7 +175,6 @@ useEffect(() => {
               minuteInterval={15}
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleStartChange}
-              
             />
           <StyledView align="center">
             <StyledBlurView borderRadius={20} align='center' isButton clickable onClick={() => setShowStartPicker(false)} style={{ padding: 8, }}>
@@ -178,11 +206,11 @@ useEffect(() => {
           </StyledView>
           </StyledView>
           )}
-
-         {isBulkUpdate &&  <StyledView justify="center">   
-            {Object.entries(DaysOfWeek).filter(([key, value]) => isNaN(Number(key))).map(([key, value], i) => (
-                <Checkbox.Item label={key} key={key} status={bulkDays?.indexOf(key) === -1  ? "unchecked": "checked"} onPress={() => onAddDay?.(key) } />
-            ))}
+         {isBulkUpdate &&  
+            <StyledView justify="center">   
+               {Object.entries(DaysOfWeek).filter(([key, value]) => isNaN(Number(key))).map(([key, value], i) => (
+                   <Checkbox.Item label={key} key={key} status={bulkDays?.indexOf(key.toLowerCase()) === -1  ? "unchecked": "checked"} onPress={() => onAddDay?.(key.toLowerCase()) } />
+               ))}
           </StyledView>}
           {liveError && (
   <StyledView>
@@ -205,9 +233,9 @@ useEffect(() => {
           </StyledView>
         </StyledView>
       </StyledView>
-        </StyledBlurView>
             </ScrollView>
         </SafeAreaView>
+        </StyledBlurView>
     </Modal>
   );
 };

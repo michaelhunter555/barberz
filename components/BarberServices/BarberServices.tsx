@@ -27,29 +27,27 @@ const BarberServices = () => {
         enabled: Boolean(barber?.id),
     });
 
-    console.log("Services UI",services)
-
-
 return (
-    <View style={{ marginTop: 20 }}>
+    <View style={{ marginTop: 10 }}>
         <StyleText style={{ fontSize: 15, fontWeight: 700 }}>Services</StyleText>
-    <StyledView direction="row" align="flex-start" gap={10} style={{ flexWrap: 'wrap'}}>
-        {!servicesIsLoading && services && services?.length > 0 && services?.map((service, i) => (
+        {servicesIsLoading && (
+          <StyledView style={{ width: '100%' }}>
+            <ManySkeletonTextLines width={200} />
+        </StyledView>
+        )}
+   {!servicesIsLoading &&  
+   <StyledView direction="row" align="flex-start" gap={10} style={{ flexWrap: 'wrap'}}>
+        {services && services?.length > 0 && services?.map((service, i) => (
             <StyledBlurView clickable onClick={() => router.push({ pathname: "/serviceForm", params: { selectedService: JSON.stringify(service)}})} key={i} style={{ padding: 10 }}>
               <StyleText>{service.name}</StyleText>
             </StyledBlurView>
         ))}
-        {!servicesIsLoading && services && services.length === 0 && ( <StyleText>No Services Found. Create one?</StyleText>)}
-        {servicesIsLoading && (
-            <>
-            <ManySkeletonTextLines width={200} />
-            <ManySkeletonTextLines width={150} />
-            </>
-        )}
+        {services && services.length === 0 && ( <StyleText>No Services Found. Create one?</StyleText>)}
         <StyledView direction="column" align="center">
         <IconButton onPress={() => router.push("/serviceForm")} size={12} style={{ backgroundColor: "#007AFF" }} icon="plus" />
         </StyledView>
     </StyledView>
+        }
     </View>
 )
 }

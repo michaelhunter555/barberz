@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import useAuth from '@/context/auth/use-auth';
+import { useMutation } from '@tanstack/react-query';
 import { DaysOfWeek, IDaySlot, IHours, IScheduleByDay, TService, type TCoupon } from '@/types';
 
 export const useBarber = () => {
@@ -312,20 +313,20 @@ export const useBarber = () => {
     }, []);
 
       /**
-     * @name editSchedule
+     * @name editTimeSlot
      * @description handles individual editing to existing slots for a M-S Schedule.
      * @parameters id: string - user id
      * @parameters schedule: IScheduleByDay[] | IScheduleByDay
      * @parameters day?: Day of the week | undefined (all days)
      * @parameters timeSlotId - id of the timeslot to be edited.
      */
-    const editSchedule = useCallback(
-        async (day: DaysOfWeek, schedule: IScheduleByDay | IScheduleByDay[], timeSlotId?: string): Promise<void> => {
+    const editTimeSlot = useCallback(
+        async (day: string, daySlot: IDaySlot | IDaySlot[], timeSlotId: string): Promise<void> => {
         try {
             const response = await fetch(
-                `${process.env.EXPO_PUBLIC_API_SERVER}/barber/manage-schedule?barber=${barber?.id}`, {
+                `${process.env.EXPO_PUBLIC_API_SERVER}/barber/edit-time-slot?barberId=${barber?.id}`, {
                 method: 'POST',
-                body: JSON.stringify({ schedule, timeSlotId, day }),
+                body: JSON.stringify({ daySlot, timeSlotId, day }),
                 headers: { "Content-Type" : "application/json" },
             });
             const data = await response.json();
@@ -338,22 +339,49 @@ export const useBarber = () => {
     }, []);
 
      /**
-     * @name deleteSchedule
+     * @name deleteTimeSlot
      * @description removes time slots for a M-S Schedule.
-     * @parameters id: string | string[] - timeSlot id to be removed
+     * @parameters timeSlotId - string of objectIds
+     * @parameters day - day for where time slots are deleted.
      */
-    const deleteSchedule = useCallback(async (timeSlotIds: string[]) => {
+    const deleteTimeSlot = useCallback(async (timeSlotIds: string[], day: string): Promise<void | string> => {
         try {
-            await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/delete-schedule`, {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/delete-time-slot`, {
                 method: 'DELETE',
-                body: JSON.stringify({ timeSlotIds }),
+                body: JSON.stringify({ timeSlotIds, day, barberId: barber?.id }),
                 headers: { "Content-Type":"application/json" },
-            })
-
+            });
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data.message;
         } catch(err) {
             console.log("Error attempting to delete time slots.")
         }
-    }, [])
+    }, []);
+
+    /**
+     * @name clearSchedule
+     * @description removes all time slots for M-Su
+     */
+    
+    const clearSchedule = useCallback(async () => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/clear-schedule?barberId=${barber?.id}`, {
+                method: 'POST',
+                body: null,
+                headers: {},
+            });
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data.message;
+        } catch(err) {
+            console.log("An error occured clearing the schedule. ", err);
+        }
+    }, []);
 
     return {
         // addons
@@ -373,8 +401,9 @@ export const useBarber = () => {
         // schedule
         addTimeSlot,
         createSchedule,
-        deleteSchedule,
-        editSchedule,
+        deleteTimeSlot,
+        clearSchedule,
+        editTimeSlot,
         getSchedule,
         isLoading
     }

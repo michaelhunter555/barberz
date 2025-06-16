@@ -27,6 +27,7 @@ const BarberBasePrice = ({ basePrice }: IBarberBasePrice) => {
                     <StyleText>Edit</StyleText>
                 </StyledBlurView>
             </StyledView>
+            
         </StyledBlurView>
     )
 }

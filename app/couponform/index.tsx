@@ -22,7 +22,6 @@ let editCoupon: TCoupon | null = null;
 if(selectedCoupon) {
     editCoupon = JSON.parse(decodeURIComponent(String(selectedCoupon)))
 }
-console.log("isEditCoupon: ",!!editCoupon)
 const { createCoupon, updateCoupon, deleteCoupon, isLoading: isCreatingCoupon } = useBarber();
 const { invalidateQuery } = useInvalidateQuery();
 const barber = auth?.userAuth;
@@ -39,12 +38,6 @@ const [ formState, inputHandler, setFormData ] = useForm({
   onlyForUsers: { value: editCoupon?.onlyForUsers as Array<string> ?? [], isValid: true },
 }, false);
 const { name, amount, terms, expirationDate, minPriceActivation, isPublic, isActive } = formState.inputs;
-
-// const { data: clients, isLoading: isLoadingClients } = useQuery({
-//     queryKey: [barber?.id, "createCoupon"],
-//     queryFn: () => void console.log("d"),
-//     enabled: Boolean(isPublic.value)
-// });
 
 useEffect(() => {
     if (
@@ -74,7 +67,6 @@ useEffect(() => {
     formState.inputs.minPriceActivation,
 ])
 
-console.log("FormState: ", formState.inputs)
 
     const resetData = () => {
         setFormData({
@@ -271,7 +263,6 @@ console.log("FormState: ", formState.inputs)
     <SkeletonCard />
     <SkeletonButton />
     </StyledView>
-
   )}
 </ScrollView>
         </SafeAreaView>

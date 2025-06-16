@@ -62,10 +62,10 @@ export const ManySkeletonTextLines = ({lines, isColumn, width }: {width: number;
     if(lines && lines > 1) {
         return (
             <SkeletonLoading background={"#adadad"} highlight={"#ffffff"}>
-                <StyledView style={{ flex: 1, marginLeft: 10 }} direction={isColumn ? "column": "row"}>
+                <StyledView style={{ flex: 1 }} direction={isColumn ? "column": "row"}>
                 {Array.from({ length: lines }).map((_, i) => (
                     <View key={i} style={{ width }}>
-                        <View style={{ backgroundColor: "#adadad", width: "60%", height: 10, marginBottom: 3, borderRadius: 5 }} />
+                        <View style={{ backgroundColor: "#adadad", width: "60%", height: 10, borderRadius: 5 }} />
                     </View>
                 ))}
                 </StyledView>
@@ -74,8 +74,8 @@ export const ManySkeletonTextLines = ({lines, isColumn, width }: {width: number;
     }
     return (
         <SkeletonLoading background={"#adadad"} highlight={"#ffffff"}>
-          <View style={{ flex:1, marginLeft: 10 }}>
-              <View style={{ backgroundColor: "#adadad", width: "60%", height: 10, marginBottom: 3, borderRadius: 5 }} />
+          <View style={{ flex:1, }}>
+              <View style={{ backgroundColor: "#adadad", width , height: 10, borderRadius: 5 }} />
           </View>
         
     </SkeletonLoading>

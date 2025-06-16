@@ -10,10 +10,7 @@ interface IAccountLocationGrid {
     blurIntensity: number;
     blurType: 'light' | 'dark'
 }
-const AccountLocationGrid = ({
-    blurIntensity,
-    blurType,
-}: IAccountLocationGrid) => {
+const AccountLocationGrid = () => {
     const auth = useAuth();
 
     // temp function PLEASE DELETE before production

@@ -121,8 +121,8 @@ export type Inputs = {
     _id?: string, 
     startTime: THourSlot, 
     endTime: THourSlot, 
-    price: number, 
-    isBooked: boolean;
+    price?: number, 
+    isBooked?: boolean;
     isChecked?: boolean;
   }
 

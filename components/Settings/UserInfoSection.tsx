@@ -1,15 +1,24 @@
 import { ColorSchemeName, View, } from 'react-native';
-import { Avatar, Icon } from 'react-native-paper';
+import { Avatar, Icon, IconButton } from 'react-native-paper';
 import { StyledText } from './SettingStyles';
 import { StyleText, StyledBlurView } from '../shared/SharedStyles';
 import { BlurView } from 'expo-blur';
+import { useDesign } from '@/hooks/design-hooks';
+import { router } from 'expo-router';
+import useAuth from '@/context/auth/use-auth';
 
 interface IUserInfoSettings {
     name: string;
     userImgPath: string;
+    isDashboard?: boolean;
 }
 
-const UserInfoSection = ({ name, userImgPath }: IUserInfoSettings) => {
+const UserInfoSection = ({ name, userImgPath, isDashboard }: IUserInfoSettings) => {
+    const auth = useAuth();
+    const barber = auth?.userAuth;
+    const { colorType } = useDesign();
+    const { background, text } = colorType('info');
+
     return (
         <View style={{
             display: 'flex',
@@ -27,6 +36,18 @@ const UserInfoSection = ({ name, userImgPath }: IUserInfoSettings) => {
                     <StyledBlurView isPaper borderRadius={5} style={{  padding: 5 }}> 
                         <StyleText>Verified</StyleText>
                         </StyledBlurView>
+                        { isDashboard && 
+                        <StyledBlurView 
+                        clickable 
+                        isPaper 
+                        direction="row" 
+                        borderRadius={25} 
+                        gap={4} 
+                        onClick={ () => router.push({ pathname: "/schedule/[id]", params: { id: String(barber?.id), price: String(barber?.startingPrice) } })} 
+                        style={{  padding: 5, }}> 
+                        <StyleText style={{ fontWeight: 600 }}>Schedule</StyleText>
+                        <Icon source="pencil" size={15} />
+                        </StyledBlurView>}
                 </View>
             </View>
             <View>

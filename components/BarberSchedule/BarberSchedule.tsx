@@ -13,55 +13,30 @@ import { useDesign } from '@/hooks/design-hooks';
 import { scheduleConflictCheck } from '@/lib/scheduleConflict';
 import { ManySkeletonTextLines } from '../shared/LoadingSkeleton/Skeletons';
 import { useInvalidateQuery } from '@/hooks/invalidate-query';
-
-const dummySchedule =
-{
-    "monday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
-        { startTime: { value: 10, hour: 10, minute: 30 }, endTime: { value: 11, hour: 11, minute: 30 }, isBooked: true, price: 50, isChecked: false },
-        { startTime: { value: 11, hour: 11, minute: 30 }, endTime: { value: 1, hour: 1, minute: 0 }, isBooked: false, price: 50, isChecked: false },
-    ],
-    "tuesday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
-    ],
-
-    "wednesday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
-    ],
-    "thursday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: false, price: 50, isChecked: false },
-    ],
-    "friday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
-    ],
-    "saturday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
-    ],
-    "sunday": [
-        { startTime: { value: 8, hour: 8, minute: 30 }, endTime: { value: 10, hour: 10, minute: 0 }, isBooked: true, price: 50, isChecked: false },
-    ]
-};
-
-const initialSchedule =
-{
-    "monday": [],
-    "tuesday": [],
-    "wednesday": [],
-    "thursday": [],
-    "friday": [],
-    "saturday": [],
-    "sunday": []
-};
+import { formatToAMPM } from '@/lib/convertDateToSlot';
 
 interface IBarberSchedule {
     barberSchedule?: IScheduleByDay;
     isScheduleLoading?: boolean;
+    isPostLoading?: boolean;
+    onAddNewTimeSlot: (slot: IDaySlot, day: string, bulkDays?: string[]) => Promise<void>;
+    onEditTimeSlot: (slot: IDaySlot, day: string, timeSlotId: string) => Promise<void>;
+    onDeleteTimeSlot: (timeSlotIds: string[], day: string) => Promise<void>;
+    onClearSchedule: () => Promise<void>;
 }
 
-const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) => {
+const BarberSchedule = ({ 
+    barberSchedule, 
+    isScheduleLoading, 
+    isPostLoading, 
+    onAddNewTimeSlot,
+    onEditTimeSlot,
+    onDeleteTimeSlot,
+    onClearSchedule,
+}: IBarberSchedule) => {
     const auth = useAuth();
     const barber = auth?.userAuth;
-    const [schedule, setSchedule] = useState<IScheduleByDay | undefined>(barberSchedule);
+    const [schedule, setSchedule] = useState<IScheduleByDay | undefined>(barberSchedule && barberSchedule);
     const [currentKey, setCurrentKey] = useState<string | null>("");
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
     const [isOpenSelectTime, setIsOpenSelectTime] = useState<boolean>(false);
@@ -71,21 +46,12 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
     const { background, text } = colorType('error');
     const [isBulkUpdate, setIsBulkUpdate] = useState<boolean>(false);
     const [bulkDays, setBulkDays] = useState<string[]>([]);
-    const { addTimeSlot } = useBarber();
-    const { invalidateQuery } = useInvalidateQuery()
-
+    
     useEffect(() => {
-        if (barberSchedule) {
+        if (barberSchedule && !isScheduleLoading) {
           setSchedule(barberSchedule);
         }
-      }, []);
-
-    const mutateTimeSlot = useMutation({
-        mutationKey: ["add-time-slot"],
-        mutationFn: async (payload: {slot: IDaySlot, day: string}) => {
-            return await addTimeSlot(payload.slot, payload.day, bulkDays);
-        }
-    })
+      }, [barberSchedule, isScheduleLoading]);
 
     const handleTimeToggle = (key: string) => {
         setCurrentKey((prev) => prev === key ? null : key);
@@ -106,13 +72,14 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
     };
 
     // remove slots
-    const handleRemoveSlots = (day: string) => {
-        setSchedule((prev) => {
-            const currentSchedule = { ...prev };
-            const newSchedule = currentSchedule[day].filter((slot, i) => !slot.isChecked);
-            currentSchedule[day] = newSchedule;
-            return currentSchedule;
-        })
+    const handleRemoveSlots = async (day: string) => {
+       const slotIds = schedule && 
+       schedule[day].filter(
+        (slot) => slot.isChecked).map((slot) => slot._id);
+
+       if(slotIds && slotIds.length > 0) {
+           await onDeleteTimeSlot(slotIds as string[], day)
+       }
         setConfirmDelete(false);
     }
 
@@ -121,44 +88,26 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
 
     // Add new time slot
     const handleAddNewSlots = async (day: string, startTime: Date, endTime: Date) => {
-        console.log(startTime, "-", endTime);
-        const newStartTime = startTime.toLocaleTimeString();
-        const newEndTime = endTime.toLocaleTimeString();
-        const startValue = newStartTime.split(":");
-        const endValue = newEndTime.split(":");
-        const start = { value: Number(startValue[0]), hour: Number(startValue[0]), minute: Number(startValue[1]) };
-        const end = { value: Number(endValue[0]), hour: Number(endValue[0]), minute: Number(endValue[1]) };
+        const start = {
+            value: startTime.getHours(), // Optional: you can drop `value` entirely
+            hour: startTime.getHours(),
+            minute: startTime.getMinutes(),
+          };
         
-        const newSlot: IDaySlot = { isBooked: false, price: Number(barber?.startingPrice), startTime: start, endTime: end, isChecked: false};
-
-            mutateTimeSlot.mutate( 
-                {slot: newSlot, day}, {
-                onSuccess: async (data) => {
-                    if(data) {
-                        setSchedule(data);
-                    }
-                },
-                onError: (err) => console.log(err),
-            });
-       
-        // setSchedule((prev) => {
-        //     const curr = { ...prev };
-        //     // handle bulk days for a time slot
-        //     if(isBulkUpdate && bulkDays.length > 0) {
-        //         for(const d of bulkDays) {
-        //             const currDay = d.toLowerCase();
-        //             if(curr[currDay].length > 0) {
-        //                 curr[currDay] = [...curr[currDay], newSlot];
-        //             } else {
-        //                 curr[currDay] = [newSlot];
-        //             }
-        //         }
-        //         return curr;
-        //     };
-        //     // otherwise single day
-        //     curr[day] = [...curr[day], newSlot];
-        //     return curr;
-        // })
+          const end = {
+            value: endTime.getHours(),
+            hour: endTime.getHours(),
+            minute: endTime.getMinutes(),
+          };
+        
+          const newSlot: IDaySlot = {
+            isBooked: false,
+            price: Number(barber?.startingPrice),
+            startTime: start,
+            endTime: end,
+            isChecked: false,
+          };
+          await onAddNewTimeSlot(newSlot, day, bulkDays);
     }
 
     // Edit time slots
@@ -166,34 +115,27 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
         day: string,
         index: number,
         start: Date,
-        end: Date
+        end: Date,
     ) => {
-        setSchedule((prev) => {
-            const updated = { ...prev };
-
-            const updatedSlot = {
-                ...updated[day][index],
-                startTime: {
-                    value: start.getHours(),
-                    hour: start.getHours(),
-                    minute: start.getMinutes(),
-                },
-                endTime: {
-                    value: end.getHours(),
-                    hour: end.getHours(),
-                    minute: end.getMinutes(),
-                },
-            };
-
-            updated[day][index] = updatedSlot;
-            return updated;
-        });
-
+        const updatedSlot = {
+            ...schedule?.[day][index],
+            startTime: {
+                value: start.getHours(),
+                hour: start.getHours(),
+                minute: start.getMinutes(),
+            },
+            endTime: {
+                value: end.getHours(),
+                hour: end.getHours(),
+                minute: end.getMinutes(),
+            },
+        }
+        await onEditTimeSlot(updatedSlot, day, String(updatedSlot?._id))
         setIsEditing(null);
     };
 
-    const handleClearSchedule = () => {
-        setSchedule(initialSchedule);
+    const handleClearSchedule = async () => {
+       await onClearSchedule();
         setOpenClearSchedule(false);
     }
 
@@ -216,12 +158,37 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
 
     const handleBulkDays = (day: string) => {
         console.log("Added: ", day)
-        setBulkDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
+        setBulkDays((prev) => prev.includes(day) ? 
+        prev.filter(d => d !== day) 
+        : [...prev, day]);
       }
+
+      const getDefaultStart = () => {
+        const now = new Date();
+        const minutes = now.getMinutes();
+        const nextQuarter = Math.ceil(minutes / 15) * 15;
+      
+        if (nextQuarter === 60) {
+          now.setHours(now.getHours() + 1);
+          now.setMinutes(0, 0, 0);
+        } else {
+          now.setMinutes(nextQuarter, 0, 0);
+        }
+      
+        return now;
+      };
+      const defaultStartTime = getDefaultStart();
+      const defaultEndTime = getDefaultStart().getTime() + 60 * 60 * 1000;
+
+      console.log("who cares" ,defaultEndTime,defaultStartTime)
 
       if(isScheduleLoading) {
         return (
-            <ManySkeletonTextLines lines={3} width={50} />
+            <StyledView gap={5} justify="center" align="center" style={{ marginTop: 20, flex: 1,  width: '100%'}}>
+                <ManySkeletonTextLines  width={200} />
+                <ManySkeletonTextLines  width={150} />
+                <ManySkeletonTextLines  width={150} />
+            </StyledView>
         )
       }
 
@@ -232,18 +199,18 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
             {editing && schedule?.[editing.day]?.[editing.index] && <SelectTimePicker
                 isOpen={!!editing}
                 onClose={() => setIsEditing(null)}
-                existingSlots={schedule[currentKey as string] || []}
+                existingSlots={schedule?.[currentKey as string] || []}
                 initialStartTime={toDate(
-                    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.hour,
-                    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.minute
+                    schedule?.[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.hour,
+                    schedule?.[editing?.day as keyof IScheduleByDay][editing?.index as number].startTime.minute
                 )}
                 initialEndTime={toDate(
-                    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.hour,
-                    schedule[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.minute
+                    schedule?.[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.hour,
+                    schedule?.[editing?.day as keyof IScheduleByDay][editing?.index as number].endTime.minute
                 )}
-                onAddSlot={(start, end) => handleEditSlot(editing!.day, editing!.index, start, end)}
+                onAddSlot={(start, end) => handleEditSlot(editing!.day, editing!.index, start, end )}
+                editingSlotId={schedule?.[editing?.day as keyof IScheduleByDay][editing?.index as number]._id}
                 submitLabel="Save Changes"
-            
                 />}
 
             {/* Adding New Time Slot */}
@@ -255,9 +222,12 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
                 isOpen={isOpenSelectTime}
                 onClose={handleSelectTimeModal}
                 bulkDays={bulkDays}
+                schedule={schedule}
+                initialStartTime={defaultStartTime}
+                initialEndTime={new Date(defaultEndTime)}
                 onAddDay={(day: string) => handleBulkDays(day)}
                 existingSlots={schedule?.[currentKey as string] || []}
-                isLoading={mutateTimeSlot.isPending }
+                isLoading={isPostLoading}
             />
             {/* Confirm Modal for delete */}
             <Modal header="Confirm Delete" text="You are about delete schedule slot(s). Please confirm." isOpen={confirmDelete} onClose={handleConfirmDelete}>
@@ -296,7 +266,7 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
                         </StyledView>
                         <StyledView direction="row">
                             {canDelete && currentKey === key && <IconButton icon="close" iconColor='red' size={15} onPress={handleConfirmDelete} />}
-                            <IconButton icon="eye" size={15} onPress={() => console.log("edit time slots")} />
+                            <IconButton icon={currentKey === key ? "eye":"eye-off"} size={15} onPress={() => console.log("edit time slots")} />
                         </StyledView>
                     </StyledBlurView>
                     {key === currentKey && value?.map((slots, j) => {
@@ -313,10 +283,9 @@ const BarberSchedule = ({ barberSchedule, isScheduleLoading }: IBarberSchedule) 
                                         </TouchableOpacity>
 
                                         <StyledView direction="row" align="center">
-
-                                            <StyleText style={{ fontSize: 13, fontWeight: 600 }}>{startHour}:{startMinute === 0 ? "00" : startMinute}</StyleText>
+                                            <StyleText style={{ fontSize: 13, fontWeight: 600 }}>{formatToAMPM(startHour, startMinute)}</StyleText>
                                             <StyleText style={{ fontSize: 13, fontWeight: 600 }}> to </StyleText>
-                                            <StyleText style={{ fontSize: 13, fontWeight: 600 }}>{endHour}:{endMinute === 0 ? "00" : endMinute}</StyleText>
+                                            <StyleText style={{ fontSize: 13, fontWeight: 600 }}>{formatToAMPM(endHour, endMinute)}</StyleText>
                                         </StyledView>
                                     </StyledView>
                                     <StyledView>
