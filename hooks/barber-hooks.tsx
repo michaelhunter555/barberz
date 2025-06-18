@@ -365,7 +365,7 @@ export const useBarber = () => {
      * @name clearSchedule
      * @description removes all time slots for M-Su
      */
-    
+
     const clearSchedule = useCallback(async () => {
         try {
             const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/clear-schedule?barberId=${barber?.id}`, {
@@ -382,6 +382,29 @@ export const useBarber = () => {
             console.log("An error occured clearing the schedule. ", err);
         }
     }, []);
+
+    /**
+     * @name updateVisibility
+     * @description whether or not a user is visible in target radius
+     * @parameters user.id
+     */
+
+    const updateVisibility = useCallback(async() => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/barber/update-visibility`, {
+                method: 'POST',
+                body: JSON.stringify({ id: barber?.id }),
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await response.json();
+            if(!data.ok){
+                throw new Error(data.error);
+            }
+            return data.isVisible;
+        } catch(err) {
+            console.log("error updating visibility", err);
+        }
+    }, [])
 
     return {
         // addons
@@ -405,6 +428,8 @@ export const useBarber = () => {
         clearSchedule,
         editTimeSlot,
         getSchedule,
+        // visibility
+        updateVisibility,
         isLoading
     }
 }

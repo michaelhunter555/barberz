@@ -23,6 +23,24 @@ isLoading?:boolean;
 schedule?: IScheduleByDay;
 }
 
+const getDefaultStart = () => {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const nextQuarter = Math.ceil(minutes / 15) * 15;
+
+  if (nextQuarter === 60) {
+    now.setHours(now.getHours() + 1);
+    now.setMinutes(0, 0, 0);
+  } else {
+    now.setMinutes(nextQuarter, 0, 0);
+  }
+
+  return now;
+};
+const defaultStartTime = getDefaultStart();
+const defaultEndTime = getDefaultStart().getTime() + 60 * 60 * 1000;
+
+
 const TimeSlotModal = ({ 
     isOpen, 
     onClose, 
@@ -38,21 +56,20 @@ const TimeSlotModal = ({
     isLoading,
     schedule
 }: TimeSlotModalProps) => {
-  console.log("initial start :", initialStartTime)
-  console.log("initial end :", initialEndTime)
+
   
-  const [startTime, setStartTime] = useState<Date>(initialStartTime ?? new Date());
-  const [endTime, setEndTime] = useState<Date>(initialEndTime ?? new Date());
+  const [startTime, setStartTime] = useState<Date>(initialStartTime ?? defaultStartTime);
+  const [endTime, setEndTime] = useState<Date>(initialEndTime ?? new Date(defaultEndTime));
   const [showStartPicker, setShowStartPicker] = useState<boolean>(false);
   const [showEndPicker, setShowEndPicker] = useState<boolean>(false);
   // console.log("slotId?:", editingSlotId)
 
   useEffect(() => {
     if (isOpen) {
-      setStartTime(initialStartTime ?? new Date());
-      setEndTime(initialEndTime ?? new Date());
+      setStartTime(initialStartTime ?? defaultStartTime);
+      setEndTime(initialEndTime ?? new Date(defaultEndTime));
     }
-  },[isOpen, initialStartTime, initialEndTime]);
+  },[isOpen]);
 
   const [liveError, setLiveError] = useState<string | null>(null);
 
@@ -104,6 +121,7 @@ useEffect(() => {
           const isOverlap = !(newEnd <= existingStart || newStart >= existingEnd);
           console.log("comparing for overlaps :", isOverlap)
           if(isOverlap) {
+            console.log("Conflict detected")
             setLiveError(
                `❌ Overlaps on ${day} with ${time.startTime.hour}:${String(time.startTime.minute).padStart(2, "0")} - ${time.endTime.hour}:${String(time.endTime.minute).padStart(2, "0")}`
             );
@@ -114,7 +132,7 @@ useEffect(() => {
   }
 
   setLiveError(null); // all good
-}, [startTime, endTime, isOpen, existingSlots, schedule]);
+}, [startTime, endTime, isOpen, existingSlots, bulkDays]);
 
 
   const handleStartChange = (_: DateTimePickerEvent, selected?: Date) => {
@@ -213,9 +231,11 @@ useEffect(() => {
                ))}
           </StyledView>}
           {liveError && (
+            <StyledBlurView style={{ padding: 5, backgroundColor: '#111' }}>
   <StyledView>
     <StyleText style={{ fontSize: 11, color: 'red' }}>{liveError}</StyleText>
   </StyledView>
+            </StyledBlurView>
 )}
 
             <StyledDivider orientation="horizontal" bold />

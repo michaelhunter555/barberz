@@ -50,7 +50,7 @@ const TabContainer = ({ tabIndex, onSelect}: ITabContainer) => {
                 justify="space-between"
                 align="center"
                 direction="row" 
-                style={{ padding: 10, marginVertical: 10 }}>
+                style={{ padding: 10, marginVertical: 10 }} gap={5}>
                     <StyledView>
                         <StyleText style={{ fontWeight: 600 }}>View, edit, and manage your schedule</StyleText>
                     </StyledView>

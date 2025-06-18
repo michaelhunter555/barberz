@@ -163,25 +163,6 @@ const BarberSchedule = ({
         : [...prev, day]);
       }
 
-      const getDefaultStart = () => {
-        const now = new Date();
-        const minutes = now.getMinutes();
-        const nextQuarter = Math.ceil(minutes / 15) * 15;
-      
-        if (nextQuarter === 60) {
-          now.setHours(now.getHours() + 1);
-          now.setMinutes(0, 0, 0);
-        } else {
-          now.setMinutes(nextQuarter, 0, 0);
-        }
-      
-        return now;
-      };
-      const defaultStartTime = getDefaultStart();
-      const defaultEndTime = getDefaultStart().getTime() + 60 * 60 * 1000;
-
-      console.log("who cares" ,defaultEndTime,defaultStartTime)
-
       if(isScheduleLoading) {
         return (
             <StyledView gap={5} justify="center" align="center" style={{ marginTop: 20, flex: 1,  width: '100%'}}>
@@ -223,8 +204,6 @@ const BarberSchedule = ({
                 onClose={handleSelectTimeModal}
                 bulkDays={bulkDays}
                 schedule={schedule}
-                initialStartTime={defaultStartTime}
-                initialEndTime={new Date(defaultEndTime)}
                 onAddDay={(day: string) => handleBulkDays(day)}
                 existingSlots={schedule?.[currentKey as string] || []}
                 isLoading={isPostLoading}
@@ -238,6 +217,7 @@ const BarberSchedule = ({
                 <Button buttonColor='red' textColor='white' onPress={handleClearSchedule}>Confirm Delete</Button>
             </Modal>
             <StyleText style={{ fontWeight: 700, fontSize: 15 }}>Schedule</StyleText>
+            <StyleText>Your schedule represents your availability to provide services. You have the freedom to create, update and remove "time slots" as you wish.</StyleText>
             <StyledView direction="row" justify="flex-end" gap={10}>
                   <StyledView justify="center" gap={3}>
                            <StyledView align="center" justify="center">

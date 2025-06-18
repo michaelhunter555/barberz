@@ -5,10 +5,11 @@ import { getUserLocation } from '@/lib/getLocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useContext } from 'react';
 import { LocationGeocodedAddress } from 'expo-location';
-import { LicenseInfo, TBarberApp } from '../types';
+import { IBarber, LicenseInfo, TBarberApp } from '../types';
 
 export const useUser = () => {
     const auth = useContext(AuthContext);
+    const user = auth?.userAuth;
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [location, setLocation] = useState<LocationGeocodedAddress[]>([]);
 
@@ -106,12 +107,28 @@ export const useUser = () => {
         }
     };
 
+    const getBarbers = useCallback(async (radius: string): Promise<Partial<IBarber[] | undefined>> => {
+        try {
+            const response = await fetch(
+                `${process.env.EXPO_PUBLIC_API_SERVER}/user/get-nearest-barbers?longitude=${user?.geoLocation?.coordinates[0]}&latitude=${user?.geoLocation?.coordinates[1]}&radius=${radius}`
+            );
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data?.barbers;
+        } catch(err) {
+            console.log("Error getting barber list", err);
+        }
+    }, [])
+
     return { 
         checkDbUser, 
         updateUserCoords, 
         handleCoords, 
         submitBarberApplication, 
-        getLocation, 
+        getLocation,
+        getBarbers,
         location, 
         isLoading 
     }

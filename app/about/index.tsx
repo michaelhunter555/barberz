@@ -57,6 +57,10 @@ const AboutMe = () => {
             <StyledBlurView style={{ padding: 10 }}>
                 <StyleText>{auth?.userAuth?.name}</StyleText>
             </StyledBlurView>
+            {isBarber && <><StyleText>Short Bio:</StyleText>
+            <StyledBlurView style={{ padding: 10, height: 120 }}>
+                <StyleText>{formState?.inputs?.aboutMe?.value as string}</StyleText>
+            </StyledBlurView></>}
                 {!isLoading && location ? location.map((details, i) => (
                     <StyledView key={i} direction="column" gap={5}>
                         <StyleText>City:</StyleText>

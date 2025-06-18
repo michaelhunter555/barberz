@@ -20,7 +20,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const HomeScreen = () => {
   const auth = useAuth();
   const colorScheme = useColorScheme();
-  const [searchValue, setSearchValue] = React.useState<string>("");
   const gradient = backgroundGradients.find((g) => g.key === "creamWhite") || { colors: ["#f7f6f1 ", "#f7f6f1"]};
   const gradientColors: readonly [string, string, ...string[]] = [gradient.colors[0], gradient.colors[1], ...gradient.colors]
   const isDarkTheme: readonly [string, string, ...string[]] = ["#000","#000"]
@@ -33,10 +32,11 @@ const HomeScreen = () => {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false} 
       contentContainerStyle={{ display: 'flex', gap: 15 }}>
+        {/* User Homepage */}
         {auth?.userAuth?.accountType === "user" && (
-        <UserHomePage searchValue={searchValue} onSearchSubmit={setSearchValue} />
+        <UserHomePage />
         )}
-
+        {/* Servicer home page */}
         {auth?.userAuth?.accountType === "barber" &&(
           <BarberHomeDashboard />
         )}

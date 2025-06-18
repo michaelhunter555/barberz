@@ -115,13 +115,18 @@ export default function UserSettings() {
                 <List.Section style={{ marginVertical: 0 }}>
                     {otherSettings.map((settings, i) => (
                         <List.Item 
-                        key={i} 
+                        key={i}
+                        disabled={isBarber && settings.link === "/join"} 
                         title={
                             i === 1 ? 
                             <StyledView direction="row" align="center" gap={15}>
                                 <StyleText style={{ fontSize: 15 }}>{settings.text}</StyleText>
                                 <Badge>{10}</Badge>
-                            </StyledView> : settings.text
+                            </StyledView> : isBarber && i === 2 ?  
+                            
+                                <StyleText style={{ fontSize: 15, opacity: 0.5 }}>{settings.text}</StyleText>
+                               
+                            : settings.text
                         } 
                         left={() => <Icon size={20} source={settings.icon} />}
                         onPress={() => router.push({ pathname: settings.link as any })}

@@ -28,14 +28,17 @@ const BarberServices = () => {
     });
 
 return (
-    <View style={{ marginTop: 10 }}>
-        <StyleText style={{ fontSize: 15, fontWeight: 700 }}>Services</StyleText>
+    <StyledView gap={5} style={{ marginTop: 10 }}>
+       
         {servicesIsLoading && (
           <StyledView style={{ width: '100%' }}>
             <ManySkeletonTextLines width={200} />
         </StyledView>
         )}
    {!servicesIsLoading &&  
+
+   <>
+    <StyleText>You can have up to 6 add-ons at any given time. These are additions to the regular based price service.</StyleText>
    <StyledView direction="row" align="flex-start" gap={10} style={{ flexWrap: 'wrap'}}>
         {services && services?.length > 0 && services?.map((service, i) => (
             <StyledBlurView clickable onClick={() => router.push({ pathname: "/serviceForm", params: { selectedService: JSON.stringify(service)}})} key={i} style={{ padding: 10 }}>
@@ -47,8 +50,9 @@ return (
         <IconButton onPress={() => router.push("/serviceForm")} size={12} style={{ backgroundColor: "#007AFF" }} icon="plus" />
         </StyledView>
     </StyledView>
+   </>
         }
-    </View>
+    </StyledView>
 )
 }
 

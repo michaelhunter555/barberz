@@ -12,37 +12,85 @@ export type Status = 'Available' | "Busy" | "Away";
  * @description Barber interface
  */
 export interface IBarber {
+  /* Optional user id property */
     _id?: string;
     id?: string;
+
+  /* user name */
     name: string;
+
+  /* user google email */
     email: string;
+
+  /* whether a servicer is visible in search results */
+    isVisible: boolean;
+
+  /* user's primary image */
     image: string;
+
+  /* Services only Only - Gallery images */
     imageOne: string;
     imageTwo: string;
     imageThree: string;
     imageFour: string;
     imageFive: string;
     appleId: string;
+
+  /* Geo-Location for AppleMaps */
     geoLocation?: {
         type: 'Point';
         coordinates: [number, number]; // [longitude, latitude]
       };
+
+  /* user listed location */
     location: string;
+
+  /* Whether a user is actively using app or not */
     userIsLive: boolean;
+
+  /* Services Only - shop name if owned */
     shopName: string;
+
+  /* Add-ons not including the base service price */
     services: Services[];
+  
+  /* user availability */
     isAvailable: boolean;
+
+  /* user status */
     status: Status;
+  
+  /* Barbers starting price */
     startingPrice: number;
+
+  /* [deprecated] - see IHours */
     hours: string;
+
+  /* Servicers average review rating */
     avgReviewScore: number;
+
+  /* total reviews a servicer has */  
     totalReviews: number;
+
+  /* Object ids connected to each review - see IReviews */  
     reviews: number[];
+
+  /* Object ids connected to each stripe transaction */  
     transactions: number[];
+
+  /* The number of requested bookings */ 
     requestedBooking: number;
+
+   /* Booking object id for created bookings */ 
     customerBookings: number[];
+
+  /* whether or not a user has a servier has an active coupon */  
     hasActiveDeal: boolean;
-    accountType: 'user' | 'barber',
+
+  /* Account type - note: only licensed users can convert to barber */  
+    accountType: 'user' | 'barber';
+
+  /* Shop ids connected to a single servicer */  
     shops: number[]
 };
 
@@ -219,7 +267,7 @@ export type LicenseInfo = {
      /* expiration date of coupon - point when it is no longer applicable */
     expirationDate: string;
 
-     /* whether or not he coupon is available to the public */
+     /* whether or not the coupon is available to the public */
     isPublic?: boolean;
 
      /* whether or not the coupon is active or not */
@@ -232,3 +280,61 @@ export type LicenseInfo = {
     onlyForUsers?: (string|number)[];
 
   }
+
+  /**
+   * @name IBarberAppointments 
+   * @description Properties belonging to a booking appointment
+   */
+
+  export interface IBookings {
+    /* the unique id representing an existing booking */
+    _id?: string | number;
+
+    /* The user id of client */
+    customerId: string | number; // ref: Barbers (Yes, Barbers!)
+
+    /* The user id of servicer */
+    barberId: string | number; // ref: Barbers
+
+    /* Whether the appoint is confirmed - default false */
+    isConfirmed: boolean;
+
+    /* Set time & date */
+    bookingDateAndTime: string;
+
+    /* Set location */
+    bookingLocation: string;
+
+    /* Add-ons for the service */
+    addOns: string[];
+
+    /* The price paid */
+    price: number;
+
+    /* discount amount */
+    discount?: number;
+
+    /* Coupon code added by client (if applicable) */
+    couponAdded?: string;
+
+    /* Tip added by client (if applicable) */
+    tip?: number;
+
+    /* Platform fee */
+    platformFee: number;
+
+    /* Whether a service has begun, triggered by servicer - default false */
+    barberIsStarted: boolean;
+
+    /* The start time when a service was marked "started" */
+    barberStartTime: string;
+
+    /* Whether a service has been completed - default false */
+    barberIsComplete: boolean;
+
+    /* The end time when a service has been marked completed */
+    barberCompleteTime: string;
+
+    /* Whether or not the client has confirmed the service complete. - default false */
+    customerConfirmComplete: boolean;
+};
