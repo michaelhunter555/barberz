@@ -1,11 +1,22 @@
 
 export type Services = {
+    _id?: string | number;
     serviceType: string;
     price: number;
     description: string;
 };
 
 export type Status = 'Available' | "Busy" | "Away";
+
+export type UserLicense = {
+  category: string;
+  city: string;
+  expiration: string | Date;
+  name: string;
+  registrationNumber: number;
+  state: string;
+  zip: string;
+}
 
 /**
  * @name IBarber
@@ -92,7 +103,17 @@ export interface IBarber {
 
   /* Shop ids connected to a single servicer */  
     shops: number[]
+
+  /* User license data */
+    userLicense: UserLicense;
+
+  /* client facing coupons applied during checkout */
+   myCoupons: ICoupon[]
+
+  /* barber created coupons for display on profile and card */
+  coupons: ICoupon[],
 };
+
 
 /**
  * @name Inputs

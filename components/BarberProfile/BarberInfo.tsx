@@ -7,9 +7,10 @@ import { router } from 'expo-router';
 interface IBarberInfoSection {
     name: string;
     userImgPath: string;
+    onVerifyClick: () => void;
 }
 
-const BarberInfoSection = ({ name, userImgPath }: IBarberInfoSection) => {
+const BarberInfoSection = ({ name, userImgPath, onVerifyClick }: IBarberInfoSection) => {
     return (
         <View style={{
             display: 'flex',
@@ -45,7 +46,7 @@ const BarberInfoSection = ({ name, userImgPath }: IBarberInfoSection) => {
                         <Icon source="star" size={15} /> 
                     <StyleText>5.0</StyleText>
                     </StyledBlurView>
-                    <StyledBlurView isPaper direction="row" gap={5} align="center" borderRadius={5} style={{ padding: 5, }}> 
+                    <StyledBlurView clickable onClick={onVerifyClick} isPaper direction="row" gap={5} align="center" borderRadius={5} style={{ padding: 5, }}> 
                     <Icon source="check-circle" size={15} /> 
                         <StyleText>Verified</StyleText>
                         </StyledBlurView>

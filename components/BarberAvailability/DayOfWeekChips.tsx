@@ -1,4 +1,5 @@
 import * as React from 'react';
+import useAuth from '@/context/auth/use-auth';
 import { View, Text, ColorSchemeName, TouchableOpacity } from 'react-native';
 import { Button, Chip, Icon, Divider, IconButton, SegmentedButtons } from "react-native-paper";
 import styled from 'styled-components/native';
@@ -7,6 +8,8 @@ import { BlurView } from 'expo-blur';
 import { router, Link } from 'expo-router';
 import colorWheel from '@/lib/colorWheel';
 import { setColorType } from '@/lib/helpers';
+import { IDaySlot, IScheduleByDay, Services } from '@/types';
+import { formatToAMPM } from '@/lib/convertDateToSlot';
 
 
 interface IDayOfWeekChips {
@@ -17,6 +20,9 @@ interface IDayOfWeekChips {
     goBack: () => void;
     name: string;
     id?: number | string;
+    image?: string;
+    services?: Services[];
+    timeSlots?: IDaySlot[]
 };
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -40,26 +46,21 @@ const generateGroupedSchedule = () => {
 };
 
 
-const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: IDayOfWeekChips) => {
-    const [price, setPrice] = React.useState<number>(50);
-    const [openSchedule, setOpenSchedule] = React.useState();
+const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name, services, timeSlots, image }: IDayOfWeekChips) => {
+    const auth = useAuth();
+    const [price, setPrice] = React.useState<number>(Number(auth?.userAuth?.startingPrice));
     const [dayIndex, setDayIndex] = React.useState<number | null>(null);
     const [booking, setBooking] = React.useState<boolean>(false);
     const [bookingItems, setBookingItems] = React.useState<{ time: any, cost: string, }>({ time: "", cost: "50" })
-    const dummySchedule = generateGroupedSchedule();
-    const textColor = colorScheme === 'light' ? "#222" : "#999";
-    const blurType = colorScheme === 'light' ? "dark" : "light"
-    const iconColor = colorScheme === 'light' ? "#444" : "#f1f1f1"
+    const blurType = colorScheme === 'light' ? "dark" : "light";
     const blurIntensity = colorScheme === 'light' ? 35 : 50;
-    const [addOns, setAddOns] = React.useState({
-        addOnOne: false,
-        addOnTwo: false,
-        addOnThree: false,
-        addOnFour: false,
-    })
-    const [addOnItems, setAddOnItems] = React.useState<string[]>([]);
     const [serviceLocationType, setServiceLocationType] = React.useState<"shop" | "home">("shop");
-    const { background, text } = setColorType("info", colorScheme)
+    const [totalAddOns, setTotalAddOns] = React.useState<Services[]>([]);
+    const { text: textColor } = setColorType("info", colorScheme);
+
+    console.log("services: ", services?.map((service,i) => service.name));
+    console.log("timeSlots: ", timeSlots);
+
     const handleServiceLocation = () => {
         setServiceLocationType((prev) => {
           setPrice(prevPrice => prev === 'shop' ? prevPrice + 150 : prevPrice - 150);
@@ -74,30 +75,16 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
 
     const handleCreateBooking = (bookingTime: string) => {
         setBooking((prev) => !prev);
-        setBookingItems({ time: bookingTime, cost: "50" })
+        setBookingItems({ time: bookingTime, cost: String(price) })
     }
 
-    const handleSelectAddOn = (addOn: string, addOnItem: string) => {
-        if (addOn === 'addOnOne') {
-            setPrice((prev) => !addOns.addOnOne ? prev + 25 : prev - 25);
-            setAddOnItems((prev) => !addOns.addOnOne && !prev.includes(addOnItem) ? [...prev, addOnItem] : prev.filter((item) => item !== addOnItem));
-        }
-
-        if (addOn === 'addOnTwo') {
-            setPrice((prev) => !addOns.addOnTwo ? prev + 20 : prev - 20);
-            setAddOnItems((prev) => !addOns.addOnTwo && !prev.includes(addOnItem) ? [...prev, addOnItem] : prev.filter((item) => item !== addOnItem));
-        }
-
-        if (addOn === 'addOnThree') {
-            setPrice((prev) => !addOns.addOnThree ? prev + 150 : prev - 150);
-            setAddOnItems((prev) => !addOns.addOnThree && !prev.includes(addOnItem) ? [...prev, addOnItem] : prev.filter((item) => item !== addOnItem));
-        }
-        if (addOn === 'addOnFour') {
-            setPrice((prev) => !addOns.addOnFour ? prev + 120 : prev - 120);
-            setAddOnItems((prev) => !addOns.addOnFour&& !prev.includes(addOnItem) ? [...prev, addOnItem] : prev.filter((item) => item !== addOnItem));
-        }
-        setAddOns((prev) => ({ ...prev, [addOn]: !prev[addOn as keyof typeof prev] }))
-    }
+   const handleAddService = (addOn: Services, price: number) => {
+    setTotalAddOns((prev) => {
+        const selectedService = prev.find((service) => service._id === addOn._id);
+        setPrice((prev) => !selectedService ? prev + price : prev - price);
+        return !selectedService ? [...prev, addOn] : prev.filter((service) => service._id !== addOn._id);
+    })
+   }
 
     return (
         <StyledView style={{ flex: 1 }} gap={5} direction="column">
@@ -105,16 +92,16 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
             {!booking && <IconButton onPress={() => {
                 goBack();
             }} icon="arrow-left" />}
-            {!booking && dummySchedule.map((slot, j) => (
-                <React.Fragment key={`${slot.hour}-${slot.minute}-${j}`}>
+            {!booking && timeSlots?.map((slot, j) => (
+                <React.Fragment key={`${slot.startTime.hour}-${slot.endTime.minute}-${j}`}>
                     <View style={{ padding: 5, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 15, justifyContent: 'center' }}>
                         <View>
-                            <StyledText colorScheme={colorScheme}>{slot.hour}:{slot.minute}-{slot.hour + 2}:00</StyledText>
+                            <StyledText colorScheme={colorScheme}>{formatToAMPM(slot.startTime.hour, slot.startTime.minute)}-{formatToAMPM(slot.endTime.hour, slot.endTime.minute)}</StyledText>
                         </View>
 
                         <View style={{ display: 'flex', flexDirection: 'column' }}>
                             <TouchableOpacity activeOpacity={0.7} onPress={() => {
-                                handleCreateBooking(`${slot.hour}:${slot.minute}-${slot.hour + 2}:00`)
+                                handleCreateBooking(`${formatToAMPM(slot.startTime.hour, slot.startTime.minute)}-${formatToAMPM(slot.endTime.hour, slot.endTime.minute)}`)
                             }}>
                                 <StyledBlurItem style={{ width: 80, ...(j % 3 === 0 && { backgroundColor: '#007AFF' }) }} intensity={blurIntensity} tint={blurType}>
                                     <StyledText style={{ fontWeight: 700 }}>{j % 3 === 0 ? "Book" : "Taken"}</StyledText>
@@ -174,12 +161,12 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                                   <StyledView direction="row" align="center" gap={4} style={{ marginTop: 5}}>
                                     <StyledBlurView direction="row" gap={4} style={{ padding: 3}}>
                                     <StyledView direction="row" align="center" gap={2}>
-                                        <Icon color={text} source={serviceLocationType === 'home' ? 'walk' : 'store'} size={15} />
-                                        <StyleText style={{ fontSize: 15, color: text }}>{serviceLocationType === 'home' ? 'House call' : 'Shop Visit'}</StyleText>
+                                        <Icon color={textColor} source={serviceLocationType === 'home' ? 'walk' : 'store'} size={15} />
+                                        <StyleText style={{ fontSize: 15, color: textColor }}>{serviceLocationType === 'home' ? 'House call' : 'Shop Visit'}</StyleText>
                                     </StyledView>
                                     <StyledView direction="row" align="center" gap={3}>
 
-                                        <StyleText style={{ fontWeight: 600, color: text }}>@{bookingItems.time}</StyleText>
+                                        <StyleText style={{ fontWeight: 600, color: textColor }}>@{bookingItems.time}</StyleText>
                                     </StyledView>
                                     </StyledBlurView>
                                 </StyledView>
@@ -188,14 +175,21 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                                 {/* Add on items */}
                                 <StyledView direction="row" align="center" gap={5} style={{ marginVertical: 10, flexWrap: 'wrap', }}>
                                     <StyleText style={{ fontWeight: 700 }}>Add ons:</StyleText>
-                                    {addOnItems && addOnItems.length > 0 ? addOnItems.map((addOn, i) => <StyledBlurView align="center" key={i} style={{ backgroundColor: colorWheel(i), padding: 3 }}><StyleText style={{ color: 'white', fontSize: 12, fontWeight: 600 }}>{addOn}</StyleText></StyledBlurView>) : <StyleText>None</StyleText>}
+                                    {totalAddOns 
+                                    && totalAddOns.length > 0 ? 
+                                    totalAddOns.map((addOn, i) => <StyledBlurView align="center" key={i} style={{ backgroundColor: colorWheel(i), padding: 3 }}>
+                                        <StyleText style={{ color: 'white', fontSize: 12, fontWeight: 600 }}>
+                                            {addOn.name}
+                                            </StyleText>
+                                            </StyledBlurView>) 
+                                    : <StyleText>None</StyleText>}
                                 </StyledView>
                                 <StyledView style={{ marginBottom: 10 }}>
 
                     {/* <StyleText style={{ fontSize: 15 }}>Location:</StyleText> */}
                     { serviceLocationType === 'home' &&  <StyledView direction="row" gap={3}>
-                        <Icon color={text} source="information-outline" size={13} />
-                    <StyleText style={{ color: text }}>{name.split(" ")[0]} will come to your listed address.</StyleText>
+                        <Icon color={textColor} source="information-outline" size={13} />
+                    <StyleText style={{ color: textColor }}>{name.split(" ")[0]} will come to your listed address.</StyleText>
                     </StyledView>}
 
                     <StyledView direction="row" align="center" style={{ marginTop: 8 }}>
@@ -210,11 +204,18 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                         <View style={{ display: 'flex', flexDirection: 'column', }}>
                             <StyledView direction="row" gap={2}>
                                 <StyleText style={{ fontSize: 10, }}>Total:</StyleText>
-                                <StyledText style={{ fontSize: 20, fontWeight: 600 }} colorScheme={colorScheme}>${price}.00</StyledText>
+                                <StyledText style={{ fontSize: 20, fontWeight: 600 }} colorScheme={colorScheme}>${(price).toFixed(2)}</StyledText>
                             </StyledView>
                             {/* Go to checkout button */}
                             <StyledDivider orientation="horizontal" marginVertical={5} />
-                            <StyledBlurView direction="row" justify="center" align="center" gap={3} style={{ backgroundColor: '#007AFF', padding: 10 }} clickable onClick={() => router.push({ pathname: '/checkout/[id]', params: { id: String(id), price: String(price), time: bookingItems.time, name: String(name) } })}>
+                            <StyledBlurView 
+                            direction="row" 
+                            justify="center" 
+                            align="center" 
+                            gap={3} 
+                            style={{ backgroundColor: '#007AFF', padding: 10 }} 
+                            clickable 
+                            onClick={() => router.push({ pathname: '/checkout/[id]', params: { id: String(id), image: String(image),  price: String(price), time: bookingItems.time, name: String(name), addOns: JSON.stringify(totalAddOns), timeSlot: String() } })}>
                                 <StyledText style={{ fontWeight: 700, fontSize: 17, color: 'white' }}>Go to Checkout</StyledText>
                                 <Icon color="white" source="arrow-right" size={17} />
                             </StyledBlurView>
@@ -224,62 +225,29 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name }: 
                     <Divider style={{ width: '100%', marginVertical: 5 }} />
                     {/* Start of Add on Options */}
                     <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                        <StyledText style={{ fontWeight: 700 }} colorScheme={colorScheme}>Available Add ons:</StyledText>
-                        <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-                            <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                                handleSelectAddOn("addOnOne", 'Enhancements')
-                            }>
-                                <StyledBlurItem style={{ width: 120, backgroundColor: addOns.addOnOne ? '#007AFF' : 'white' }} intensity={blurIntensity} tint={blurType}>
-                                    <StyledText style={{ fontWeight: 700, color: addOns.addOnOne ? 'white' : 'black' }}>Enhancements</StyledText>
-                                </StyledBlurItem>
-                            </TouchableOpacity>
-                            <StyledText colorScheme={colorScheme}>$25</StyledText>
-                            <Divider style={{ height: 10, width: 1 }} />
-                            <StyledText style={{ flex: 1 }} colorScheme={colorScheme}>If you're thinning, I got you! I use italia crisps hair enhancments for a crispy thick look</StyledText>
-                        </View>
-                        <Divider style={{ width: '100%', marginVertical: 5 }} />
-                        <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-
-                            <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                                handleSelectAddOn("addOnTwo", "Beard")
-                            }>
-                                <StyledBlurItem style={{ width: 120, backgroundColor: addOns.addOnTwo ? '#007AFF' : 'white' }} intensity={blurIntensity} tint={blurType}>
-                                    <StyledText style={{ fontWeight: 700, color: addOns.addOnTwo ? 'white' : 'black' }}>Beard</StyledText>
-                                </StyledBlurItem>
-                            </TouchableOpacity>
-                            <StyledText colorScheme={colorScheme}>$20</StyledText>
-                            <Divider style={{ height: 10, width: 1 }} />
-                            <StyledText style={{ flex: 1 }} colorScheme={colorScheme}>Include a beard line-up.</StyledText>
-                        </View>
-                        <Divider style={{ width: '100%', marginVertical: 5 }} />
-                        <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-
-                            <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                                handleSelectAddOn("addOnThree", "Scalp Exfoliation")
-                            }>
-                                <StyledBlurItem style={{ width: 120, backgroundColor: addOns.addOnThree ? '#007AFF' : 'white' }} intensity={blurIntensity} tint={blurType}>
-                                    <StyledText style={{ fontWeight: 700, color: addOns.addOnThree ? 'white' : 'black' }}>Scalp exfoliation</StyledText>
-                                </StyledBlurItem>
-                            </TouchableOpacity>
-                            <StyledText colorScheme={colorScheme}>$150</StyledText>
-                            <Divider style={{ height: 10, width: 1 }} />
-                            <StyledText style={{ flex: 1 }} colorScheme={colorScheme}>Deep scalp exfoliation targeting follicticitus issues and hydrating your scalp back to the feel of a new born.</StyledText>
-                        </View>
-                        <Divider style={{ width: '100%', marginVertical: 5 }} />
-                         <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-
-                            <TouchableOpacity activeOpacity={0.7} onPress={() =>
-                                handleSelectAddOn("addOnFour", "Hair Perm")
-                            }>
-                                <StyledBlurItem style={{ width: 120, backgroundColor: addOns.addOnFour? '#007AFF' : 'white' }} intensity={blurIntensity} tint={blurType}>
-                                    <StyledText style={{ fontWeight: 700, color: addOns.addOnFour ? 'white' : 'black' }}>Hair Perm</StyledText>
-                                </StyledBlurItem>
-                            </TouchableOpacity>
-                            <StyledText colorScheme={colorScheme}>$120</StyledText>
-                            <Divider style={{ height: 10, width: 1 }} />
-                            <StyledText style={{ flex: 1 }} colorScheme={colorScheme}>Straighten your hair for design or future braids.</StyledText>
-                        </View>
-                       
+                        <StyledText style={{ fontWeight: 700 }} colorScheme={colorScheme}>Availableadd ons:</StyledText>
+                        {services && services.length > 0 && services.map((service, i) => {
+                            const isSelected = totalAddOns.some(s => s._id === service._id);
+                            return(
+                                (
+                                    <React.Fragment key={service?._id}>
+                                    <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                                        <TouchableOpacity activeOpacity={0.7} onPress={() =>
+                                        handleAddService(service, service.price)
+                                    }>
+                                        <StyledBlurItem style={{ width: 120, backgroundColor: isSelected ? '#007AFF' : 'white' }} intensity={blurIntensity} tint={blurType}>
+                                            <StyledText style={{ fontWeight: 700, color: isSelected ? 'white' : 'black' }}>{service.name}</StyledText>
+                                        </StyledBlurItem>
+                                    </TouchableOpacity>
+                                    <StyledText colorScheme={colorScheme}>${service.price}</StyledText>
+                                    <Divider style={{ height: 10, width: 1 }} />
+                                    <StyledText style={{ flex: 1 }} colorScheme={colorScheme}>{service.description}</StyledText>
+                                </View>
+                                {i !== services.length - 1 && <Divider style={{ width: '100%', marginVertical: 5 }} />}
+                                    </React.Fragment>
+                                )
+                            )
+                        })}
                     </View>
                 </>
             )}

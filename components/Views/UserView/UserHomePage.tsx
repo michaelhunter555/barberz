@@ -54,7 +54,7 @@ const UserHomePage = () => {
       </View>
       <View style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <View>
-          <StyleText style={{ fontWeight: 600, fontSize: 15 }}>Near [location]</StyleText>
+          <StyleText style={{ fontWeight: 600, fontSize: 15 }}>Near You</StyleText>
           <FilterBarberChips colorScheme={colorScheme} />
         </View>
         

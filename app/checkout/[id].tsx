@@ -9,6 +9,7 @@ import { dummyUsers } from '@/components/home/DummyData';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import { setColorType } from '@/lib/helpers';
+import { Services } from '@/types';
 
 const tipChips = [5,10,15,20,25]
 
@@ -17,32 +18,41 @@ const CheckoutPage = () => {
     const [note, setNote] = React.useState<string>("");
     const [tip, setTip] = React.useState<number | null>(null);
     const [tipIndex, setTipIndex] = React.useState<number | null>(null);
-    const [color, setColor] = React.useState<string>("#222")
-    const { id, slotId, name, price, image } = useLocalSearchParams();
+    const [discount, setDiscount] = React.useState<number>(0);
+    const { id, time, name, price, image, addOns } = useLocalSearchParams();
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
     const barber = dummyUsers.find(b => b.id === Number(id));
     const { background, text } = setColorType("success", colorScheme);
 
-    const handleRemoveColor = () => {
-        setColor(() => tip === null ? "#222": "#fff")
-    }
+    const parsedAddOns = React.useMemo((): Services[] | [] => {
+        try {
+          return addOns ? JSON.parse(addOns as string) : [];
+        } catch (err) {
+          console.error('Failed to parse addOns:', err);
+          return [];
+        }
+      }, [addOns]);
     
+
     const totalPrice =  tip === null ? (((Number(price) * 0.06) + Number(price)) - 10 ).toFixed(2)
         : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2);
 
+
+        console.log("auth: ", auth?.userAuth)
+
     // check if user has any coupons
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
             <GoBackArrow />
             <ScrollView>
         <StyledViewContainer>
-            <StyledViewContent style={{ paddingVertical: 5 }}>
+            <StyledViewContent style={{ padding: 5 }}>
             <StyledText style={{ fontWeight: 700, fontSize: 20 }} colorScheme={colorScheme}>Confirm With Barber</StyledText>
             <StyledText colorScheme={colorScheme}>Your booking with {name} is almost set! Please review the price with any add-ons. Once the barber accepts, your card will be charged. </StyledText>
             <StyledView direction="row" gap={10} style={{ marginVertical: 10}}>
             <StyledView direction="column" gap={3}>
-                <Avatar.Image source={{ uri: barber?.image }} />
+                <Avatar.Image source={{ uri: String(image) }} />
             <StyledText colorScheme={colorScheme}>{name}</StyledText>
             </StyledView>
             <StyledView direction="column" gap={2}>
@@ -51,6 +61,8 @@ const CheckoutPage = () => {
             
             <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Payment method:</StyledText>
             <StyledText colorScheme={colorScheme}>Card ending in 3453</StyledText>
+            <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Time:</StyledText>
+            <StyledText colorScheme={colorScheme}>{time}</StyledText>
             </StyledView>
             <StyledText style={{ fontSize: 50}} colorScheme={colorScheme}>${price}</StyledText>
             </StyledView>
@@ -95,11 +107,27 @@ const CheckoutPage = () => {
 
             {/* Transaction Breakdown */}
             <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
+                <StyledText style={{ fontSize: 13, fontWeight: 700 }} colorScheme={colorScheme}>
+                    addOns:
+                </StyledText>
+                <StyledText style={{ fontSize: 13,}} colorScheme={colorScheme}>
+                   {parsedAddOns.length > 0 ? `$${parsedAddOns.reduce((acc, curr) => acc += Number(curr.price), 0)?.toFixed(2)}`: 'None' }
+                </StyledText>
+            </StyledView>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
+                <StyledText style={{ fontSize: 13, fontWeight: 700 }} colorScheme={colorScheme}>
+                    basePrice:
+                </StyledText>
+                <StyledText style={{ fontSize: 13,}} colorScheme={colorScheme}>
+                   ${ (auth?.userAuth?.startingPrice)?.toFixed(2) }
+                </StyledText>
+            </StyledView>
+            <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Subtotal:
                 </StyledText>
                 <StyledText style={{ fontSize: 20,}} colorScheme={colorScheme}>
-                   ${ price }.00
+                   ${ Number(price)?.toFixed(2) }
                 </StyledText>
             </StyledView>
             <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
@@ -115,10 +143,10 @@ const CheckoutPage = () => {
                     Discount:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                   $0.00
+                  ${discount ? `${(discount).toFixed(2)}` : "0.00"}
                 </StyledText>
                 <StyledBlurView clickable style={{ padding: 5, backgroundColor: background}}>
-                    <StyleText style={{ color: text }}>Check for coupons?</StyleText>
+                    <StyleText style={{ color: text }}>Select coupon</StyleText>
                 </StyledBlurView>
             </StyledView>
             <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
@@ -126,7 +154,7 @@ const CheckoutPage = () => {
                     Total:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                  ${tip === null ? (((Number(price) * 0.06) + Number(price)) - 10 ).toFixed(2)
+                  ${tip === null ? (((Number(price) * 0.06) + Number(price)) - discount ).toFixed(2)
                   : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2)
                 } 
                 </StyledText>

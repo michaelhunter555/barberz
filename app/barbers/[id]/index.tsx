@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocalSearchParams, router } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 import { View, Text, useColorScheme, ColorSchemeName, TouchableOpacity, ScrollView } from 'react-native';
 import styled from "styled-components/native";
 import { Avatar, Divider, Button, Icon } from 'react-native-paper';
@@ -13,6 +14,12 @@ import ImageChanger from "@/components/shared/ImageChanger/ImageChanger";
 import { dummyImgArr } from "@/components/BarberProfile/ShowCaseGallery";
 import BarberBasePrice from "@/components/BarberServices/BarberBasePrice";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import UserLicenseModal from "@/components/shared/Modals/LicenseModal";
+import useAuth from "@/context/auth/use-auth";
+import { UserLicense } from "@/types";
+import { useUser } from "@/hooks/user-hooks";
+import { ManySkeletonTextLines } from "@/components/shared/LoadingSkeleton/Skeletons";
+import { reverseWeekDays, weekDays } from "@/lib/helpers";
 
 const userImg = "https://images.unsplash.com/photo-1641318175316-795cd2db99f8?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -39,22 +46,29 @@ const formatDateString = (dateStr: string) => {
 
   
 export default function BarberProfile() {
+    const { getOneBarber } = useUser();
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [openBookings, setOpenBookings] = useState<boolean>(false);
+    const [openVerifyModal, setOpenVerifyModal] = useState<boolean>(false);
     const { id, name, location, price, image } = useLocalSearchParams();
+    const barber = { id, name, location, price, image };
     const colorScheme = useColorScheme();
-        const [currentIndex, setCurrentIndex] = useState<number>(0);
-        const [open, setOpen] = useState<boolean>(false);
-        const [path, setImgPath] = useState<string>("");
-        const shopImg = require("../../../assets/images/homeImg.png")
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [open, setOpen] = useState<boolean>(false);
+    const [path, setImgPath] = useState<string>("");
+    const shopImg = require("../../../assets/images/homeImg.png");
+        
+    const { data: barberData, isLoading: barberIsLoading } = useQuery({
+        queryKey: ['get-one-barber', id],
+        queryFn: () => getOneBarber(String(id)),
+        enabled: Boolean(id),
+    })
     
-        const handleImageDialog = (path: string, index: number) => {
+    const handleImageDialog = (path: string, index: number) => {
             setImgPath(path);
             setOpen(prev => !prev);
             setCurrentIndex(index);
-        };
-
-    const barber = { id, name, location, price, image };
+    };
 
     const handleDateSelection = (date: string) => {
         setSelectedDate(date);
@@ -72,16 +86,28 @@ export default function BarberProfile() {
         })
     };
 
+    const handleVerifyModal = () => {
+        setOpenVerifyModal(prev => !prev);
+    };
+
+    const getDayIndex = (day: string) => {
+        return new Date(day + 'T12:00:00').getDay();
+      };
+    const dayIndex = getDayIndex(selectedDate)
+    const selectedScheduleDay = reverseWeekDays[dayIndex];
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
 
-        <StyledView style={{ flex: 1 }}>
+        {!barberIsLoading && <StyledView style={{ flex: 1 }}>
+            <UserLicenseModal isOpen={openVerifyModal} onClose={handleVerifyModal} userLicense={barberData?.userLicense as UserLicense}/>
             <ImageChanger onNextClick={handleNextImageClick} onClose={() => setOpen(false)} path={dummyImgArr[currentIndex].imgPath} isOpen={open} />
             <ScrollView 
              keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ display: 'flex', padding: 15 }} >
                
-            <BarberInfoSection 
+            <BarberInfoSection
+            onVerifyClick={handleVerifyModal} 
             name={String(name)} 
             userImgPath={String(barber.image)} />
             <Divider bold style={{ width: '100%', marginVertical: 10 }}/>
@@ -130,14 +156,18 @@ export default function BarberProfile() {
             <StyleText>Select Date</StyleText>
             </Div>
            </StyledBlurView>
-            <AppointmentCalendar 
+            <AppointmentCalendar
+            schedule={barberData?.hours[0]?.schedule || {}} 
             selectedDate={selectedDate}
             onSelectedDate={(date: string) => handleDateSelection(date)} 
             colorScheme={colorScheme} />
             </>
             )}
                 {selectedDate && (
-                <DayOfWeekChips 
+                <DayOfWeekChips
+                image={barberData.image}
+                services={barberData?.services[0].services}
+                timeSlots={barberData?.hours[0]?.schedule[selectedScheduleDay]}
                 id={Number(id)} 
                 name={String(name)} 
                 goBack={() => setSelectedDate("")} 
@@ -147,7 +177,14 @@ export default function BarberProfile() {
                
         
             </ScrollView>
-        </StyledView>
+        </StyledView>}
+
+        {barberIsLoading &&
+        (
+            <StyledView>
+                <ManySkeletonTextLines width={150}/>
+            </StyledView>
+        )}
         </SafeAreaView>
     )
     

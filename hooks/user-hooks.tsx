@@ -120,6 +120,19 @@ export const useUser = () => {
         } catch(err) {
             console.log("Error getting barber list", err);
         }
+    }, []);
+
+    const getOneBarber = useCallback(async (barberId: string) => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_SERVER}/user/get-one-barber?barberId=${barberId}`);
+            const data = await response.json();
+            if(!data.ok) {
+                throw new Error(data.error);
+            };
+            return data.barber;
+        } catch(err) {
+            console.log(err);
+        }
     }, [])
 
     return { 
@@ -129,6 +142,7 @@ export const useUser = () => {
         submitBarberApplication, 
         getLocation,
         getBarbers,
+        getOneBarber,
         location, 
         isLoading 
     }
