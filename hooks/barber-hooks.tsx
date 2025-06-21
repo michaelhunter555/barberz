@@ -404,6 +404,27 @@ export const useBarber = () => {
         } catch(err) {
             console.log("error updating visibility", err);
         }
+    }, []);
+
+    const editUserBio = useCallback(async (text: string) => {
+        try {
+            const response = await fetch(
+                `${process.env.EXPO_PUBLIC_API_SERVER}/barber/update-bio`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ bio: text, barberId: barber?.id }),
+                    headers: {"Content-Type": "application/json"}
+                }
+            );
+            const data = await response.json();
+
+            if(!data.ok) {
+                throw new Error(data.error);
+            }
+            return data.message;
+        } catch(err) {
+            console.log("")
+        }
     }, [])
 
     return {
@@ -430,6 +451,8 @@ export const useBarber = () => {
         getSchedule,
         // visibility
         updateVisibility,
+        //bio
+        editUserBio,
         isLoading
     }
 }

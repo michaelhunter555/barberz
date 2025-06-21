@@ -9,7 +9,8 @@ import { dummyUsers } from '@/components/home/DummyData';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GoBackArrow from '@/components/shared/BackArrow/GoBackArrow';
 import { setColorType } from '@/lib/helpers';
-import { Services } from '@/types';
+import { ICoupon, Services } from '@/types';
+import SelectCouponModal from '@/components/shared/Modals/SelectCouponModal';
 
 const tipChips = [5,10,15,20,25]
 
@@ -19,11 +20,23 @@ const CheckoutPage = () => {
     const [tip, setTip] = React.useState<number | null>(null);
     const [tipIndex, setTipIndex] = React.useState<number | null>(null);
     const [discount, setDiscount] = React.useState<number>(0);
-    const { id, time, name, price, image, addOns } = useLocalSearchParams();
+    const [coupon, setCoupon] = React.useState<ICoupon | null>(null);
+    const [openCouponModal, setOpenCouponModal] = React.useState<boolean>(false);
+    const { id, time, name, price, image, addOns, appointmentDate, barberCoupons } = useLocalSearchParams();
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
     const barber = dummyUsers.find(b => b.id === Number(id));
     const { background, text } = setColorType("success", colorScheme);
+
+
+    const parsedBarberCoupons = React.useMemo((): ICoupon[] | [] => {
+                try {
+                  return barberCoupons ? JSON.parse(barberCoupons as string) : [];
+                } catch (err) {
+                  console.error('Failed to parse barberCoupons:', err);
+                  return [];
+                }
+              }, [barberCoupons]);
 
     const parsedAddOns = React.useMemo((): Services[] | [] => {
         try {
@@ -39,12 +52,19 @@ const CheckoutPage = () => {
         : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2);
 
 
-        console.log("auth: ", auth?.userAuth)
+        const handleCouponModal = () => {
+            setOpenCouponModal((prev) => !prev)
+        }
 
     // check if user has any coupons
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <GoBackArrow />
+            <SelectCouponModal 
+            onSelectCoupon={(coupon: ICoupon) => setCoupon(coupon)} 
+            onClose={handleCouponModal} 
+            isOpen={openCouponModal} 
+            barberCoupons={parsedBarberCoupons} />
             <ScrollView>
         <StyledViewContainer>
             <StyledViewContent style={{ padding: 5 }}>
@@ -61,8 +81,9 @@ const CheckoutPage = () => {
             
             <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Payment method:</StyledText>
             <StyledText colorScheme={colorScheme}>Card ending in 3453</StyledText>
-            <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Time:</StyledText>
+            <StyledText style={{ fontWeight: 700, fontSize: 17 }} colorScheme={colorScheme}>Appointment:</StyledText>
             <StyledText colorScheme={colorScheme}>{time}</StyledText>
+            <StyleText>{appointmentDate}</StyleText>
             </StyledView>
             <StyledText style={{ fontSize: 50}} colorScheme={colorScheme}>${price}</StyledText>
             </StyledView>
@@ -143,19 +164,22 @@ const CheckoutPage = () => {
                     Discount:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                  ${discount ? `${(discount).toFixed(2)}` : "0.00"}
+                  ${coupon ? `${(coupon.amount).toFixed(2)}` : "0.00"}
                 </StyledText>
-                <StyledBlurView clickable style={{ padding: 5, backgroundColor: background}}>
-                    <StyleText style={{ color: text }}>Select coupon</StyleText>
-                </StyledBlurView>
+               {!coupon &&  <TouchableOpacity onPress={handleCouponModal} style={{ padding: 5, backgroundColor: 'transparent'}}>
+                    <StyleText style={{ color: text }}>Check for Coupon</StyleText>
+                </TouchableOpacity>}
+               {coupon &&  <TouchableOpacity onPress={() => setCoupon(null)} style={{ padding: 5, backgroundColor: 'transparent'}}>
+                    <StyleText style={{ color: 'salmon'}}>Remove</StyleText>
+                </TouchableOpacity>}
             </StyledView>
             <StyledView direction="row" gap={5} style={{ alignItems: "center", justifyContent: 'flex-start'}}>
                 <StyledText style={{ fontSize: 17, fontWeight: 700 }} colorScheme={colorScheme}>
                     Total:
                 </StyledText>
                 <StyledText style={{ fontSize: 15,}} colorScheme={colorScheme}>
-                  ${tip === null ? (((Number(price) * 0.06) + Number(price)) - discount ).toFixed(2)
-                  : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - 10).toFixed(2)
+                  ${tip === null ? (((Number(price) * 0.06) + Number(price)) - (coupon?.amount ?? 0) ).toFixed(2)
+                  : (((Number(price) * 0.06) + Number(price) + ((tip /100) * Number(price))) - (coupon?.amount ?? 0)).toFixed(2)
                 } 
                 </StyledText>
             </StyledView>
@@ -164,7 +188,7 @@ const CheckoutPage = () => {
             {/* Confirmation Button */}
             </StyledViewContent>
             <View>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/Confirming', params: { price: String(price), barberImgPath: barber?.image, name: String(barber?.name) }, })}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: '/Confirming', params: { price: String(price), barberImgPath: image, name: String(barber?.name) }, })}>
                     <StyledView direction="row" gap={5} style={{ backgroundColor: '#ffffff', width: '100%', height: 40, overflow: 'hidden', borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
                         <StyledText style={{ fontSize: 17, color: 'black' }} colorScheme={colorScheme}>
                             Send Confirmation

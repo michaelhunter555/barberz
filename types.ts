@@ -1,7 +1,7 @@
 
 export type Services = {
     _id?: string | number;
-    serviceType: string;
+    name: string;
     price: number;
     description: string;
 };
@@ -29,6 +29,9 @@ export interface IBarber {
 
   /* user name */
     name: string;
+
+  /* Babers person about for profile */
+    bio?: string;
 
   /* user google email */
     email: string;
@@ -223,6 +226,7 @@ export interface IHours {
  * @description Coupon properties for creating barber coupon
  */
 export interface ICoupon {
+  _id?: string;
   name: string;
   ownerId: string;
   isPublic: boolean;

@@ -44,7 +44,7 @@ const UserCard = ({ userData, colorScheme }: IUserCard<IBarber>) => {
                                     name: user.name,
                                     location: user.location,
                                     price: user.startingPrice.toString(), 
-                                    image: user.image
+                                    image: user.image,
                                 }
                              })} isPaper justify="center" borderRadius={20} style={{ flex: 1, padding: 5, }}>
                                     <Card.Title

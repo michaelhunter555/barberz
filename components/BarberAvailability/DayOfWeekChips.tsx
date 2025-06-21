@@ -8,13 +8,11 @@ import { BlurView } from 'expo-blur';
 import { router, Link } from 'expo-router';
 import colorWheel from '@/lib/colorWheel';
 import { setColorType } from '@/lib/helpers';
-import { IDaySlot, IScheduleByDay, Services } from '@/types';
+import { ICoupon, IDaySlot, IScheduleByDay, Services } from '@/types';
 import { formatToAMPM } from '@/lib/convertDateToSlot';
 
 
 interface IDayOfWeekChips {
-    day?: string;
-    value?: number;
     onPress: () => void;
     colorScheme: ColorSchemeName
     goBack: () => void;
@@ -22,31 +20,12 @@ interface IDayOfWeekChips {
     id?: number | string;
     image?: string;
     services?: Services[];
-    timeSlots?: IDaySlot[]
+    timeSlots?: IDaySlot[];
+    selectedDate: string;
+    barberCoupons: ICoupon[]
 };
 
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-const generateGroupedSchedule = () => {
-    let value = 0;
-    const slots = [];
-
-    for (let hour = 8; hour <= 16; hour++) {
-        if (hour === 16) {
-            slots.push({ value, hour, minute: 30 });
-            value++;
-            break;
-        }
-
-        slots.push({ value, hour, minute: 30 });
-        value++;
-    }
-
-    return slots;
-};
-
-
-const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name, services, timeSlots, image }: IDayOfWeekChips) => {
+const DayOfWeekChips = ({ id, onPress, barberCoupons, colorScheme, goBack, name, services, timeSlots, image, selectedDate }: IDayOfWeekChips) => {
     const auth = useAuth();
     const [price, setPrice] = React.useState<number>(Number(auth?.userAuth?.startingPrice));
     const [dayIndex, setDayIndex] = React.useState<number | null>(null);
@@ -153,10 +132,10 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name, se
                         />
                     </View>
                         {/* Booking Details Row */}
+                               <StyleText style={{ fontSize: 15, color: textColor }}>{selectedDate}</StyleText>
                         <StyledView direction="row" align="center" justify="space-between">
                             <StyledView direction="row" gap={10}>
                         
-                               
                                   {/* Service Type & Location */}
                                   <StyledView direction="row" align="center" gap={4} style={{ marginTop: 5}}>
                                     <StyledBlurView direction="row" gap={4} style={{ padding: 3}}>
@@ -215,7 +194,18 @@ const DayOfWeekChips = ({ id, day, value, onPress, colorScheme, goBack, name, se
                             gap={3} 
                             style={{ backgroundColor: '#007AFF', padding: 10 }} 
                             clickable 
-                            onClick={() => router.push({ pathname: '/checkout/[id]', params: { id: String(id), image: String(image),  price: String(price), time: bookingItems.time, name: String(name), addOns: JSON.stringify(totalAddOns), timeSlot: String() } })}>
+                            onClick={() => router.push({ 
+                                pathname: '/checkout/[id]', 
+                                params: { 
+                                    id: String(id), 
+                                    image: String(image),  
+                                    price: String(price), 
+                                    time: bookingItems.time, 
+                                    name: String(name), 
+                                    addOns: JSON.stringify(totalAddOns), 
+                                    appointmentDate: selectedDate,
+                                    barberCoupons: JSON.stringify(barberCoupons),  
+                                    } })}>
                                 <StyledText style={{ fontWeight: 700, fontSize: 17, color: 'white' }}>Go to Checkout</StyledText>
                                 <Icon color="white" source="arrow-right" size={17} />
                             </StyledBlurView>

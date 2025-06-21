@@ -63,20 +63,39 @@ export default function TabLayout() {
         }}
       />
 
+<Tabs.Screen
+        name="profile"
+        options={{
+          href: !isBarber ? null : undefined,
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
+
 
       <Tabs.Screen
         name="upgrades"
         options={{
-          href: !isBarber ? null : undefined,
+          href: null,
           title: 'Upgrade',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={color} />,
         }}
       />
 
+      <Tabs.Screen 
+      name="more"
+      options={{
+        href: isBarber ? undefined : null,
+        title: 'More',
+        tabBarIcon: ({ color }) => <IconSymbol size={28} name="line.3.horizontal" color={color} />
+      }}
+       />
+
 
        <Tabs.Screen
         name="settings"
         options={{
+          href: isBarber ? null : undefined,
           title: 'Settings',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
         }}
